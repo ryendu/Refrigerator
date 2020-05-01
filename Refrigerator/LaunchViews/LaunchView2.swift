@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct LaunchView2: View {
-    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @State private var name = UserDefaults.standard.string(forKey: "name") ?? ""
     @State private var didFinishTyping = false
     
@@ -38,11 +37,9 @@ struct LaunchView2: View {
         }
     }
 }
-let ref = RefrigeratorViewModel()
 struct LaunchView2_Previews: PreviewProvider {
     
     static var previews: some View {
         LaunchView2()
-            .environmentObject(ref)
     }
 }

@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct LaunchView5: View {
-    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
 
     var body: some View {
         VStack {

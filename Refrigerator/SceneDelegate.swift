@@ -23,7 +23,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
-let ref = RefrigeratorViewModel()
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -32,9 +31,9 @@ let ref = RefrigeratorViewModel()
 //            let homeView = HomeView().environment(\.managedObjectContext, managedObjectContext)
             if !UserDefaults.standard.bool(forKey: "didLaunchBefore") {
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")
-                window.rootViewController = UIHostingController(rootView: LaunchView1().environmentObject(ref))
+                window.rootViewController = UIHostingController(rootView: LaunchView1())
             } else {
-                window.rootViewController = UIHostingController(rootView: HomeView().environmentObject(ref))
+                window.rootViewController = UIHostingController(rootView: HomeView())
             }
             self.window = window
             window.makeKeyAndVisible()

@@ -17,8 +17,8 @@
         <attribute name="premiumStatus" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="IteminStorage" positionX="-54" positionY="9" width="128" height="118"/>
-        <element name="StorageLocation" positionX="-36" positionY="54" width="128" height="88"/>
         <element name="UserItem" positionX="-63" positionY="-18" width="128" height="73"/>
+        <element name="IteminStorage" positionX="-54" positionY="-9" width="128" height="118"/>
+        <element name="StorageLocation" positionX="-36" positionY="9" width="128" height="88"/>
     </elements>
 </model>

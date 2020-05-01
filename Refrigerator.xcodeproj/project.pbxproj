@@ -16,14 +16,13 @@
 		94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94598D1E2458E23000456333 /* LaunchScreen.storyboard */; };
 		94598D2B2458E23100456333 /* RefrigeratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D2A2458E23100456333 /* RefrigeratorTests.swift */; };
 		94598D362458E23100456333 /* RefrigeratorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D352458E23100456333 /* RefrigeratorUITests.swift */; };
+		945E0301245C718200A6C26E /* FunFactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945E0300245C718200A6C26E /* FunFactCell.swift */; };
 		946C568F245A0294007C2986 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C568E245A0294007C2986 /* Models.swift */; };
-		946C5691245A1A40007C2986 /* RestrauntViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5690245A1A40007C2986 /* RestrauntViewModel.swift */; };
 		946C5693245A1D75007C2986 /* LaunchView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5692245A1D75007C2986 /* LaunchView1.swift */; };
 		946C5695245A20D3007C2986 /* LaunchView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5694245A20D3007C2986 /* LaunchView3.swift */; };
 		946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5696245A20E2007C2986 /* LaunchView4.swift */; };
 		946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5698245A20F7007C2986 /* LaunchView2.swift */; };
 		946C569B245A2104007C2986 /* LaunchView5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C569A245A2104007C2986 /* LaunchView5.swift */; };
-		94EA3D36245B5CF0001FCB5A /* UserItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EA3D35245B5CF0001FCB5A /* UserItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,14 +58,13 @@
 		94598D312458E23100456333 /* RefrigeratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefrigeratorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94598D352458E23100456333 /* RefrigeratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefrigeratorUITests.swift; sourceTree = "<group>"; };
 		94598D372458E23100456333 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		945E0300245C718200A6C26E /* FunFactCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunFactCell.swift; sourceTree = "<group>"; };
 		946C568E245A0294007C2986 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		946C5690245A1A40007C2986 /* RestrauntViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrauntViewModel.swift; sourceTree = "<group>"; };
 		946C5692245A1D75007C2986 /* LaunchView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView1.swift; sourceTree = "<group>"; };
 		946C5694245A20D3007C2986 /* LaunchView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView3.swift; sourceTree = "<group>"; };
 		946C5696245A20E2007C2986 /* LaunchView4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView4.swift; sourceTree = "<group>"; };
 		946C5698245A20F7007C2986 /* LaunchView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView2.swift; sourceTree = "<group>"; };
 		946C569A245A2104007C2986 /* LaunchView5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView5.swift; sourceTree = "<group>"; };
-		94EA3D35245B5CF0001FCB5A /* UserItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,8 +118,7 @@
 				94598D102458E22700456333 /* AppDelegate.swift */,
 				94598D122458E22700456333 /* SceneDelegate.swift */,
 				94598D172458E22700456333 /* HomeView.swift */,
-				946C5690245A1A40007C2986 /* RestrauntViewModel.swift */,
-				94EA3D35245B5CF0001FCB5A /* UserItem.swift */,
+				945E0300245C718200A6C26E /* FunFactCell.swift */,
 				946C568E245A0294007C2986 /* Models.swift */,
 				94EA3D37245B5D03001FCB5A /* LaunchViews */,
 				94598D192458E23000456333 /* Assets.xcassets */,
@@ -303,7 +300,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				94598D112458E22700456333 /* AppDelegate.swift in Sources */,
-				946C5691245A1A40007C2986 /* RestrauntViewModel.swift in Sources */,
 				946C569B245A2104007C2986 /* LaunchView5.swift in Sources */,
 				946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */,
 				94598D162458E22700456333 /* Refrigerator.xcdatamodeld in Sources */,
@@ -313,7 +309,7 @@
 				94598D182458E22700456333 /* HomeView.swift in Sources */,
 				94598D132458E22700456333 /* SceneDelegate.swift in Sources */,
 				946C568F245A0294007C2986 /* Models.swift in Sources */,
-				94EA3D36245B5CF0001FCB5A /* UserItem.swift in Sources */,
+				945E0301245C718200A6C26E /* FunFactCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
