@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="true" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E266" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="IteminStorage" representedClassName=".IteminStorage" parentEntity="StorageLocation" syncable="YES" codeGenerationType="class">
+        <attribute name="inStorageFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="inWhichStorage" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="staysFreshFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="symbol" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="StorageLocation" representedClassName=".StorageLocation" syncable="YES" codeGenerationType="class">
+        <attribute name="storageName" optional="YES" attributeType="String"/>
+        <attribute name="symbolName" optional="YES" attributeType="String"/>
+        <attribute name="typeOfStorage" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="UserItem" representedClassName=".UserItem" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="premiumStatus" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+    </entity>
+    <elements>
+        <element name="IteminStorage" positionX="-54" positionY="9" width="128" height="118"/>
+        <element name="StorageLocation" positionX="-36" positionY="54" width="128" height="88"/>
+        <element name="UserItem" positionX="-63" positionY="-18" width="128" height="73"/>
+    </elements>
 </model>
