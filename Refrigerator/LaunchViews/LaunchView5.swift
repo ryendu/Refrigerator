@@ -17,7 +17,7 @@ struct LaunchView5: View {
                 .font(.largeTitle)
                 .bold()
             Spacer()
-            NavigationLink(destination: HomeView(), label: {
+            NavigationLink(destination: TabBarView(), label: {
                 Image("Next button")
                 .renderingMode(.original)
                 .padding(.bottom, 50)

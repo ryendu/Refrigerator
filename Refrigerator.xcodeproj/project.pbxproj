@@ -7,22 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9444E64E24673137006B6215 /* StorageLocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */; };
+		9444E64F24673137006B6215 /* StorageLocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9444E64B24673137006B6215 /* StorageLocation+CoreDataProperties.swift */; };
+		9444E65024673137006B6215 /* FoodItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9444E64C24673137006B6215 /* FoodItem+CoreDataClass.swift */; };
+		9444E65124673137006B6215 /* FoodItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9444E64D24673137006B6215 /* FoodItem+CoreDataProperties.swift */; };
 		94598D112458E22700456333 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D102458E22700456333 /* AppDelegate.swift */; };
 		94598D132458E22700456333 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D122458E22700456333 /* SceneDelegate.swift */; };
 		94598D162458E22700456333 /* Refrigerator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 94598D142458E22700456333 /* Refrigerator.xcdatamodeld */; };
-		94598D182458E22700456333 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D172458E22700456333 /* HomeView.swift */; };
 		94598D1A2458E23000456333 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94598D192458E23000456333 /* Assets.xcassets */; };
 		94598D1D2458E23000456333 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94598D1C2458E23000456333 /* Preview Assets.xcassets */; };
 		94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94598D1E2458E23000456333 /* LaunchScreen.storyboard */; };
 		94598D2B2458E23100456333 /* RefrigeratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D2A2458E23100456333 /* RefrigeratorTests.swift */; };
 		94598D362458E23100456333 /* RefrigeratorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D352458E23100456333 /* RefrigeratorUITests.swift */; };
-		945E0301245C718200A6C26E /* FunFactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945E0300245C718200A6C26E /* FunFactCell.swift */; };
-		946C568F245A0294007C2986 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C568E245A0294007C2986 /* Models.swift */; };
+		946A6D15245E09E0006845CC /* RefrigeratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0B245E09DF006845CC /* RefrigeratorView.swift */; };
+		946A6D16245E09E0006845CC /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0C245E09DF006845CC /* Models.swift */; };
+		946A6D17245E09E0006845CC /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0D245E09DF006845CC /* TabBarView.swift */; };
+		946A6D18245E09E0006845CC /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0E245E09DF006845CC /* ProgressView.swift */; };
+		946A6D19245E09E0006845CC /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0F245E09DF006845CC /* HomeView.swift */; };
+		946A6D1A245E09E0006845CC /* SeeMoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D10245E09E0006845CC /* SeeMoreView.swift */; };
+		946A6D1B245E09E0006845CC /* RefrigeratorItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D11245E09E0006845CC /* RefrigeratorItemCell.swift */; };
+		946A6D1C245E09E0006845CC /* ShoppingListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D12245E09E0006845CC /* ShoppingListCell.swift */; };
+		946A6D1D245E09E0006845CC /* FunFactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D13245E09E0006845CC /* FunFactCell.swift */; };
+		946A6D1E245E09E0006845CC /* RefrigeratorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D14245E09E0006845CC /* RefrigeratorViewModel.swift */; };
 		946C5693245A1D75007C2986 /* LaunchView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5692245A1D75007C2986 /* LaunchView1.swift */; };
 		946C5695245A20D3007C2986 /* LaunchView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5694245A20D3007C2986 /* LaunchView3.swift */; };
 		946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5696245A20E2007C2986 /* LaunchView4.swift */; };
 		946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5698245A20F7007C2986 /* LaunchView2.swift */; };
 		946C569B245A2104007C2986 /* LaunchView5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C569A245A2104007C2986 /* LaunchView5.swift */; };
+		9470A49E2461E508006CBC6F /* AddToStorageItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */; };
+		9470A4A02461F107006CBC6F /* IndivisualRefrigeratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */; };
+		9470A4A22461F649006CBC6F /* AddFoodItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */; };
+		9481FA302460B24B00633558 /* StorageLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9481FA2F2460B24B00633558 /* StorageLocationCell.swift */; };
+		948BCDFA245E7EBD00ED10A2 /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDF9245E7EBD00ED10A2 /* PremiumView.swift */; };
+		948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */; };
+		948BCDFE245F0DBB00ED10A2 /* AddToShoppingListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,11 +61,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageLocation+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9444E64B24673137006B6215 /* StorageLocation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageLocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9444E64C24673137006B6215 /* FoodItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9444E64D24673137006B6215 /* FoodItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		94598D0D2458E22700456333 /* Refrigerator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refrigerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94598D102458E22700456333 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		94598D122458E22700456333 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		94598D152458E22700456333 /* Refrigerator.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Refrigerator.xcdatamodel; sourceTree = "<group>"; };
-		94598D172458E22700456333 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		94598D192458E23000456333 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		94598D1C2458E23000456333 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		94598D1F2458E23000456333 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -58,13 +79,28 @@
 		94598D312458E23100456333 /* RefrigeratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefrigeratorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94598D352458E23100456333 /* RefrigeratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefrigeratorUITests.swift; sourceTree = "<group>"; };
 		94598D372458E23100456333 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		945E0300245C718200A6C26E /* FunFactCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunFactCell.swift; sourceTree = "<group>"; };
-		946C568E245A0294007C2986 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		946A6D0B245E09DF006845CC /* RefrigeratorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefrigeratorView.swift; sourceTree = "<group>"; };
+		946A6D0C245E09DF006845CC /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		946A6D0D245E09DF006845CC /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		946A6D0E245E09DF006845CC /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		946A6D0F245E09DF006845CC /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		946A6D10245E09E0006845CC /* SeeMoreView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeeMoreView.swift; sourceTree = "<group>"; };
+		946A6D11245E09E0006845CC /* RefrigeratorItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefrigeratorItemCell.swift; sourceTree = "<group>"; };
+		946A6D12245E09E0006845CC /* ShoppingListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListCell.swift; sourceTree = "<group>"; };
+		946A6D13245E09E0006845CC /* FunFactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunFactCell.swift; sourceTree = "<group>"; };
+		946A6D14245E09E0006845CC /* RefrigeratorViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefrigeratorViewModel.swift; sourceTree = "<group>"; };
 		946C5692245A1D75007C2986 /* LaunchView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView1.swift; sourceTree = "<group>"; };
 		946C5694245A20D3007C2986 /* LaunchView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView3.swift; sourceTree = "<group>"; };
 		946C5696245A20E2007C2986 /* LaunchView4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView4.swift; sourceTree = "<group>"; };
 		946C5698245A20F7007C2986 /* LaunchView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView2.swift; sourceTree = "<group>"; };
 		946C569A245A2104007C2986 /* LaunchView5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView5.swift; sourceTree = "<group>"; };
+		9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStorageItemSheet.swift; sourceTree = "<group>"; };
+		9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndivisualRefrigeratorView.swift; sourceTree = "<group>"; };
+		9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodItemSheet.swift; sourceTree = "<group>"; };
+		9481FA2F2460B24B00633558 /* StorageLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLocationCell.swift; sourceTree = "<group>"; };
+		948BCDF9245E7EBD00ED10A2 /* PremiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumView.swift; sourceTree = "<group>"; };
+		948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDialougView.swift; sourceTree = "<group>"; };
+		948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToShoppingListSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +128,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9444E65224673145006B6215 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */,
+				9444E64B24673137006B6215 /* StorageLocation+CoreDataProperties.swift */,
+				9444E64C24673137006B6215 /* FoodItem+CoreDataClass.swift */,
+				9444E64D24673137006B6215 /* FoodItem+CoreDataProperties.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		94598D042458E22700456333 = {
 			isa = PBXGroup;
 			children = (
@@ -115,11 +162,11 @@
 		94598D0F2458E22700456333 /* Refrigerator */ = {
 			isa = PBXGroup;
 			children = (
-				94598D102458E22700456333 /* AppDelegate.swift */,
-				94598D122458E22700456333 /* SceneDelegate.swift */,
-				94598D172458E22700456333 /* HomeView.swift */,
-				945E0300245C718200A6C26E /* FunFactCell.swift */,
-				946C568E245A0294007C2986 /* Models.swift */,
+				9444E65224673145006B6215 /* CoreData */,
+				946A6D21245E0A15006845CC /* System Delegates */,
+				946A6D22245E0A1C006845CC /* Views */,
+				946A6D23245E0A22006845CC /* SupportingViews */,
+				946A6D24245E0A2E006845CC /* Models and ViewModels */,
 				94EA3D37245B5D03001FCB5A /* LaunchViews */,
 				94598D192458E23000456333 /* Assets.xcassets */,
 				94598D1E2458E23000456333 /* LaunchScreen.storyboard */,
@@ -154,6 +201,53 @@
 				94598D372458E23100456333 /* Info.plist */,
 			);
 			path = RefrigeratorUITests;
+			sourceTree = "<group>";
+		};
+		946A6D21245E0A15006845CC /* System Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				94598D102458E22700456333 /* AppDelegate.swift */,
+				94598D122458E22700456333 /* SceneDelegate.swift */,
+			);
+			path = "System Delegates";
+			sourceTree = "<group>";
+		};
+		946A6D22245E0A1C006845CC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				946A6D0F245E09DF006845CC /* HomeView.swift */,
+				948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */,
+				948BCDF9245E7EBD00ED10A2 /* PremiumView.swift */,
+				946A6D0E245E09DF006845CC /* ProgressView.swift */,
+				946A6D0D245E09DF006845CC /* TabBarView.swift */,
+				946A6D10245E09E0006845CC /* SeeMoreView.swift */,
+				946A6D0B245E09DF006845CC /* RefrigeratorView.swift */,
+				9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		946A6D23245E0A22006845CC /* SupportingViews */ = {
+			isa = PBXGroup;
+			children = (
+				9481FA2F2460B24B00633558 /* StorageLocationCell.swift */,
+				948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */,
+				9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */,
+				9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */,
+				946A6D13245E09E0006845CC /* FunFactCell.swift */,
+				946A6D12245E09E0006845CC /* ShoppingListCell.swift */,
+				946A6D11245E09E0006845CC /* RefrigeratorItemCell.swift */,
+			);
+			path = SupportingViews;
+			sourceTree = "<group>";
+		};
+		946A6D24245E0A2E006845CC /* Models and ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				946A6D0C245E09DF006845CC /* Models.swift */,
+				946A6D14245E09E0006845CC /* RefrigeratorViewModel.swift */,
+			);
+			path = "Models and ViewModels";
 			sourceTree = "<group>";
 		};
 		94EA3D37245B5D03001FCB5A /* LaunchViews */ = {
@@ -299,17 +393,35 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9481FA302460B24B00633558 /* StorageLocationCell.swift in Sources */,
+				948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */,
 				94598D112458E22700456333 /* AppDelegate.swift in Sources */,
+				946A6D1B245E09E0006845CC /* RefrigeratorItemCell.swift in Sources */,
+				9444E64E24673137006B6215 /* StorageLocation+CoreDataClass.swift in Sources */,
+				946A6D17245E09E0006845CC /* TabBarView.swift in Sources */,
+				946A6D19245E09E0006845CC /* HomeView.swift in Sources */,
 				946C569B245A2104007C2986 /* LaunchView5.swift in Sources */,
+				946A6D1C245E09E0006845CC /* ShoppingListCell.swift in Sources */,
 				946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */,
 				94598D162458E22700456333 /* Refrigerator.xcdatamodeld in Sources */,
+				946A6D18245E09E0006845CC /* ProgressView.swift in Sources */,
 				946C5693245A1D75007C2986 /* LaunchView1.swift in Sources */,
+				9470A4A02461F107006CBC6F /* IndivisualRefrigeratorView.swift in Sources */,
+				946A6D1E245E09E0006845CC /* RefrigeratorViewModel.swift in Sources */,
 				946C5695245A20D3007C2986 /* LaunchView3.swift in Sources */,
+				9444E65124673137006B6215 /* FoodItem+CoreDataProperties.swift in Sources */,
+				948BCDFA245E7EBD00ED10A2 /* PremiumView.swift in Sources */,
+				9470A4A22461F649006CBC6F /* AddFoodItemSheet.swift in Sources */,
+				9444E65024673137006B6215 /* FoodItem+CoreDataClass.swift in Sources */,
+				946A6D15245E09E0006845CC /* RefrigeratorView.swift in Sources */,
 				946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */,
-				94598D182458E22700456333 /* HomeView.swift in Sources */,
+				946A6D1A245E09E0006845CC /* SeeMoreView.swift in Sources */,
+				946A6D1D245E09E0006845CC /* FunFactCell.swift in Sources */,
 				94598D132458E22700456333 /* SceneDelegate.swift in Sources */,
-				946C568F245A0294007C2986 /* Models.swift in Sources */,
-				945E0301245C718200A6C26E /* FunFactCell.swift in Sources */,
+				9444E64F24673137006B6215 /* StorageLocation+CoreDataProperties.swift in Sources */,
+				948BCDFE245F0DBB00ED10A2 /* AddToShoppingListSheet.swift in Sources */,
+				9470A49E2461E508006CBC6F /* AddToStorageItemSheet.swift in Sources */,
+				946A6D16245E09E0006845CC /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

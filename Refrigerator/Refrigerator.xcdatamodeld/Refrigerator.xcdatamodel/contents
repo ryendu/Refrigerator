@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E266" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
-    <entity name="IteminStorage" representedClassName=".IteminStorage" parentEntity="StorageLocation" syncable="YES" codeGenerationType="class">
-        <attribute name="inStorageFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    <entity name="FoodItem" representedClassName=".FoodItem" parentEntity="StorageLocation" syncable="YES">
+        <attribute name="inStorageSince" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="inWhichStorage" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="staysFreshFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="symbol" optional="YES" attributeType="String"/>
+        <relationship name="origion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StorageLocation" inverseName="foodItem" inverseEntity="StorageLocation"/>
     </entity>
-    <entity name="StorageLocation" representedClassName=".StorageLocation" syncable="YES" codeGenerationType="class">
+    <entity name="StorageLocation" representedClassName=".StorageLocation" syncable="YES">
         <attribute name="storageName" optional="YES" attributeType="String"/>
         <attribute name="symbolName" optional="YES" attributeType="String"/>
-        <attribute name="typeOfStorage" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="UserItem" representedClassName=".UserItem" syncable="YES" codeGenerationType="class">
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="premiumStatus" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <relationship name="foodItem" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodItem" inverseName="origion" inverseEntity="FoodItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="storageName"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="UserItem" positionX="-63" positionY="-18" width="128" height="73"/>
-        <element name="IteminStorage" positionX="-54" positionY="-9" width="128" height="118"/>
+        <element name="FoodItem" positionX="-54" positionY="-9" width="128" height="133"/>
         <element name="StorageLocation" positionX="-36" positionY="9" width="128" height="88"/>
     </elements>
 </model>

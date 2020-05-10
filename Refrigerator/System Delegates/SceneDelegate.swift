@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -20,20 +21,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Get the managed object context from the shared persistent container.
-
+        let context = (UIApplication.shared.delegate as!AppDelegate).persistentContainer.viewContext
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-//            let managedObjectContext = (UIApplication.shared.delegate as!AppDelegate).persistentContainer.viewContext
-//            let launchView1 = LaunchView1().environment(\.managedObjectContext, managedObjectContext)
-//            let homeView = HomeView().environment(\.managedObjectContext, managedObjectContext)
+            
+            let launchView1 = LaunchView1().environment(\.managedObjectContext, context)
+            let tabBarView = TabBarView().environment(\.managedObjectContext, context)
+            
             if !UserDefaults.standard.bool(forKey: "didLaunchBefore") {
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")
-                window.rootViewController = UIHostingController(rootView: LaunchView1())
+                window.rootViewController = UIHostingController(rootView: launchView1.environmentObject(refrigerator))
             } else {
-                window.rootViewController = UIHostingController(rootView: HomeView())
+                window.rootViewController = UIHostingController(rootView: tabBarView.environmentObject(refrigerator))
             }
             self.window = window
             window.makeKeyAndVisible()
