@@ -18,8 +18,12 @@ enum WhichView {
 
 class RefrigeratorViewModel: ObservableObject {
     
+    @Published var percentDone = 0.0
+    @Published var images = [CGImage]()
+    @Published var presentScanner = false
     @Published var isInAddFridgeItemView = false
     @Published var isInShoppingListItemAddingView = false
     @Published var isInStorageItemAddingView = false
     @Published var isInWhichView = WhichView.homeView
+    
 }
