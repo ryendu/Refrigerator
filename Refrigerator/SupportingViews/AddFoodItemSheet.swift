@@ -12,7 +12,7 @@ struct AddFoodItemSheet: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @Environment(\.managedObjectContext) var managedObjectContext
-    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: []) var foodItem: FetchedResults<FoodItem>
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(key: "order", ascending: true)]) var foodItem: FetchedResults<FoodItem>
     var storage: StorageLocation
     @State var lastsFor = 7
     @State var selectedEmoji = ""
@@ -113,10 +113,17 @@ struct AddFoodItemSheet: View {
                 
             }.padding()
                Button(action: {
+                var tempNumberOfFoodOrder = Int()
                    let newFoodItem = FoodItem(context: self.managedObjectContext)
                 newFoodItem.staysFreshFor = Int16(self.lastsFor)
                 newFoodItem.symbol = self.selectedEmoji
                 newFoodItem.name = self.nameOfFood
+                newFoodItem.inStorageSince = Date()
+                newFoodItem.order = Int32(UserDefaults.standard.integer(forKey: "foodOrder"))
+                tempNumberOfFoodOrder = UserDefaults.standard.integer(forKey: "foodOrder")
+                print("The food item \(self.nameOfFood) has a order of \(UserDefaults.standard.integer(forKey: "foodOrder"))")
+                UserDefaults.standard.set(tempNumberOfFoodOrder + 1, forKey: "foodOrder")
+                
                 //If these lines are gotten rid of then the second copy of the storageLocation will not appear and neither will the food item anywhere
                 newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
                 newFoodItem.origion?.storageName = self.storage.wrappedStorageName
@@ -136,3 +143,9 @@ struct AddFoodItemSheet: View {
 }
 
 
+extension Date {
+    func adding(days: Int) -> Date? {
+        let result =  Calendar.current.date(byAdding: .day, value: days, to: self)
+        return result
+    }
+}

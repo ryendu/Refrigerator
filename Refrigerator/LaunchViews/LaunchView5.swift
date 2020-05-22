@@ -23,7 +23,9 @@ struct LaunchView5: View {
                 .padding(.bottom, 50)
             })
             
-        }
+        }.onAppear(perform:{
+            UserDefaults.standard.set(0, forKey: "foodOrder")
+        })
         
     }
 }

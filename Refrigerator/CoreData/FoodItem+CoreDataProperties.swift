@@ -23,6 +23,7 @@ extension FoodItem {
     @NSManaged public var staysFreshFor: Int16
     @NSManaged public var symbol: String?
     @NSManaged public var origion: StorageLocation?
+    @NSManaged public var order: Int32
 
     public var wrappedInStorageSince: Date {
         inStorageSince ?? Date()
@@ -40,6 +41,7 @@ extension FoodItem {
     public var wrappedSymbol: String {
         symbol ?? "⍰"
     }
+    
     
 
 }

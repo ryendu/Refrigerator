@@ -30,8 +30,8 @@ extension StorageLocation {
     }
     
     public var foodItemArray: [FoodItem] {
-        let set = foodItem as? Set<FoodItem> ?? []
-        return Array(set)
+        let set = foodItem?.sortedArray(using: [NSSortDescriptor(keyPath: \FoodItem.name, ascending: true)]) as! [FoodItem]
+        return set
     }
 }
 

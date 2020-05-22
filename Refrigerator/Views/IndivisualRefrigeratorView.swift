@@ -13,13 +13,20 @@ import CoreData
 struct IndivisualRefrigeratorView: View {
     var storageIndex: StorageLocation
     // use vision software to recognize the text from the image below.
-    @State var image: Image? = nil
+    func addDays (days: Int, dateCreated: Date) -> Date{
+        let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
+        print("Modified date: \(modifiedDate)")
+        return modifiedDate
+    }
+    @State var image: UIImage? = nil
     @State var showCaptureImageView = false
+    @State var gotImage = false
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
-    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: []) var foodItem: FetchedResults<FoodItem>
-    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: []) var storageLocation: FetchedResults<StorageLocation>
+    //TODO: WHEN I GET BACK FIX THIS SO THAT IT ACTRUALLY SORTS THIS STUFF
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.name, ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
-
+    @State var showEatActionSheet = false
 
     var body: some View {
         ZStack {
@@ -49,13 +56,37 @@ struct IndivisualRefrigeratorView: View {
                             
                         })
                     }
-                    Text("swipe left to throw away and swipe right to eat").padding()
+                    Text("Long hold for more options").padding()
                         .font(.custom("SF Compact Display", size: 16))
                         .foregroundColor(.gray)
+                    
                     ForEach(self.storageIndex.foodItemArray, id:\.self) { item in
-                        RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+                        
+                        RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
+                        .gesture(LongPressGesture()
+                            .onEnded({ i in
+                                self.showEatActionSheet.toggle()
+                            })
+                        )
+                            //TODO: Make a diffrence between eat all and throw away
+                            .actionSheet(isPresented: self.$showEatActionSheet, content: {
+                           ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                               .default(Text("Eat All"), action: {
+                                 self.managedObjectContext.delete(item)
+                                   try? self.managedObjectContext.save()
+                           })
+                            ,.default(Text("Throw Away"), action: {
+                                self.managedObjectContext.delete(item)
+                                try? self.managedObjectContext.save()
+                            })
+                            
+                            ,.default(Text("Cancel"))
+                           ])
+                        })
+                            
                     }
                 }
+            
                 .sheet(isPresented: $refrigeratorViewModel.isInAddFridgeItemView, content: {
                     AddFoodItemSheet(storage: self.storageIndex).environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext)
                 })
@@ -66,7 +97,9 @@ struct IndivisualRefrigeratorView: View {
             })
             
             if (showCaptureImageView) {
-              CaptureImageView(isShown: $showCaptureImageView, image: $image)
+              CaptureImageView(isShown: $showCaptureImageView, image: $image, gotImage: $gotImage)
+            } else if gotImage{
+                ExamineRecieptView(image: $image, storageIndex: storageIndex)
             }
         }
             
@@ -87,10 +120,11 @@ struct IndivisualRefrigeratorView: View {
       
       /// MARK: - Properties
       @Binding var isShown: Bool
-      @Binding var image: Image?
+      @Binding var image: UIImage?
+    @Binding var gotImage: Bool
       
       func makeCoordinator() -> Coordinator {
-        return Coordinator(isShown: $isShown, image: $image)
+        return Coordinator(isShown: $isShown, image: $image, gotImage: $gotImage)
       }
   }
 
@@ -108,21 +142,30 @@ extension CaptureImageView: UIViewControllerRepresentable {
     }
 }
 
-import SwiftUI
 class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
   @Binding var isCoordinatorShown: Bool
-  @Binding var imageInCoordinator: Image?
-  init(isShown: Binding<Bool>, image: Binding<Image?>) {
+  @Binding var imageInCoordinator: UIImage?
+  @Binding var gotImage: Bool
+    init(isShown: Binding<Bool>, image: Binding<UIImage?>, gotImage: Binding<Bool>) {
     _isCoordinatorShown = isShown
     _imageInCoordinator = image
+    _gotImage = gotImage
   }
   func imagePickerController(_ picker: UIImagePickerController,
                 didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
      guard let unwrapImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-     imageInCoordinator = Image(uiImage: unwrapImage)
+     imageInCoordinator = unwrapImage
+    print("got image")
+    gotImage = true
      isCoordinatorShown = false
+    
   }
   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
      isCoordinatorShown = false
+    gotImage = false
+    print("gotimage false")
   }
+    
 }
+
+

@@ -26,7 +26,7 @@ enum storageLocationIcons: String {
 struct RefrigeratorView: View {
     
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
-    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: []) var storageLocation: FetchedResults<StorageLocation>
+    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var isShowingActionSheet = false
     @State var indexOfDelete = 0
@@ -46,15 +46,19 @@ struct RefrigeratorView: View {
                         })
                     }
                     
+                    if storageLocation.count > 0{
                     ForEach(self.storageLocation, id: \.self) { item in
                         
                         //TODO: CHANGE the storage Location Number Of Items
                         
                         NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item).environment(\.managedObjectContext, self.managedObjectContext)) {
-                            StorageLocationCell(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: 0, storageLocationTitle: item.wrappedStorageName).environment(\.managedObjectContext, self.managedObjectContext)
+                            StorageLocationCell(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: item.foodItemArray.count, storageLocationTitle: item.wrappedStorageName, storage: item).environment(\.managedObjectContext, self.managedObjectContext)
                         }.buttonStyle(PlainButtonStyle())
 
 
+                    }
+                    } else {
+                        Text("Start by adding a new Storage location with the plus button above")
                     }
                     
                     

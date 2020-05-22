@@ -19,7 +19,8 @@ struct SeeMoreView: View {
                 .padding()
             
             ForEach(self.refrigeItemsPreview, id: \.self) { item in
-                RefrigeratorItemCell(icon: item.icon, title: item.title, lastsFor: item.daysLeft)
+                //TODO: when replacing this with coredata, replace the lastsUntil argument below with the actrual date
+                RefrigeratorItemCell(icon: item.icon, title: item.title, lastsUntil: Date())
                 
             }
             Spacer()

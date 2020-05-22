@@ -38,9 +38,11 @@
 		9470A4A02461F107006CBC6F /* IndivisualRefrigeratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */; };
 		9470A4A22461F649006CBC6F /* AddFoodItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */; };
 		9481FA302460B24B00633558 /* StorageLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9481FA2F2460B24B00633558 /* StorageLocationCell.swift */; };
+		9482EE2B2476FF8800704674 /* detectItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9482EE2A2476FF8800704674 /* detectItemCell.swift */; };
 		948BCDFA245E7EBD00ED10A2 /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDF9245E7EBD00ED10A2 /* PremiumView.swift */; };
 		948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */; };
 		948BCDFE245F0DBB00ED10A2 /* AddToShoppingListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */; };
+		94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,9 +100,11 @@
 		9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndivisualRefrigeratorView.swift; sourceTree = "<group>"; };
 		9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodItemSheet.swift; sourceTree = "<group>"; };
 		9481FA2F2460B24B00633558 /* StorageLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLocationCell.swift; sourceTree = "<group>"; };
+		9482EE2A2476FF8800704674 /* detectItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detectItemCell.swift; sourceTree = "<group>"; };
 		948BCDF9245E7EBD00ED10A2 /* PremiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumView.swift; sourceTree = "<group>"; };
 		948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDialougView.swift; sourceTree = "<group>"; };
 		948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToShoppingListSheet.swift; sourceTree = "<group>"; };
+		94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamineRecieptView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,10 +237,12 @@
 				9481FA2F2460B24B00633558 /* StorageLocationCell.swift */,
 				948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */,
 				9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */,
+				94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */,
 				9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */,
 				946A6D13245E09E0006845CC /* FunFactCell.swift */,
 				946A6D12245E09E0006845CC /* ShoppingListCell.swift */,
 				946A6D11245E09E0006845CC /* RefrigeratorItemCell.swift */,
+				9482EE2A2476FF8800704674 /* detectItemCell.swift */,
 			);
 			path = SupportingViews;
 			sourceTree = "<group>";
@@ -409,11 +415,13 @@
 				9470A4A02461F107006CBC6F /* IndivisualRefrigeratorView.swift in Sources */,
 				946A6D1E245E09E0006845CC /* RefrigeratorViewModel.swift in Sources */,
 				946C5695245A20D3007C2986 /* LaunchView3.swift in Sources */,
+				9482EE2B2476FF8800704674 /* detectItemCell.swift in Sources */,
 				9444E65124673137006B6215 /* FoodItem+CoreDataProperties.swift in Sources */,
 				948BCDFA245E7EBD00ED10A2 /* PremiumView.swift in Sources */,
 				9470A4A22461F649006CBC6F /* AddFoodItemSheet.swift in Sources */,
 				9444E65024673137006B6215 /* FoodItem+CoreDataClass.swift in Sources */,
 				946A6D15245E09E0006845CC /* RefrigeratorView.swift in Sources */,
+				94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */,
 				946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */,
 				946A6D1A245E09E0006845CC /* SeeMoreView.swift in Sources */,
 				946A6D1D245E09E0006845CC /* FunFactCell.swift in Sources */,

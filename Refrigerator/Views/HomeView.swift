@@ -9,10 +9,20 @@
 import SwiftUI
 
 struct HomeView: View {
+        func addDays (days: Int, dateCreated: Date) -> Date{
+            let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
+            print("Modified date: \(modifiedDate)")
+            return modifiedDate
+        }
     //TODO: Change the funFact
     //TODO: make the addToShopping list in the viewmodel and have an instance of the viewmodels enviroment here
+    //TODO: add a sort descriptor to the food item below to show the foods that will go bad soon first
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
+    @Environment(\.managedObjectContext) var managedObjectContext
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @State var addToShoppingList = false
+    @State var showEatActionSheet = false
     @State var funFact = "chocolate is healthy"
     @State var refrigeItemsPreview = [refrigeItem(icon: "🥚", title: "eggs", daysLeft: 8),refrigeItem(icon: "🥑", title: "avocados", daysLeft: 5),refrigeItem(icon: "🍍", title: "pineapple", daysLeft: 1),refrigeItem(icon: "🍌", title: "Bananas", daysLeft: 1),refrigeItem(icon: "🍉", title: "watermellons", daysLeft: 4)]
     @State var funFoodFacts = ["did you know brocoli contains more protein than steak", "Chocolate is as healthy as a fruit"]
@@ -42,8 +52,28 @@ struct HomeView: View {
                                 Spacer()
                                 } .padding()
                             
-                            ForEach(self.refrigeItemsPreview, id: \.self) { item in
-                                RefrigeratorItemCell(icon: item.icon, title: item.title, lastsFor: item.daysLeft)
+                            ForEach(self.foodItem, id: \.self) { item in
+                                RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
+                                .gesture(LongPressGesture()
+                                    .onEnded({ i in
+                                        self.showEatActionSheet.toggle()
+                                    })
+                                )
+                                    //TODO: Make a diffrence between eat all and throw away
+                                    .actionSheet(isPresented: self.$showEatActionSheet, content: {
+                                   ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                                       .default(Text("Eat All"), action: {
+                                         self.managedObjectContext.delete(item)
+                                           try? self.managedObjectContext.save()
+                                   })
+                                    ,.default(Text("Throw Away"), action: {
+                                        self.managedObjectContext.delete(item)
+                                        try? self.managedObjectContext.save()
+                                    })
+                                    
+                                    ,.default(Text("Cancel"))
+                                   ])
+                                })
                             }
                             NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
                             
@@ -96,6 +126,7 @@ struct HomeView: View {
                 }
             }
         }
+
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $refrigeratorViewModel.isInShoppingListItemAddingView, content: {AddToShoppingListSheet().environmentObject(refrigerator) })
     }
