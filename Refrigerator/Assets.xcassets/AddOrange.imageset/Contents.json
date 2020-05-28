@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Progress icon@1x.png",
+      "filename" : "Add.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Progress icon@2x.png",
+      "filename" : "Add@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Progress icon@3x.png",
+      "filename" : "Add@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

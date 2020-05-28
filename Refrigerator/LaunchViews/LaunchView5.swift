@@ -16,16 +16,16 @@ struct LaunchView5: View {
             Text("\(UserDefaults.standard.string(forKey: "name") ?? "error name is nil"), You are Ready to Go! Start saving food from going to the trash!")
                 .font(.largeTitle)
                 .bold()
+                .padding()
             Spacer()
             NavigationLink(destination: TabBarView(), label: {
                 Image("Next button")
                 .renderingMode(.original)
                 .padding(.bottom, 50)
-            })
+                })
             
-        }.onAppear(perform:{
-            UserDefaults.standard.set(0, forKey: "foodOrder")
-        })
+            
+        }
         
     }
 }

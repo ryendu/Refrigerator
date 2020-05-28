@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 
-extension FoodItem {
+extension FoodItem : Identifiable{
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<FoodItem> {
         return NSFetchRequest<FoodItem>(entityName: "FoodItem")
@@ -23,7 +23,8 @@ extension FoodItem {
     @NSManaged public var staysFreshFor: Int16
     @NSManaged public var symbol: String?
     @NSManaged public var origion: StorageLocation?
-    @NSManaged public var order: Int32
+    @NSManaged public var id: UUID?
+
 
     public var wrappedInStorageSince: Date {
         inStorageSince ?? Date()
@@ -41,7 +42,10 @@ extension FoodItem {
     public var wrappedSymbol: String {
         symbol ?? "⍰"
     }
-    
+    public var wrappedID: UUID{
+        id ?? UUID()
+    }
+
     
 
 }

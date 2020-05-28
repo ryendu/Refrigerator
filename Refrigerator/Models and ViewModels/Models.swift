@@ -16,7 +16,7 @@ struct refrigeItem:  Identifiable, Hashable {
     var daysLeft: Int
 }
 
-struct shoppingListItems: Identifiable, Hashable {
+struct shoppingListItems: Identifiable, Hashable, Codable {
     var id = UUID()
     var icon: String
     var title: String

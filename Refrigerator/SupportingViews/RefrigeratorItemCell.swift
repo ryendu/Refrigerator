@@ -1,6 +1,6 @@
 //
 //  RefrigeratorItemCell.swift
-//  RefrigeratorDesigning(SWIFTUI)
+//  Refrigerator
 //
 //  Created by Ryan Du on 5/1/20.
 //  Copyright © 2020 Ryan Du. All rights reserved.
@@ -13,14 +13,8 @@ struct RefrigeratorItemCell: View {
     var title: String
     var lastsUntil: Date
     let calendar = Calendar.current
-    @State var date = Date()
     @State var daysLeft = Int()
 
-    func daysBetween(start: Date, end: Date) -> Int {
-        let day1 = calendar.component(.day, from: start)
-        let day2 = calendar.component(.day, from: end)
-        return day2 - day1
-    }
     
     var body: some View {
         HStack {
@@ -37,7 +31,7 @@ struct RefrigeratorItemCell: View {
                 
                 HStack {
                     //TODO: fix this
-                    Text("lasts for \(daysBetween(start: self.date, end: self.lastsUntil)) days")
+                    Text("lasts for \(daysLeft) days")
                         .font(.custom("SF Compact Display", size: 16))
                         .foregroundColor(Color(hex: "868686"))
                         .multilineTextAlignment(.leading)
@@ -46,10 +40,21 @@ struct RefrigeratorItemCell: View {
             }
             Spacer()
             
-            }
+        }.onAppear(perform: {
+            let calendar = Calendar.current
+
+            // Replace the hour (time) of both dates with 00:00
+            let date1 = calendar.startOfDay(for: Date())
+            let date2 = calendar.startOfDay(for: self.lastsUntil)
+
+            let components = calendar.dateComponents([.day], from: date1, to: date2)
+            self.daysLeft = components.day!
+        })
             
         .padding()
-        .background(Image("Rectangle").resizable().padding(.horizontal))
+        .background(Rectangle().cornerRadius(16).padding(.horizontal)
+        .foregroundColor(Color("cellColor"))
+        )
         .padding(.bottom)
     
         
@@ -64,7 +69,7 @@ struct RefrigeratorItemCell_Previews: PreviewProvider {
 
 
 public extension Date {
-    func daysTo(_ date: Date) -> Int? {
+    func daysTo(date: Date) -> Int {
         let calendar = Calendar.current
 
         // Replace the hour (time) of both dates with 00:00
@@ -72,6 +77,6 @@ public extension Date {
         let date2 = calendar.startOfDay(for: date)
 
         let components = calendar.dateComponents([.day], from: date1, to: date2)
-        return components.day  // This will return the number of day(s) between dates
+        return components.day!  // This will return the number of day(s) between dates
     }
 }

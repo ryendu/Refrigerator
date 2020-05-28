@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import Firebase
+import GoogleMobileAds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +18,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+ 
+        FirebaseApp.configure()
+        RemoteConfigManager.configure()
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        
+        var expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
+        if (expirationDate?.daysTo(date: Date()))! <= 1 {
+            UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
+            print("cleared userDefaults")
+
+            
+            expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
+        }
+        UserDefaults.standard.set(false, forKey: "RefrigeratorViewLoadedAd")
+        UserDefaults.standard.set(false, forKey: "IndivisualRefrigeratorViewLoadedAd")
+        UserDefaults.standard.set(false, forKey: "ExamineRecieptViewLoadedAd")
+        UserDefaults.standard.set(false, forKey: "SeeMoreViewLoadedAd")
+        
+        
         return true
     }
 

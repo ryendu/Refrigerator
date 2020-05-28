@@ -11,7 +11,7 @@ import SwiftUI
 struct StorageLocationCell: View {
     
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
-    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.name, ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var isShowingActionSheet = false
     var storageLocationIcon: String
@@ -51,12 +51,13 @@ struct StorageLocationCell: View {
                     })
                        }
                    .padding()
-                   .background(Image("Rectangle").resizable().padding(.horizontal))
+                   .background(Rectangle().cornerRadius(16).padding(.horizontal)
+                   .foregroundColor(Color("cellColor"))
+                   )
                    .padding(.bottom)
                }        .actionSheet(isPresented: $isShowingActionSheet, content: {
                   ActionSheet(title: Text("Delete?"), message: Text("Are you sure you want to delete this Storage Location?"), buttons: [
                       .default(Text("Yes"), action: {
-                        let foodItems = self.foodItem[0]
                         self.managedObjectContext.delete(self.storage)
                           try? self.managedObjectContext.save()
                   })

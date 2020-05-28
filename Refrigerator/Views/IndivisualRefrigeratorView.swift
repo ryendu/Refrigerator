@@ -12,6 +12,7 @@ import VisionKit
 import Vision
 import Combine
 import UIKit
+import Firebase
 
 
 
@@ -24,17 +25,46 @@ struct IndivisualRefrigeratorView: View {
         return modifiedDate
     }
     
-    @State var image: UIImage? = nil
-    @State var foodsToDisplay = [refrigeItem]()
+//    var interstitial:Interstitial
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
-    //TODO: WHEN I GET BACK FIX THIS SO THAT IT ACTRUALLY SORTS THIS STUFF
-    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.name, ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var showEatActionSheet = false
-    @State var percentDone = 0.0
-    @ObservedObject var recognizedText: RecognizedText = RecognizedText()
+    
+    
     @State var showingView = "fridge"
+    //Variables below for the paramaters of EamineRecieptView
+    @State var scan: VNDocumentCameraScan? = nil
+    @State var image: [CGImage]? = nil
+    @State var foodItemTapped: FoodItem? = nil
+    @State var interstitial: GADInterstitial!
+    var adDelegate = MyDInterstitialDelegate()
+    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+            var x = top
+            var y = bottom
+            while (y != 0) {
+                let buffer = y
+                y = x % y
+                x = buffer
+            }
+            let hcfVal = x
+            let newTopVal = top/hcfVal
+            let newBottomVal = bottom/hcfVal
+            return(newTopVal, newBottomVal)
+        }
+        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+        var returnValue = false
+        print(denomenator)
+        if Int.random(in: 1...denomenator.newBottom) == 1 {
+        returnValue = true
+      }
+       return returnValue
+    }
+    @State var editFoodItem = false
+
     var body: some View {
         ZStack {
             
@@ -43,59 +73,147 @@ struct IndivisualRefrigeratorView: View {
                     
                     
                     
-                    HStack {
-                        Text(storageIndex.wrappedStorageName)
-                            .font(.custom("SF Compact Display", size: 38))
-                        Button(action: {
-                            self.refrigeratorViewModel.isInAddFridgeItemView.toggle()
-                        }, label: {
-                            Image("plus")
-                                .renderingMode(.original)
-                        })
-                        Button(action: {
-                            print("yaya")
-                            self.showingView = "scanner"
-                            
-                        }, label: {
-                            Image(systemName: "doc.text.viewfinder")
-                                .resizable()
-                                .renderingMode(.original)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 30, height: 30)
-                            
-                        })
-                        
-                    }
-                    Text("Long hold for more options").padding()
+                    
+                    if editFoodItem == false {
+                        Text("Long hold for more options").padding()
                         .font(.custom("SF Compact Display", size: 16))
                         .foregroundColor(.gray)
                     
-                    ForEach(self.storageIndex.foodItemArray, id:\.self) { item in
-                        
-                        RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
-                            .gesture(LongPressGesture()
-                                .onEnded({ i in
-                                    self.showEatActionSheet.toggle()
+                    ForEach(self.storageIndex.foodItemArray, id: \.self) { item in
+                       RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
+                        .onTapGesture {}
+                        .gesture(LongPressGesture()
+                            .onEnded({ i in
+                                self.foodItemTapped = item      // << tapped item
+                            }))
+                    }
+                        .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                            ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                                .default(Text("Eat All"), action: {
+                                    var previousInteger = UserDefaults.standard.double(forKey: "eaten")
+                                    previousInteger += 1.0
+                                    UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                                    self.managedObjectContext.delete(item)
+                                    try? self.managedObjectContext.save()
                                 })
-                        )
-                            //TODO: Make a diffrence between eat all and throw away
-                            .actionSheet(isPresented: self.$showEatActionSheet, content: {
-                                ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
-                                    .default(Text("Eat All"), action: {
-                                        self.managedObjectContext.delete(item)
-                                        try? self.managedObjectContext.save()
-                                    })
-                                    ,.default(Text("Throw Away"), action: {
-                                        self.managedObjectContext.delete(item)
-                                        try? self.managedObjectContext.save()
-                                    })
+                                ,.default(Text("Throw Away"), action: {
+                                    var previousData = [shoppingListItems]()
+                                    if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
+                                        do {
+                                            let decoder = JSONDecoder()
+                                            let note = try decoder.decode([shoppingListItems].self, from: data)
+                                            previousData = note
+                                        } catch {
+                                            print("Unable to Decode Note (\(error))")
+                                        }
+                                    }
+                                    previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
                                     
-                                    ,.default(Text("Cancel"))
-                                ])
-                            })
+                                    do {
+                                        let encoder = JSONEncoder()
+                                        
+                                        let data = try encoder.encode(previousData)
+                                        
+                                        UserDefaults.standard.set(data, forKey: "recentlyDeleted")
+                                        
+                                    } catch {
+                                        print("Unable to Encode previousData (\(error))")
+                                    }
+                                    var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
+                                    previousInteger += 1.0
+                                    UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
+                                    print(previousData)
+                                    print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                                    self.managedObjectContext.delete(item)
+                                    try? self.managedObjectContext.save()
+                                })
+                                ,.default(Text("Eat Some"), action: {
+                                    //TODO: Make this actrually do something
+                                    print("ate some of \(item)")
+                                })
+                                
+                                ,.default(Text("Duplicate"), action: {
+                                    let newFoodItem = FoodItem(context: self.managedObjectContext)
+                                    newFoodItem.staysFreshFor = item.staysFreshFor
+                                    newFoodItem.symbol = item.symbol
+                                    newFoodItem.name = item.name
+                                    newFoodItem.inStorageSince = Date()
+                                    newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+                                    newFoodItem.origion?.storageName = item.origion?.storageName
+                                    newFoodItem.origion?.symbolName = item.origion?.symbolName
+                                    newFoodItem.id = UUID()
+                                    Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : item.name ?? ""])
+                                    do{
+                                        try self.managedObjectContext.save()
+                                    } catch let error{
+                                        print(error)
+                                    }
+                                    
+                                })
+                                ,.default(Text("Cancel"))
+                            ])
+                        })
                         
+                    } else {
+                        ForEach(self.storageIndex.foodItemArray, id: \.self) { item in
+                            DetectItemCoreDataCell(foodsToDisplay: item)
+                        }
+                    }
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 8 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                    GADBannerViewController()
+                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+                    }else {
+
                     }
                 }
+                .navigationBarItems(trailing: HStack{
+                    
+                    Button(action: {
+                self.editFoodItem.toggle()
+                
+            }, label: {
+                Text("Edit")
+                    
+                        }).padding(6)
+                    Button(action: {
+                                   self.showingView = "scanner"
+                                   
+                               }, label: {
+                                   Image("scanIcon")
+                                       .resizable()
+                                       .renderingMode(.original)
+                                       .aspectRatio(contentMode: .fit)
+                                       .frame(width: 30, height: 30)
+                                       
+                               }).padding(6)
+                    Button(action: {
+                        self.refrigeratorViewModel.isInAddFridgeItemView.toggle()
+                    }, label: {
+                        Image("plus")
+                            .renderingMode(.original)
+                            
+                        }).padding(6)
+                    
+                })
+
+            .navigationBarTitle(storageIndex.wrappedStorageName)
+            .onAppear(perform: {
+                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 9 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "IndivisualRefrigeratorViewLoadedAd") == false{
+                    //FIXME: Change the Adunit ID To My AdUNITID that i didnt set yet but will set when i create a new Interetitial ad in admob
+                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                    self.interstitial.delegate = self.adDelegate
+                    
+                    let req = GADRequest()
+                    self.interstitial.load(req)
+
+                    UserDefaults.standard.set(true, forKey: "IndivisualRefrigeratorViewLoadedAd")
+                    
+                }else {
+
+                }
+                
+                
+            })
                     
                     
                 .sheet(isPresented: $refrigeratorViewModel.isInAddFridgeItemView, content: {
@@ -109,9 +227,9 @@ struct IndivisualRefrigeratorView: View {
             })
             
             if self.showingView == "scanner" {
-                ScanningView(foodsToDisplay: $foodsToDisplay, percentDone: $percentDone, showingView: $showingView).environmentObject(refrigerator)
+                makeScannerView()
             } else if self.showingView == "results" {
-                ExamineRecieptView(image: UIImage(cgImage: self.refrigeratorViewModel.images[0]), storageIndex: self.storageIndex, foodsToDisplay: self.foodsToDisplay, percentDone: self.refrigeratorViewModel.percentDone)
+                ExamineRecieptView(image: UIImage(cgImage: self.image![0]), storageIndex: self.storageIndex, scan: self.scan)
             }else {
                 
             }
@@ -119,109 +237,41 @@ struct IndivisualRefrigeratorView: View {
         
         
     }
-}
-
-
-
-
-
-//struct CaptureImageView {
-//
-//    /// MARK: - Properties
-//    @Binding var isShown: Bool
-//    @Binding var image: UIImage?
-//    @Binding var gotImage: Bool
-//
-//    func makeCoordinator() -> Coordinator {
-//        return Coordinator(isShown: $isShown, image: $image, gotImage: $gotImage)
-//    }
-//}
-//
-//extension CaptureImageView: UIViewControllerRepresentable {
-//    func makeUIViewController(context: UIViewControllerRepresentableContext<CaptureImageView>) -> UIImagePickerController {
-//        let picker = UIImagePickerController()
-//        picker.delegate = context.coordinator
-//        picker.sourceType = .camera
-//        return picker
-//    }
-//
-//    func updateUIViewController(_ uiViewController: UIImagePickerController,
-//                                context: UIViewControllerRepresentableContext<CaptureImageView>) {
-//
-//    }
-//}
-//
-//class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-//    @Binding var isCoordinatorShown: Bool
-//    @Binding var imageInCoordinator: UIImage?
-//    @Binding var gotImage: Bool
-//    init(isShown: Binding<Bool>, image: Binding<UIImage?>, gotImage: Binding<Bool>) {
-//        _isCoordinatorShown = isShown
-//        _imageInCoordinator = image
-//        _gotImage = gotImage
-//    }
-//    func imagePickerController(_ picker: UIImagePickerController,
-//                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//        guard let unwrapImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-//        imageInCoordinator = unwrapImage
-//        print("got image")
-//        gotImage = true
-//        isCoordinatorShown = false
-//
-//    }
-//    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-//        isCoordinatorShown = false
-//        gotImage = false
-//        print("gotimage false")
-//    }
-//
-//}
-
-
-//struct ViewControllerWrapper: UIViewControllerRepresentable {
-//
-//    typealias UIViewControllerType = DocumentScanningViewController
-//
-//
-//    func makeUIViewController(context: UIViewControllerRepresentableContext<ViewControllerWrapper>) -> ViewControllerWrapper.UIViewControllerType {
-//        return DocumentScanningViewController()
-//    }
-//
-//    func updateUIViewController(_ uiViewController: ViewControllerWrapper.UIViewControllerType, context: UIViewControllerRepresentableContext<ViewControllerWrapper>) {
-//
-//    }
-//}
-// Ian is the Best
-
-final class RecognizedText: ObservableObject, Identifiable {
-    
-    let willChange = PassthroughSubject<RecognizedText, Never>()
-    
-    var value: String = "Scan document to see its contents" {
-        willSet {
-            willChange.send(self)
-        }
+    private func makeScannerView() -> ScanningView {
+        ScanningView(completion: { (images, scan) in
+            if images == nil && scan == nil {
+                self.showingView = "fridge"
+            } else {
+                self.showingView = "results"
+                self.scan = scan
+                self.image = images
+                
+            }
+        })
     }
-    
 }
+
 
 struct ScanningView: UIViewControllerRepresentable {
     
-    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
-    @Binding var foodsToDisplay: [refrigeItem]
-    @Binding var percentDone: Double
-    @Binding var showingView: String
+    private let completionHandler: ([CGImage]?, VNDocumentCameraScan?) -> Void
+    
+    init(completion: @escaping ([CGImage]?, VNDocumentCameraScan?) -> Void) {
+        self.completionHandler = completion
+    }
+    
+    
     
     typealias UIViewControllerType = VNDocumentCameraViewController
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(foodsToDisplay: $foodsToDisplay, refrigeratorViewModel: refrigeratorViewModel, percentDone: $percentDone, showingView: $showingView)
+        return Coordinator(completion: completionHandler)
     }
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ScanningView>) -> VNDocumentCameraViewController {
-        let documentCameraViewController = VNDocumentCameraViewController()
-        documentCameraViewController.delegate = context.coordinator
-        return documentCameraViewController
+        let viewController = VNDocumentCameraViewController()
+        viewController.delegate = context.coordinator
+        return viewController
     }
     
     func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: UIViewControllerRepresentableContext<ScanningView>) {
@@ -230,18 +280,19 @@ struct ScanningView: UIViewControllerRepresentable {
     
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
         
-        var foodsToDisplay: Binding<[refrigeItem]>
-        private let textRecognizer: TextRecognizer
-        var refrigeratorViewModel: RefrigeratorViewModel
-        var percentDone: Binding<Double>
-        var showingView: Binding<String>
+        private var images = [CGImage]()
+        private let completionHandler: ([CGImage]?, VNDocumentCameraScan?) -> Void
         
-        init(foodsToDisplay: Binding<[refrigeItem]>, refrigeratorViewModel: RefrigeratorViewModel, percentDone: Binding<Double>, showingView: Binding<String>) {
-            self.showingView = showingView
-            self.foodsToDisplay = foodsToDisplay
-            self.percentDone = percentDone
-            self.refrigeratorViewModel = refrigeratorViewModel
-            textRecognizer = TextRecognizer(foodsToDisplay: foodsToDisplay, percentDone: percentDone)
+        init(completion: @escaping ([CGImage]?, VNDocumentCameraScan?) -> Void) {
+            
+            self.completionHandler = completion
+        }
+        func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
+            completionHandler(nil, nil)
+            
+        }
+        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+            completionHandler(nil, nil)
         }
         
         public func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
@@ -249,66 +300,16 @@ struct ScanningView: UIViewControllerRepresentable {
             for pageIndex in 0 ..< scan.pageCount {
                 let image = scan.imageOfPage(at: pageIndex)
                 if let cgImage = image.cgImage {
-                    self.refrigeratorViewModel.images.append(cgImage)
+                    self.images.append(cgImage)
                 }
             }
             
-            self.showingView.wrappedValue = "results"
-            print(self.showingView.wrappedValue)
-            print(self.showingView)
-            textRecognizer.recognizeText(from: self.refrigeratorViewModel.images)
+            completionHandler(images, scan)
             
         }
         
     }
     
 }
-public struct TextRecognizer {
-    
-    
-    @Binding var foodsToDisplay: [refrigeItem]
-    @Binding var percentDone: Double
-    private let textRecognitionWorkQueue = DispatchQueue(label: "TextRecognitionQueue",
-                                                         qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
-    let newArrayOfFoods = ["oranges" : "🍊", "eggs":"🥚", "mandarines" : "🍊"]
-    func recognizeText(from images: [CGImage]) {
-        var tmp = ""
-        let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
-            guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                print("The observations are of an unexpected type.")
-                return
-            }
-            // Concatenate the recognised text from all the observations.
-            for observation in observations {
-                guard let bestCandidate = observation.topCandidates(1).first else { continue }
-                for (word,emoji) in self.newArrayOfFoods {
-                    if bestCandidate.string.lowercased().contains(word) {
-                        self.foodsToDisplay.append(refrigeItem(icon: emoji, title: bestCandidate.string, daysLeft: 7))
-                        print("found and appended: \(bestCandidate.string)")
-                        break
-                    }else {
-                        print("found but not appended: \(bestCandidate.string)")
-                    }
-                }
-            }
-        }
-        textRecognitionRequest.usesLanguageCorrection = true
-        textRecognitionRequest.minimumTextHeight = 0
-        textRecognitionRequest.progressHandler = { (request, value, error) in
-            self.percentDone = value
-        }
-        textRecognitionRequest.recognitionLevel = .accurate
-        for image in images {
-            let requestHandler = VNImageRequestHandler(cgImage: image, options: [:])
-            
-            do {
-                try requestHandler.perform([textRecognitionRequest])
-            } catch {
-                print(error)
-            }
-            tmp += "\n\n"
-        }
-    }
-    
-}
+
 

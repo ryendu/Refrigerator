@@ -13,168 +13,181 @@ import CoreML
 import NaturalLanguage
 import Foundation
 import UIKit
+import Firebase
 
 
 
 struct ExamineRecieptView: View {
-    let arrayOfFoods = ["oranges", "eggs", "bread", "cake", "watermellon", "grapes", "chicken wings", "mug cake", "cup cake", "pizza", "hot dog", "caviar", "parmesean", "chesse", "bbq", "pork", "eggs", "milk", "soy milk", "creme caremal", "brocolie", "onion", "donut", "cherries", "green apple", "banana", "carrot", "pumpkin pie", "pastrys", "cookies", "mandarine", "spinach", "bok choi", "ramen", "noodles", "chipotle", "taco", "burrito", "sugar", "mango", "asparagus", "acorn squash", "almond", "apple sauce", "asian noodles", "antalope", "tuna", "apple juice", "avacado roll", "bacon", "black beans", "bagels", "baked beans", "bbq", "beer", "fish", "cabbage", "celery", "cat fish", "chips", "chocolate", "chowder", "clams", "coffee", "corn", "crab", "curry", "cereal", "kimchi", "dates", "dips", "duck", "dumplings", "donuts", "eggs", "enchilada", "eggrolls", "english muffins", "muffins", "edimame", "sushi", "fagida", "fondue", "french toast", "french dip", "garlic", "ginger", "gnocchi", "goose", "granola", "green beans", "beens", "guacamole", "grahm crakers", "ham", "hamburger", "honey", "hashbrowns", "hikurolls", "hummus", "irish stew", "indian food", "italian bread", "jam", "jelly", "jerky", "jalapeno", "kale", "ketchup", "kiwi", "beans", "kingfish", "lobster", "lamb", "lasagna", "meatballs", "moose", "milk", "milkshake", "noodles", "ostritch", "pizza", "peperoni", "pancakes", "quesadila", "spaghetti", "tatter tots", "toast", "udon noodles", "udon", "venison", "waffles", "wasabi", "wine", "walnuts", "yougart", "ziti", "zucchini", "ugli", "tangerine", "oatmeal", "goat cheese", "mushrooms", "pears", "rasberry", "strawberrys", "rasberyys", "strawberry", "mango", "pinenuts", "cherries", "cherry", "olives", "cottage cheese", "tuna", "refried beans", "bell peppers", "salmon", "pinnaple", "sweet potatos", "rice cake", "mochi", "beans", "pinto beans", "coconut", "purple yam", "urchins", "ugali", "ukarian rools", "umbrella fruit", "papya", "steak", "extreme candy", "hot sauce", "xo sauce", "shrimp", "xiami", "xiangcai", "parsly", "sausage", "tomato", "ximi powder", "tapioca perals", "tortillas", "vanilla", "fries", "mushroom", "radish", "yam", "oranges", "potato", "orange", "blueberrys", "blackberrys", "brandy", "butter", "pork", "beets", "cider", "cauliflower", "clam", "cramberries", "dressing", "doritos", "chettos", "takis", "fritos", "french fries", "juice", "lettus", "mayonase", "mozerella", "macaroonie", "mustard", "meatloaf", "popcorn", "peppers", "peaches", "pretzles", "popsicle", "pomogrant", "quail", "rum", "rasins", "ravioli", "sage", "salmon", "subway sandwich", "subway", "tostata", "turkey", "left overs", "frosting", "fudge", "flour", "gravy", "grapefruit", "ground beef", "hazelnut", "asparagus", "almonds", "burgurs", "crisps", "eggs", "kiwi", "kale", "meatballs", "noodles", "turnip", "pasta", "appracot", "breadfruit", "bamboo sheets", "buck wheat", "cucumber", "lemons", "red velvet cake", "star fruit", "dragonfruit", "peanut butter", "oreo pie", "cheese cake", "brownies", "sauce", "pickels", "peas", "rice", "chinese food", "japanese food", "beef stew", "chicken soup", "chicken noodle soup", "sweet potatos", "dandaline", "grape", "brussel sprouts", "corn salad", "dill", "lettuce", "pak choy", "pea", "poke", "sea beet", "sea kale", "shepherds purse", "turnip greends", "water grass", "wheatgrass", "bittermellon", "eggplant", "olive fruit", "pumpkin", "squash", "sweet pepper", "winter mellon", "chick peas", "common peas", "indian pea", "peanut", "ricebean", "soybean", "chives", "garlic chives", "lemongrass", "leek", "lotus root", "topal", "peral onion", "potato onion", "spring onion", "green onion", "mandrian wild rice", "bamboo shoot", "beetroot", "canna", "cassava", "horseradish", "parshnip", "turnip", "tea", "tigernut", "sea lettuce", "ability", "about", "biscut", "meat", "meat", "lamb", "hot pot", "beef", "pork chop", "pannacota", "pancake mix", "wongtons", "frozen dumplings", "dumplings", "sourdough", "sourdough bread", "grahm cracker", "macaroni", "macaroni and cheese", "chicken alfredo", "mochi icecream", "pineapple", "pineapple cake", "banana bread", "blueberry muffins", "aloe juice", "aloe vera drink", "smoothie", "macaroon", "marinara sauce", "mini potatos", "honeycrisp apples", "cilantro", "japanese pumpkin", "basil", "frozen mango", "dried mango", "beef jerky", "tangerines", "clementines", "sugar canes", "honeydew", "asian pears", "congee", "yellow onions", "baby carrots", "grape tomatoes", "tomatoes on the vine", "squash yellow", "white mushrooms", "sweet onions", "romanine lettuce", "sweet corn cobs", "corn", "shallot", "brocolie florets", "golden potatos", "russet potatoes", "chayote squash", "peeled garlic", "napa", "spaghetti squash", "boston lettuce", "diced yellow onions", "butternut squash", "curly mustard", "lime", "lemons", "seedless grapes", "red mango", "seedless watermellon", "navel oranges", "granny smith apples", "gala apples", "seeded red watermellon", "barlett pear", "bosc pear", "sungold kiwi", "honeydew melon", "lunchables", "ground beef", "ground pork", "smoked bacon", "cracker crunchers", "nachos", "chicken drumsticks", "mashed potatos", "ground turkey", "italian sausage", "chinese sausage", "sausage", "shrimp", "frozen shrimp", "tuna", "frito-lay", "tortilla chips", "hot dog buns", "ramen noodle soup", "potato chips", "ritz stacks origional crackers", "barbecue sauce", "toasted coconut chips", "coconut", "white sliced bread", "canned green beans", "oreos", "taco seasoning", "flamin hot cheetos", "diced tomatos", "chili", "shells and cheese dinner", "king hawaiians origional sweet rolls", "beef ravioli", "burger buns", "honey maid grahm crackers", "cheez it", "cream of chicken soup", "pringles", "nutter puffs", "penne pasta", "bbq potato chips", "ranch", "tomato paste", "chicken broth", "vegtable broth", "fat free skim milk", "chocolate milk", "sharp cheddar cheese", "cheddar", "yougart", "greek yougart", "pasteurized milk", "egg whites", "mexican style blend", "american cheese", "coffe-mate french vanilla liquid coffee creamer", "coffee creamer", "sour cream", "unsalted butter", "salted butter", "wipped cream", "cream cheese", "half and half", "half & half", "heavy cream", "cinnamon rolls", "chobani greek yougart", "almond milk", "soy milk", "oat milk", "buttermilk biscuts", "macaroni salad", "mustard potato salad", "chicken teners", "fresh mozerella", "feta cheese", "pretzel", "dinner rools", "crossants", "mini crossants", "savory butter rolls", "choclate chip cookies", "m&m cookies", "flat bread", "desert shells", "donettes", "mini donuts", "apple pie", "garlic naan flatbread", "brownies", "bakery fresh goodness mini cinnamon rolls", "sugar cookies", "reese\'s peanut butter cups", "kitkat", "m&ms", "spinach", "Cappuccino", "bacon", "sunnyside up", "cinnamon"]
-    let newArrayOfFoods = ["oranges" : "🍊", "eggs":"🥚"]
+    let newArrayOfFoods:KeyValuePairs = ["bread":"🍞", "cake":"🎂", "watermelon":"🍉", "grapes":"🍇", "chicken wings":"🍗", "mug cake":"🧁", "cup cake":"🧁", "pizza":"🍕", "hot dog":"🌭", "caviar":"🐟", "parmesan":"🧀", "cheese":"🧀", "bbq":"🍖", "eggs":"🥚", "milk":"🥛", "creme caramel":"🍮", "broccoli":"🥦", "onion":"🧅", "donut":"🍩", "cherries":"🍒", "green apple":"🍏", "banana":"🍌", "carrot":"🥕", "pumpkin pie":"🥧", "pastries":"🥐", "cookies":"🍪", "mandarine":"🍊", "bok choi":"🥬", "ramen":"🍜", "chipotle":"🥙", "taco":"🌮", "burrito":"🌯", "sugar":"🍬", "mango":"🥭", "asparagus":"🌲", "acorn squash":"🌰", "almond":"🌰", "apple sauce":"🍎", "asian noodles":"🍜", "cantaloupe":"🍈", "tuna":"🐟", "apple juice":"🧃", "avocado roll":"🥑", "black beans":"🌰", "bagels":"🥐", "baked beans":"🌰", "beer":"🍺", "fish":"🐠", "cabbage":"🥬", "celery":"🥬", "cat fish":"🐟", "chips":"🍟", "chocolate":"🍫", "chowder":"🍲", "clams":"🦪", "coffee":"☕️", "crab":"🦀", "curry":"🍛", "cereal":"🥣", "kimchi":"🇰🇷", "dates":"🌰", "dips":"🥣", "duck":"🦆", "donuts":"🍩", "enchilada":"🥘", "egg rolls":"🍳", "english muffins":"🧁", "muffins":"🧁", "edamame":"🥬", "sushi":"🍣", "fondue":"🧀", "french toast":"🍞", "garlic":"🧄", "ginger":"🥕", "gnocchi":"🍝", "goose":"🦆", "granola":"🍫", "green beans":"🌰", "beans":"🌰", "guacamole":"🥑", "graham crackers":"🍘", "ham":"🐖", "hamburger":"🍔", "honey":"🍯", "hash browns":"🍟", "hikurolls":"🥞", "hummus":"🥫", "irish stew":"🍲", "indian food":"🇮🇳", "italian bread":"🥖", "jam":"🥫", "jelly":"🥫", "jerky":"🥓", "jalapeno":"🌶", "kale":"🥬", "ketchup":"🥫", "kiwi":"🥝", "kingfish":"🐠", "lobster":"🦞", "lamb":"🐑", "lasagna":"🍝", "moose":"🦌", "milkshake":"🥤", "peperoni":"🍕", "pancakes":"🥞", "quesadilla":"🌮", "spaghetti":"🍝", "tater tots":"🍟", "toast":"🍞", "udon noodles":"🍜", "udon":"🍜", "venison":"🥩","waffles":"🧇", "wasabi":"🍣", "wine":"🍷", "walnuts":"🌰", "ziti":"🍝", "zucchini":"🥒", "ugli":"🍊", "tangerine":"🍊","oatmeal":"🥣", "goat cheese":"🧀", "mushrooms":"🍄", "pears":"🍐", "raspberry":"🍇", "strawberry":"🍓", "fig":"🥭", "passion fruit":"🍊", "pineuts":"🌰", "olives":"🍐", "cottage cheese":"🧀", "refried beans":"🌰", "bell peppers":"🌶", "salmon":"🐠", "rice cake":"🍙", "mochi":"🍡", "pinto beans":"🌰", "purple yam":"🍠", "urchins":"🐡", "ukraine rolls":"🥞", "umbrella fruit":"🍐", "papaya":"🥭", "steak":"🥩", "extreme candy":"🍬", "hot sauce":"🌶", "xo sauce":"🥫", "parsley":"🥬", "sausage":"🥓", "tomato":"🍅", "tapioca pearls":"⚫️", "tortillas":"🌮", "vanilla":"🍨", "fries":"🍟", "mushroom":"🍄", "radish":"🥕", "yam":"🍠", "oranges":"🍊", "potato":"🥔", "orange":"🍊", "blueberries":"🍇", "blackberries":"🍇", "brandy":"🍺", "butter":"🧈", "pork":"🐖", "beets":"🥕", "cider":"🍺", "cauliflower":"🥦", "clam":"🐚", "cranberries":"🍇", "dressing":"🥫", "doritos":"🍟", "cheetos":"🍟", "takis":"🍟", "french fries":"🍟", "mayonnaise":"🥫", "mozzarella":"🧀", "macaroon":"🍜", "mustard":"🥫", "meatloaf":"🍖", "popcorn":"🍿", "peppers":"🌶", "peaches":"🍑", "pretzels":"🥨", "popsicle":"🧊", "pomegranate":"🍎", "quail egg":"🥚", "rum":"🍺", "raisins":"🍇", "ravioli":"🥟", "salmon":"🐟", "sandwich":"🥪", "turkey":"🦃", "left overs":"🍲", "frosting":"🧁", "fudge":"🍫", "flour":"🌾", "gravy":"🍲", "grapefruit":"🍊", "ground beef":"🥩", "hazelnut":"🌰", "burgers":"🍔", "meatballs":"🧆", "noodles":"🍜", "turnip":"🍠", "pasta":"🍝", "appracot":"🍑", "breadfruit":"🍐", "buckwheat":"🌾", "cucumber":"🥒", "red velvet cake":"🍰", "star fruit":"🍋", "dragon fruit":"🍎", "peanut butter":"🥜", "oreo pie":"🥧", "cheese cake":"🧀", "brownies":"🍫", "sauce":"🥫", "pickles":"🥒", "peas":"🌰", "rice":"🍚", "chinese food":"🇨🇳", "japanese food":"🇯🇵", "beef stew":"🍲", "chicken soup":"🐣", "chicken noodle soup":"🍜", "sweet potatoes":"🍠", "dandelion":"🌼", "grape":"🍇", "brussel sprouts":"🥬", "corn salad":"🥗", "dill":"🥬", "lettuce":"🥬", "sea beet":"🥬", "sea kale":"🥬", "water grass":"🥬", "wheatgrass":"🌾", "bittermelon":"🍈", "eggplant":"🍆", "olive fruit":"🍐", "pumpkin":"🎃", "sweet pepper":"🌶", "winter melon":"🍈", "chickpeas":"🌰", "common peas":"🌰", "indian pea":"🌰", "peanut":"🥜", "soybean":"🌰", "chives":"🥬", "garlic chives":"🥬", "lemon grass":"🥬", "leek":"🥬", "lotus root":"🥥", "pearl onion":"🧅", "spring onion":"🧅", "green onion":"🧅", "mondrian wild rice":"🍚", "bamboo shoot":"🎍", "beetroot":"🥕", "canna":"🌼", "cassava":"🥕", "horseradish":"🥕", "parsnip":"🥕", "tea":"🍵", "tigernut":"🌰", "sea lettuce":"🥬", "biscuit":"🍪", "meat":"🥩", "hot pot":"🍲", "pork chop":"🐖", "panna cotta":"🍮", "pancake mix":"🥞", "wontons":"🥟", "frozen dumplings":"🥟", "sourdough":"🌾", "sourdough bread":"🍞", "graham cracker":"🍪", "macaroni":"🍝", "macaroni and cheese":"🍝", "chicken alfredo":"🍝", "mochi ice cream":"🍦", "pineapple":"🍍", "pineapple cake":"🍰", "banana bread":"🍞", "blueberry muffins":"🧁", "aloe juice":"🥤", "aloe vera drink":"🥤", "smoothie":"🥤", "macaroon":"🍬", "marinara sauce":"🥫", "mini potatoes":"🥔", "honeycrisp apples":"🍎", "japanese pumpkin":"🎃", "basil":"🥬", "frozen mango":"🥭", "dried mango":"🥭", "beef jerky":"🥓", "tangerines":"🍊", "clementines":"🍊", "sugar canes":"🍬", "honeydew":"🍈", "asian pears":"🍐", "congee":"🍚", "yellow onions":"🧅", "baby carrots":"🥕", "grape tomatoes":"🍅", "white mushrooms":"🍄", "sweet onions":"🧅", "romaine lettuce":"🥬", "sweet corn cobs":"🌽", "shallot":"🧅", "broccoli florets":"🥦", "golden potatoes":"🥔", "russet potatoes":"🥔", "chayote squash":"🍈", "peeled garlic":"🧄", "spaghetti squash":"🍝", "boston lettuce":"🥬", "diced yellow onions":"🧅", "butternut squash":"🍟", "curly mustard":"🥬", "lime":"🍋", "lemons":"🍋", "seedless grapes":"🍇", "red mango":"🥭", "seedless watermelon":"🍉", "navel oranges":"🍊", "granny smith apples":"🍏", "gala apples":"🍎", "seeded red watermelon":"🍉", "bartlett pear":"🍐", "bosc pear":"🍐", "sungold kiwi":"🥝", "honeydew melon":"🍈", "lunchables":"🍱", "ground beef":"🍖", "ground pork":"🐖", "smoked bacon":"🥓", "cracker crunchers":"🍪", "nachos":"🇲🇽", "chicken drumsticks":"🍗", "mashed potatoes":"🥔", "ground turkey":"🦃", "italian sausage":"🌭", "chinese sausage":"🌭", "sausage":"🌭", "shrimp":"🦐", "frozen shrimp":"🦐", "frito-lay":"🍟", "tortilla chips":"🍟", "hot dog buns":"🌭", "ramen noodle soup":"🍜", "potato chips":"🍟", "ritz stacks original crackers":"🍪", "barbecue sauce":"🥫", "toasted coconut chips":"🍟", "coconut":"🥥", "white sliced bread":"🍞", "canned green beans":"🥫", "oreo":"🍪", "taco seasoning":"🌮", "flaming hot cheetos":"🍟", "diced tomatoes":"🍅", "chili":"🌶", "beef ravioli":"🥟", "burger buns":"🍔", "honey maid graham crackers":"🍪", "cheez it":"🍟", "cream of chicken soup":"🍲", "pringles":"🍟", "penne pasta":"🍝", "bbq potato chips":"🍟", "ranch":"🥫", "tomato paste":"🍅", "chicken broth":"🍲", "vegetable broth":"🍲", "fat free skim milk":"🥛", "chocolate milk":"🥛", "sharp cheddar cheese":"🧀", "cheddar":"🧀", "yogurt":"🥛", "greek yogurt":"🥛", "pasteurized milk":"🥛", "egg whites":"🥚", "mexican style blend":"🇲🇽", "american cheese":"🧀", "coffee mate":"☕️", "coffee creamer":"☕️", "sour cream":"🥛", "unsalted butter":"🧈", "salted butter":"🧈", "whipped cream":"", "cream cheese":"", "heavy cream":"", "cinnamon rolls":"🍬", "chobani greek yogurt":"🥛", "almond milk":"🥛", "soy milk":"🥛", "oat milk":"🥛", "buttermilk biscuits":"🍪", "macaroni salad":"🥗", "mustard potato salad":"🥗", "chicken tenders":"🍗", "fresh mozzarella":"🧀", "feta cheese":"🧀", "pretzel":"🥨", "dinner rolls":"🍞", "croissants":"🥐", "mini croissants":"🥐", "savory butter rolls":"🧈", "chocolate chip cookies":"🍪", "m&m cookies":"🍬", "flat bread":"🍞", "desert shells":"🐚", "mini donuts":"🍩", "apple pie":"🥧", "garlic naan flatbread":"🍞", "bakery fresh goodness mini cinnamon rolls":"🍬", "sugar cookies":"🍪", "reese's peanut butter cups":"🥜", "kitkat":"🍫", "m&ms":"🍬", "spinach":"🥬", "cappuccino":"☕️", "bacon":"🥓", "sunnyside up":"🍳", "cinnamon":"🍬", "juice":"🧃", "pepsi":"🥤","coke":"🥤","sprite":"🥤","dr peper":"🥤","mountatin dew":"🥤","sparkling water":"🥤","aloe drink":"🥤", "yakult":"🥤", "sunchip":"🍿"]
+
     var image: UIImage
     var storageIndex: StorageLocation
-    var foodsToDisplay: [refrigeItem]
+    @State var foodsToDisplay = [refrigeItem]()
     func getRandomEmoji () -> String{
         let listOfEmojis = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄"),emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚"),emoji(emoji: "🍳"),emoji(emoji: "🧈"),emoji(emoji: "🥞"),emoji(emoji: "🧇"),emoji(emoji: "🥓"),emoji(emoji: "🥩"),emoji(emoji: "🍗"),emoji(emoji: "🍖"),emoji(emoji: "🦴"),emoji(emoji: "🌭"),emoji(emoji: "🍔"),emoji(emoji: "🍟"),emoji(emoji: "🍕"),emoji(emoji: "🥪"),emoji(emoji: "🥙"),emoji(emoji: "🧆"),emoji(emoji: "🌮"),emoji(emoji: "🌯"),emoji(emoji: "🥗"),emoji(emoji: "🥘"),emoji(emoji: "🥫"),emoji(emoji: "🍝"),emoji(emoji: "🍜"),emoji(emoji: "🍲"),emoji(emoji: "🍛"),emoji(emoji: "🍣"),emoji(emoji: "🍱"),emoji(emoji: "🥟"),emoji(emoji: "🍙"),emoji(emoji: "🍚"),emoji(emoji: "🍘"),emoji(emoji: "🍥"),emoji(emoji: "🥠"),emoji(emoji: "🥮"),emoji(emoji: "🍢"),emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")]
         return listOfEmojis.randomElement()!.emoji
         
         }
-    var percentDone: Double
-    
+    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+            var x = top
+            var y = bottom
+            while (y != 0) {
+                let buffer = y
+                y = x % y
+                x = buffer
+            }
+            let hcfVal = x
+            let newTopVal = top/hcfVal
+            let newBottomVal = bottom/hcfVal
+            return(newTopVal, newBottomVal)
+        }
+        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+        var returnValue = false
+        print(denomenator)
+        if Int.random(in: 1...denomenator.newBottom) == 1 {
+        returnValue = true
+      }
+       return returnValue
+    }
+    var scan: VNDocumentCameraScan?
+    @State var percentDone = 0.0
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @State var interstitial: GADInterstitial!
+    var adDelegate = MyDInterstitialDelegate()
     var body: some View {
         ZStack{
+            Color("whiteAndBlack")
         ScrollView(.vertical, showsIndicators: false, content: {
             ZStack{
             VStack {
-                HStack{
-                    NavigationLink(destination: RefrigeratorView(), label: {
-                        Image(systemName: "chevron.left")
-                        .resizable()
-                            .foregroundColor(.blue)
-                            .frame(width: 19, height: 29)
-                            .padding()
-                    })
-                Spacer()
-                }
                 
-                Image(uiImage: image)
-                .resizable()
-                .padding()
-                .aspectRatio(contentMode: .fit)
-                .scaledToFit()
                 Text("Analyzing Your Image...")
                     .font(.largeTitle)
                     .bold()
                     .padding(.vertical)
                     .multilineTextAlignment(.center)
+                Image(uiImage: image)
+                .resizable()
+                .padding()
+                .aspectRatio(contentMode: .fit)
+                .scaledToFit()
+
                 Text("\(percentDone * 100)% done")
-                //TODO: change to only showing foods from the text detected
-                ForEach(foodsToDisplay, id: \.self) { food in
-                    DetectItemCell(icon: food.icon, title: food.title, lastsFor: food.daysLeft)
+                ForEach(foodsToDisplay) { food in
+                    DetectItemCell(foodsToDisplay: self.$foodsToDisplay, index: self.foodsToDisplay.firstIndex(of: food)!, icon: food.icon, title: food.title, lastsFor: food.daysLeft)
                 }
                 Spacer()
-            }.onAppear(perform: {
+                
+                Button(action: {
+                    self.foodsToDisplay.append(refrigeItem(icon: "⍰", title: "to be named", daysLeft: 7))
+                }, label: {
+                    Image("plus")
+                    .renderingMode(.original)
+                })
+                
+                NavigationLink(destination: RefrigeratorView(), label: {
+                    Image("addOrange")
+                        .renderingMode(.original)
+                    }).simultaneousGesture(TapGesture().onEnded{
+                        
+                        for i in self.foodsToDisplay{
+                            //save
+                               let newFoodItem = FoodItem(context: self.managedObjectContext)
+                            newFoodItem.staysFreshFor = Int16(i.daysLeft)
+                            newFoodItem.symbol = i.icon
+                            newFoodItem.name = i.title
+                            newFoodItem.inStorageSince = Date()
+                            newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+                            newFoodItem.origion?.storageName = self.storageIndex.wrappedStorageName
+                            newFoodItem.origion?.symbolName = self.storageIndex.wrappedSymbolName
+                            newFoodItem.id = UUID()
+                               
+                               do{
+                                   try self.managedObjectContext.save()
+                               } catch let error{
+                               print(error)
+                               }
+                            Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : i.title])
+                        }
+                        
+                        
+                    })
+                    .padding(.top, 200)
+                
+                }
+            .onAppear(perform: {
+                
+                
+                
+                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 3 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "ExamineRecieptViewLoadedAd") == false{
+                    //FIXME: Change the Adunit ID To My AdUNITID that i didnt set yet but will set when i create a new Interetitial ad in admob
+                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                    self.interstitial.delegate = self.adDelegate
+                    
+                    let req = GADRequest()
+                    self.interstitial.load(req)
+
+                    UserDefaults.standard.set(true, forKey: "ExamineRecieptViewLoadedAd")
+                    
+                }else {
+
+                }
+                
+                
+                
+                DispatchQueue.main.async {
+                    let images = (0..<self.scan!.pageCount).compactMap({ self.scan!.imageOfPage(at: $0).cgImage })
+
+                    let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
+                        guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                            print("The observations are of an unexpected type.")
+                            return
+                        }
+                        // Concatenate the recognised text from all the observations.
+                        for observation in observations {
+                            guard let bestCandidate = observation.topCandidates(1).first else { continue }
+                            for (word,emoji) in self.newArrayOfFoods {
+                                if bestCandidate.string.lowercased().contains(word) {
+                                    self.foodsToDisplay.append(refrigeItem(icon: emoji, title: bestCandidate.string, daysLeft: 7))
+                                    print("found and appended: \(bestCandidate.string)")
+                                    break
+                                }else {
+                                    print("found but not appended: \(bestCandidate.string)")
+                                }
+                            }
+                        }
+                    }
+                    textRecognitionRequest.usesLanguageCorrection = true
+                                        textRecognitionRequest.minimumTextHeight = 0
+                                        textRecognitionRequest.progressHandler = { (request, value, error) in
+                                            self.percentDone = value
+                                        }
+                                        textRecognitionRequest.recognitionLevel = .accurate
+                                        for image in images {
+                                            let requestHandler = VNImageRequestHandler(cgImage: image, options: [:])
+
+                                            do {
+                                                try requestHandler.perform([textRecognitionRequest])
+                                            } catch {
+                                                print(error)
+                                            }
+                    }
+                }
+                
+                print(self.foodsToDisplay)
                 print("appearing")
             })
                 
             }
-            
         }
         )
-        }.background(Rectangle()
-        .foregroundColor(.white))
-        .navigationBarBackButtonHidden(true)
+            
+        }
+    
         
     }
 }
 
-
-
-
-
-
-//class DocumentScanningViewController: UIViewController, ObservableObject {
-//
-//    @Published var scannedImage: UIImage? = nil
-//    @Published var showingResult = false
-//    @Published var scannedResults = [VNRecognizedTextObservation]()
-//    static let businessCardContentsIdentifier = "businessCardContentsVC"
-//    static let receiptContentsIdentifier = "receiptContentsVC"
-//    static let otherContentsIdentifier = "otherContentsVC"
-//
-//    enum ScanMode: Int {
-//        case receipts
-//        case businessCards
-//        case other
-//    }
-//
-//
-//
-//
-//    var scanMode: ScanMode = .receipts
-//    var textRecognitionRequest = VNRecognizeTextRequest()
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        print("doccument view did load")
-//        textRecognitionRequest = VNRecognizeTextRequest(completionHandler: { (request, error) in
-//            if let results = request.results, !results.isEmpty {
-//                if let requestResults = request.results as? [VNRecognizedTextObservation] {
-//                    DispatchQueue.main.async {
-//                        self.scannedResults = requestResults
-//                        for observation in requestResults {
-//                            print(observation)
-//                        }
-//                    }
-//                }
-//            }
-//        })
-//        // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
-//        textRecognitionRequest.recognitionLevel = .accurate
-//        textRecognitionRequest.usesLanguageCorrection = true
-//        DispatchQueue.main.async { self.scan() }
-//    }
-//
-//    func scan() {
-//        self.scanMode = .receipts
-//        let documentCameraViewController = VNDocumentCameraViewController()
-//        documentCameraViewController.delegate = self
-//        present(documentCameraViewController, animated: true)
-//        print("scan and presenting documentCamreaViewController")
-//    }
-//
-//    func processImage(image: UIImage) {
-//        guard let cgImage = image.cgImage else {
-//            print("Failed to get cgimage from input image")
-//            return
-//        }
-//
-//        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-//        do {
-//            try handler.perform([textRecognitionRequest])
-//        } catch {
-//            print(error)
-//        }
-//    }
-//}
-//
-//extension DocumentScanningViewController: VNDocumentCameraViewControllerDelegate {
-//    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-//        print("got results")
-//        self.scannedImage = scan.imageOfPage(at: 0)
-//        self.showingResult = true
-//        DispatchQueue.main.async {
-//
-//            self.dismiss(animated: true, completion: {
-//                self.dismiss(animated: true)
-//            })
-//        }
-//
-//    }
-//    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-//        DispatchQueue.main.async {
-//
-//            self.dismiss(animated: true, completion: {
-//            })
-//
-//        }
-//    }
-//    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-//        DispatchQueue.main.async {
-//
-//            self.dismiss(animated: true)
-//        }
-//        print(error)
-//    }
-//}
-//
-//
-//

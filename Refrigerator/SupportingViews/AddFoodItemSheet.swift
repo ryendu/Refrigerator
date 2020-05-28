@@ -7,12 +7,14 @@
 //
 
 import SwiftUI
+import Firebase
+import GoogleMobileAds
 
 struct AddFoodItemSheet: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @Environment(\.managedObjectContext) var managedObjectContext
-    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(key: "order", ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
     var storage: StorageLocation
     @State var lastsFor = 7
     @State var selectedEmoji = ""
@@ -23,7 +25,30 @@ struct AddFoodItemSheet: View {
        
        @State var listOfEmojis3 = [emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")]
            
-           
+           func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+               func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+                   var x = top
+                   var y = bottom
+                   while (y != 0) {
+                       let buffer = y
+                       y = x % y
+                       x = buffer
+                   }
+                   let hcfVal = x
+                   let newTopVal = top/hcfVal
+                   let newBottomVal = bottom/hcfVal
+                   return(newTopVal, newBottomVal)
+               }
+               let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+               var returnValue = false
+               print(denomenator)
+               if Int.random(in: 1...denomenator.newBottom) == 1 {
+               returnValue = true
+             }
+              return returnValue
+           }
+    
        
        var body: some View {
            VStack {
@@ -113,30 +138,31 @@ struct AddFoodItemSheet: View {
                 
             }.padding()
                Button(action: {
-                var tempNumberOfFoodOrder = Int()
                    let newFoodItem = FoodItem(context: self.managedObjectContext)
                 newFoodItem.staysFreshFor = Int16(self.lastsFor)
                 newFoodItem.symbol = self.selectedEmoji
                 newFoodItem.name = self.nameOfFood
                 newFoodItem.inStorageSince = Date()
-                newFoodItem.order = Int32(UserDefaults.standard.integer(forKey: "foodOrder"))
-                tempNumberOfFoodOrder = UserDefaults.standard.integer(forKey: "foodOrder")
-                print("The food item \(self.nameOfFood) has a order of \(UserDefaults.standard.integer(forKey: "foodOrder"))")
-                UserDefaults.standard.set(tempNumberOfFoodOrder + 1, forKey: "foodOrder")
-                
-                //If these lines are gotten rid of then the second copy of the storageLocation will not appear and neither will the food item anywhere
                 newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
                 newFoodItem.origion?.storageName = self.storage.wrappedStorageName
                 newFoodItem.origion?.symbolName = self.storage.wrappedSymbolName
-                
-                   
+                newFoodItem.id = UUID()
+                Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : self.nameOfFood])
                    do{
                        try self.managedObjectContext.save()
                    } catch let error{
                    print(error)
                    }
+                
                    self.presentationMode.wrappedValue.dismiss()
-                }, label: {Image("add").renderingMode(.original)}).padding()
+                }, label: {Image("addOrange").renderingMode(.original)}).padding()
+            
+            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 6 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+            GADBannerViewController()
+            .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+            }else {
+
+            }
            }
            
        }

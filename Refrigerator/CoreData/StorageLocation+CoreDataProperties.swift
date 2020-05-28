@@ -33,6 +33,7 @@ extension StorageLocation {
         let set = foodItem?.sortedArray(using: [NSSortDescriptor(keyPath: \FoodItem.name, ascending: true)]) as! [FoodItem]
         return set
     }
+
 }
 
 // MARK: Generated accessors for foodItem

@@ -7,7 +7,25 @@
 		<key>Refrigerator.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>26</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>94598D0C2458E22700456333</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>94598D252458E23100456333</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>94598D302458E23100456333</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>751967040402-jakfakuik33lo2sgvvbcb5a6e92553ks.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.751967040402-jakfakuik33lo2sgvvbcb5a6e92553ks</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCC2hPfNncs2NzbNyE9tpZ8hyc5MlEnY5E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>751967040402</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ryandu.refrigerator</string>
+	<key>PROJECT_ID</key>
+	<string>refrigerator-be2e2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>refrigerator-be2e2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:751967040402:ios:0013d8ae6b247b6fa9c74b</string>
+	<key>DATABASE_URL</key>
+	<string>https://refrigerator-be2e2.firebaseio.com</string>
+</dict>
+</plist>

@@ -9,23 +9,29 @@
 import SwiftUI
 
 struct TabBarView: View {
+    @State private var selection = 0
     var body: some View {
-        TabView {
+        TabView(selection: $selection){
             //TODO: make the tab items when not displayed not filled and when displayed filled
             
             HomeView()
                 .tabItem {
-                    Image("Home icon filled")
+                    selection == 0 ? Image("Home icon filled") : Image("Home icon")
                 }
+            .tag(0)
             RefrigeratorView().environmentObject(refrigerator)
                 .tabItem {
-                    Image("Fridge icon fillied")
-                }
-            ProgressView()
+                    selection == 1 ? Image("Fridge icon fillied") : Image("Fridge icon")
+            }
+            .tag(1)
+            SettingsView()
                 .tabItem {
-                    Image("Progress icon filled")
-                }
+                    selection == 2 ?  Image("Settings icon filled") : Image("Settings icon")
+            }
+        .tag(2)
+        
         }
+        .navigationBarBackButtonHidden(true)
         .font(.headline)
     }
 }

@@ -1,22 +1,26 @@
 //
 //  ShoppingListCell.swift
-//  RefrigeratorDesigning(SWIFTUI)
+//  Refrigerator
 //
 //  Created by Ryan Du on 5/1/20.
 //  Copyright © 2020 Ryan Du. All rights reserved.
 //
 
 import SwiftUI
+import CoreData
 
 struct ShoppingListCell: View {
+    @FetchRequest(entity: ShoppingList.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \ShoppingList.name, ascending: true)]) var shoppingList: FetchedResults<ShoppingList>
+    @Environment(\.managedObjectContext) var managedObjectContext
+    
     var icon: String
     var title: String
-    @State var checked = false
+    var shoppingItem: ShoppingList
     var body: some View {
         
         HStack {
             Button(action: {
-                //Delete the current cell here using Core Data and have a undo feature
+                self.managedObjectContext.delete(self.shoppingItem)
             }, label: {
                 
                 Circle()
@@ -43,15 +47,13 @@ struct ShoppingListCell: View {
                 Spacer()
                 }
             .padding()
-            .background(Image("Rectangle").resizable().padding(.horizontal))
+            .background(Rectangle().cornerRadius(16).padding(.horizontal)
+            .foregroundColor(Color("cellColor"))
+            )
             .padding(.bottom)
         }
     
         
     }
 }
-struct ShoppingListCell_Previews: PreviewProvider {
-    static var previews: some View {
-        ShoppingListCell(icon: "🥦", title: "brocolie")
-    }
-}
+

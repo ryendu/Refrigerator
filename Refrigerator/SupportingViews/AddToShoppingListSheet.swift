@@ -8,13 +8,19 @@
 
 
 import SwiftUI
+import Firebase
+
 struct emoji: Identifiable, Hashable{
     var id = UUID()
     var emoji: String
 }
 
 struct AddToShoppingListSheet: View {
+    @Environment(\.presentationMode) var presentationMode
+
+    @Environment(\.managedObjectContext) var managedObjectContext
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
+    
     @State var selectedEmoji = ""
     @State var listOfEmojis1 = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄"),emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚")]
     
@@ -103,8 +109,21 @@ struct AddToShoppingListSheet: View {
             
             Button(action: {
                 self.refrigeratorViewModel.isInShoppingListItemAddingView.toggle()
-                //TODO: add to CoreData Shopping List
-            }, label: {Image("add").renderingMode(.original)})
+                let newShoppingItem = ShoppingList(context: self.managedObjectContext)
+                newShoppingItem.name = self.nameOfFood
+                newShoppingItem.icon = self.selectedEmoji
+                
+                do{
+                    try self.managedObjectContext.save()
+                } catch let error{
+                print(error)
+                }
+                Analytics.logEvent("addedShoppingListItem", parameters: nil)
+                self.presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Image("addOrange").renderingMode(.original)
+                
+            })
         }
         
     }
@@ -117,3 +136,4 @@ struct AddToShoppingListSheet_Previews: PreviewProvider {
         AddToShoppingListSheet().environmentObject(refrigerator)
     }
 }
+

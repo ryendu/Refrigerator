@@ -9,8 +9,34 @@
 import SwiftUI
 import CoreData
 import Foundation
+import GoogleMobileAds
+import Firebase
 
 struct AddToStorageItemSheet: View {
+    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+            var x = top
+            var y = bottom
+            while (y != 0) {
+                let buffer = y
+                y = x % y
+                x = buffer
+            }
+            let hcfVal = x
+            let newTopVal = top/hcfVal
+            let newBottomVal = bottom/hcfVal
+            return(newTopVal, newBottomVal)
+        }
+        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+        var returnValue = false
+        print(denomenator)
+        if Int.random(in: 1...denomenator.newBottom) == 1 {
+        returnValue = true
+      }
+       return returnValue
+    }
+
     @Environment(\.presentationMode) var presentationMode
 
     @Environment(\.managedObjectContext) var managedObjectContext
@@ -22,7 +48,7 @@ struct AddToStorageItemSheet: View {
     @State var selectedIcon = storageLocationIcons.fridgeGreen
        var body: some View {
            VStack {
-               Text("Add Item To Shopping List")
+               Text("Add A Storage Location")
                    .font(.largeTitle)
                    .layoutPriority(1)
                HStack {
@@ -99,9 +125,20 @@ ForEach(listOfIcons1, id: \.self) {emoji in
                 } catch let error{
                 print(error)
                 }
+
+                
+                
                 self.presentationMode.wrappedValue.dismiss()
-               }, label: {Image("add").renderingMode(.original)})
-           }
+               
+               }, label: {Image("addOrange").renderingMode(.original)})
+            
+            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 4 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+            GADBannerViewController()
+            .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+            }else {
+
+            }
+        }
            
        }
 }

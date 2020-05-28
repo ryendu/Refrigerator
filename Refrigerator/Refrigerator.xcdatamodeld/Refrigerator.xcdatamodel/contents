@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E266" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="FoodItem" representedClassName=".FoodItem" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="inStorageSince" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="inWhichStorage" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="staysFreshFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="symbol" optional="YES" attributeType="String"/>
         <relationship name="origion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StorageLocation" inverseName="foodItem" inverseEntity="StorageLocation"/>
+    </entity>
+    <entity name="ShoppingList" representedClassName="ShoppingList" syncable="YES">
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
     <entity name="StorageLocation" representedClassName=".StorageLocation" syncable="YES">
         <attribute name="storageName" optional="YES" attributeType="String"/>
@@ -21,6 +25,7 @@
     </entity>
     <elements>
         <element name="FoodItem" positionX="-54" positionY="-9" width="128" height="148"/>
+        <element name="ShoppingList" positionX="-45" positionY="45" width="128" height="73"/>
         <element name="StorageLocation" positionX="-36" positionY="9" width="128" height="88"/>
     </elements>
 </model>
