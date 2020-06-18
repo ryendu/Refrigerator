@@ -18,6 +18,7 @@ struct HomeView: View {
         print("Modified date: \(modifiedDate)")
         return modifiedDate
     }
+    @State var ref: DocumentReference!
     func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
         func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
 
@@ -55,6 +56,7 @@ struct HomeView: View {
     @State var editFoodItem: FoodItem? = nil
     @State var displayAmount = 0
     @State var moveToStorageLocation: ShoppingList? = nil
+    @State var funFactText = ""
     var body: some View {
         NavigationView {
             GeometryReader { geo in
@@ -64,7 +66,7 @@ struct HomeView: View {
                             
                             VStack{
                                 
-                                Text((RemoteConfigManager.stringArrayValue(forkey: RCKeys.funFoodFacts.rawValue))?.randomElement()! ?? (self.refrigeratorViewModel.defaultValues[RCKeys.funFoodFacts.rawValue] as! [String]).randomElement()!)
+                                Text(self.funFactText)
                                     .font(.custom("SF Pro Text", size: 16))
                                     .foregroundColor(Color("blackAndWhite"))
                                     .padding(15)
@@ -267,17 +269,7 @@ struct HomeView: View {
                                 Text(RemoteConfigManager.stringValue(forkey: RCKeys.noFoodItemsText.rawValue))
                                     .padding()
                             }
-                            //TODO: Only display if the user doesnt have premium
-                            NavigationLink(destination: PremiumView(), label: {
-                                Text(RemoteConfigManager.stringValue(forkey: RCKeys.upgradeToPremiumTextHomeView.rawValue))
-                                    .font(.custom("SF Pro Text", size: 16))
-                                    .foregroundColor(Color("blackAndWhite")).font(.title).padding(15)
-                                    .background(Rectangle().cornerRadius(16).padding(.horizontal)
-                                        .foregroundColor(Color("cellColor"))
-                                        
-                                        .frame(width: geo.size.width - 18))
-                                
-                            }).padding()
+                            
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
                             GADBannerViewController()
                             .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
@@ -353,8 +345,21 @@ struct HomeView: View {
                     }.padding().navigationBarTitle("Hi, \(UserDefaults.standard.string(forKey: "name") ?? "name not set (go to settings)")")
                 
                 .onAppear(perform: {
+                    self.ref = Firestore.firestore().document("Others/funfoodFacts")
+                    self.ref.getDocument{(documentSnapshot, error) in
+                        guard let docSnapshot = documentSnapshot, docSnapshot.exists else { self.funFactText = "did you know that brocoli contains more protein than steak?"
+                            print("docSnapshot does not exist")
+                            return}
+                        
+                        let myData = docSnapshot.data()
+                        //TODO: add more to this default list
+                        let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
+                        self.funFactText = arrayOfFoodFacts.randomElement()!
+                    }
                     if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue){
+                        //FIXME: to actruall review request
                     SKStoreReviewController.requestReview()
+                        Analytics.logEvent("requestedReview", parameters: nil)
                     }
                 })
                 
@@ -372,7 +377,6 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-//TODO: Start from here tomorrow
 
 struct RemoteConfigManager {
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
@@ -394,7 +398,7 @@ struct RemoteConfigManager {
                 return
             }
             print("Recieved Values From Remote Config")
-            RemoteConfig.remoteConfig().activate(completionHandler: nil)
+//            RemoteConfig.remoteConfig().activate(completionHandler: nil)
         }
     }
     
@@ -407,17 +411,8 @@ struct RemoteConfigManager {
     static func doubleValue(forkey key: String) -> Double{
         return remoteConfig.configValue(forKey: key).numberValue as! Double
     }
-    static func stringArrayValue(forkey key: String) -> [String]?{
-        var array: [String]? = nil
-        let jsonData = remoteConfig.configValue(forKey: key).dataValue
-        let decoder = JSONDecoder()
-        do{
-            array = try decoder.decode([String].self, from: jsonData)
-        }catch{
-            print(error)
-        }
-        return array
-    }
+
+    
     static func boolValue(forkey key: String) -> Bool{
         return remoteConfig.configValue(forKey: key).boolValue
     }

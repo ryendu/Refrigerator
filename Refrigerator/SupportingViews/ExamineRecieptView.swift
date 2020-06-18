@@ -22,6 +22,7 @@ struct ExamineRecieptView: View {
 
     var image: UIImage
     var storageIndex: StorageLocation
+    @State var ref: DocumentReference!
     @State var foodsToDisplay = [refrigeItem]()
     func getRandomEmoji () -> String{
         let listOfEmojis = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄"),emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚"),emoji(emoji: "🍳"),emoji(emoji: "🧈"),emoji(emoji: "🥞"),emoji(emoji: "🧇"),emoji(emoji: "🥓"),emoji(emoji: "🥩"),emoji(emoji: "🍗"),emoji(emoji: "🍖"),emoji(emoji: "🦴"),emoji(emoji: "🌭"),emoji(emoji: "🍔"),emoji(emoji: "🍟"),emoji(emoji: "🍕"),emoji(emoji: "🥪"),emoji(emoji: "🥙"),emoji(emoji: "🧆"),emoji(emoji: "🌮"),emoji(emoji: "🌯"),emoji(emoji: "🥗"),emoji(emoji: "🥘"),emoji(emoji: "🥫"),emoji(emoji: "🍝"),emoji(emoji: "🍜"),emoji(emoji: "🍲"),emoji(emoji: "🍛"),emoji(emoji: "🍣"),emoji(emoji: "🍱"),emoji(emoji: "🥟"),emoji(emoji: "🍙"),emoji(emoji: "🍚"),emoji(emoji: "🍘"),emoji(emoji: "🍥"),emoji(emoji: "🥠"),emoji(emoji: "🥮"),emoji(emoji: "🍢"),emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")]
@@ -119,7 +120,19 @@ struct ExamineRecieptView: View {
                 
                 }
             .onAppear(perform: {
-                
+                var secondArray: [[String:Any]]? = nil
+                self.ref = Firestore.firestore().document("Others/SecondArrayOfFoods")
+                self.ref.getDocument{(documentSnapshot, error) in
+                    guard let docSnapshot = documentSnapshot, docSnapshot.exists else {
+                        print("docSnapshot does not exist")
+                        return}
+                    
+                    let myData = docSnapshot.data()
+                    //TODO: add more to this default list
+                    let secondArrayOfFoods = myData?["data"] as? [[String: Any]]
+                    secondArray = secondArrayOfFoods
+                    print("secondArrayOfFoods: \(secondArrayOfFoods)")
+                }
                 
                 
                 if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 3 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "ExamineRecieptViewLoadedAd") == false{
@@ -157,6 +170,19 @@ struct ExamineRecieptView: View {
                                 }else {
                                     print("found but not appended: \(bestCandidate.string)")
                                 }
+                            }
+                            if let secArray = secondArray{
+                                print("countssss: \(secArray.count)")
+                                for index in 0...secArray.count - 1{
+                                    print("nametest: \(((secArray[index])["name"] as? String) ?? "")")
+                                if bestCandidate.string.lowercased().contains(((secArray[index])["name"] as? String) ?? "") {
+                                    self.foodsToDisplay.append(refrigeItem(icon: (((secArray[index])["emoji"] as? String) ?? ""), title: bestCandidate.string, daysLeft: 7))
+                                    print("found and appended: \(bestCandidate.string)")
+                                    break
+                                }else {
+                                    print("found but not appended: \(bestCandidate.string)")
+                                }
+                            }
                             }
                         }
                     }

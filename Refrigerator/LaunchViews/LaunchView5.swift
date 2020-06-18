@@ -13,7 +13,7 @@ struct LaunchView5: View {
     var body: some View {
         VStack {
             Spacer()
-            Text("\(UserDefaults.standard.string(forKey: "name") ?? "error name is nil"), You are Ready to Go! Start saving food from going to the trash!")
+            Text("\(UserDefaults.standard.string(forKey: "name") ?? "name not set"), You are Ready to Go! Start saving food from going to the trash!")
                 .font(.largeTitle)
                 .bold()
                 .padding()

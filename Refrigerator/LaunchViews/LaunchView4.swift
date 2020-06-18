@@ -16,7 +16,7 @@ struct LaunchView4: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
             Spacer()
-            Text("In Your fridge page, You can see all of the places where you store food. Without premium, You are limited to only three storages. You can add more with the plus button on the top right.")
+            Text("In Your fridge page, You can see all of the places where you store food.")
                 .padding()
                 .layoutPriority(1)
                 

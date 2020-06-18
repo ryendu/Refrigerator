@@ -53,16 +53,7 @@ struct SettingsView: View{
                                 })
                         }
                     }
-                    Section{
-                    Text("Premium")
-                     .font(.title)
-                        //TODO: Add Premium Status Here
-                    Text("Premium Status: Basic")
-                     NavigationLink(destination: PremiumView(), label: {
-                         Text("Upgrade Premium for just $4.99 a month")
-                             .font(.custom("SF Pro Text", size: 16))
-                     })
-                     }
+                    
                     Section{
                         Text("Progress")
                         .font(.title)
@@ -84,6 +75,12 @@ struct SettingsView: View{
                         }
                         
                     }
+                    
+                    Section{
+                    NavigationLink(destination: FeedbackView(), label: {
+                        Text("send feedback")
+                    })
+                     }
                     }.listStyle(GroupedListStyle())
                 
             .navigationBarTitle("Settings")

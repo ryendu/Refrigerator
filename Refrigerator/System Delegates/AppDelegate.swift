@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         RemoteConfigManager.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        
+        let db = Firestore.firestore()
         var expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
         if (expirationDate?.daysTo(date: Date()))! <= 1 {
             UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
