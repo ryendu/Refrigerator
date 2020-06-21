@@ -7,10 +7,32 @@
 //
 
 import SwiftUI
+import VisionKit
+import Vision
+import Combine
+import UIKit
 
 struct TabBarView: View {
+    @State var scan: VNDocumentCameraScan? = nil
+    @State var image: [CGImage]? = nil
+    @State var foodItemTapped: FoodItem? = nil
     @State private var selection = 0
+    @State var showingView: String? = "fridge"
+    private func makeScannerView() -> ScanningView {
+        ScanningView(completion: { (images, scan) in
+            if images == nil && scan == nil {
+                self.showingView = "fridge"
+            } else {
+                self.showingView = "results"
+                self.scan = scan
+                self.image = images
+                
+            }
+        })
+    }
     var body: some View {
+        ZStack{
+            
         TabView(selection: $selection){
             //TODO: make the tab items when not displayed not filled and when displayed filled
             
@@ -19,7 +41,7 @@ struct TabBarView: View {
                     selection == 0 ? Image("Home icon filled") : Image("Home icon")
                 }
             .tag(0)
-            RefrigeratorView().environmentObject(refrigerator)
+            RefrigeratorView(showingView: self.$showingView, scan: self.$scan, image: self.$image).environmentObject(refrigerator)
                 .tabItem {
                     selection == 1 ? Image("Fridge icon fillied") : Image("Fridge icon")
             }
@@ -33,6 +55,11 @@ struct TabBarView: View {
         }
         .navigationBarBackButtonHidden(true)
         .font(.headline)
+            
+            if self.showingView == "scanner" {
+                makeScannerView()
+            }
+    }
     }
 }
 

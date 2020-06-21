@@ -55,6 +55,7 @@ struct SeeMoreView: View {
                         .onTapGesture{}
                         .gesture(LongPressGesture()
                             .onEnded({ i in
+                                 simpleSuccess()
                                 self.foodItemTapped = item
                             })
                     )
@@ -70,6 +71,8 @@ struct SeeMoreView: View {
                             var previousInteger = UserDefaults.standard.double(forKey: "eaten")
                             previousInteger += 1.0
                             UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                            let center = UNUserNotificationCenter.current()
+                            center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                             self.managedObjectContext.delete(item)
                             try? self.managedObjectContext.save()
                         })
@@ -101,6 +104,8 @@ struct SeeMoreView: View {
                             UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
                             print(previousData)
                             print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                            let center = UNUserNotificationCenter.current()
+                            center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                             self.managedObjectContext.delete(item)
                             try? self.managedObjectContext.save()
                         })
@@ -113,6 +118,7 @@ struct SeeMoreView: View {
                             self.editFoodItem = item
                         })
                         ,.default(Text("Duplicate"), action: {
+                            let id = UUID()
                             let newFoodItem = FoodItem(context: self.managedObjectContext)
                             newFoodItem.staysFreshFor = item.staysFreshFor
                             newFoodItem.symbol = item.symbol
@@ -121,8 +127,23 @@ struct SeeMoreView: View {
                             newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
                             newFoodItem.origion?.storageName = item.origion?.storageName
                             newFoodItem.origion?.symbolName = item.origion?.symbolName
-                            newFoodItem.id = UUID()
-                            Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : item.name ?? ""])
+                            newFoodItem.id = id
+                            
+                            let center = UNUserNotificationCenter.current()
+                            let content = UNMutableNotificationContent()
+                            content.title = "Eat This Food Soon"
+                            let date = Date()
+                            let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                            content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                            content.sound = UNNotificationSound.default
+                            var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                            dateComponents.hour = 10
+                            dateComponents.minute = 0
+                            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                            print("dateComponents for notifs: \(dateComponents)")
+                            let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                            center.add(request)
+                            Analytics.logEvent("addedFoodItem", parameters: nil)
                             do{
                                 try self.managedObjectContext.save()
                             } catch let error{

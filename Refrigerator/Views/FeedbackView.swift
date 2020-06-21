@@ -15,9 +15,11 @@ struct FeedbackView: View {
     @State var ref: DocumentReference!
     var body: some View {
         GeometryReader{ geo in
+            ScrollView{
             ZStack{
             VStack{
-                Text(RemoteConfigManager.stringValue(forkey: RCKeys.feedbackViewMessage.rawValue)).padding()
+                Text(RemoteConfigManager.stringValue(forkey: RCKeys.feedbackViewMessage.rawValue)).padding().fixedSize(horizontal: false, vertical: false)
+                Spacer()
                 
                 MultilineTextField("", text: self.$responseText, onCommit: {
                     
@@ -31,7 +33,7 @@ struct FeedbackView: View {
                             .cornerRadius(12)
                         
                 )
-                
+                Spacer()
                 Button(action: {
                     print("button Pressed")
                     
@@ -40,10 +42,10 @@ struct FeedbackView: View {
                         self.show.toggle()
                     }
                     self.ref = Firestore.firestore().collection("Feedback").addDocument(data: ["Feedback": self.responseText, "hasBeenRead" : false])
-                    
+                    simpleSuccess()
                 }, label: {
                     Image("sendButton").renderingMode(.original)
-                }).buttonStyle(PlainButtonStyle())
+                    }).buttonStyle(PlainButtonStyle()).padding()
                 
                 
                 if self.show{
@@ -52,6 +54,7 @@ struct FeedbackView: View {
 
             }.navigationBarTitle("Feedback View")
                 
+            }
             }
         }
     }

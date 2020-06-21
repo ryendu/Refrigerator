@@ -9,27 +9,33 @@
 import SwiftUI
 
 struct LaunchView3: View {
+    @State var showNextView = false
+    
     var body: some View {
-        VStack {
-            Spacer()
-            Image("home view mock")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            
-            Text("In Your home page, you get a new random fun fact each time you open the app, a reminder of foods that will go bad soon, and a shopping list.")
-               .padding()
-               .layoutPriority(1)
-            
-            NavigationLink(destination: LaunchView4(), label: {
-                Image("Next button")
-                    .renderingMode(.original)
+        ZStack{
+            Color.white
+            VStack {
+                Spacer()
+                Image("home view mock")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                 
+                Text("In Your home page, you get a new random fun fact each time you open the app, a reminder of foods that will go bad soon, and a shopping list.")
+                    .padding()
+                    .layoutPriority(1)
                 
-            })
-        Spacer()
+                Button(action: {
+                    
+                    self.showNextView.toggle()
+                }, label: {Image("Next button")
+                    .renderingMode(.original)}).padding(.bottom, CGFloat(60))
+                
+                Spacer()
+            }
+            if self.showNextView{
+                LaunchView4()
+            }
         }
-        
-            
         
         
     }

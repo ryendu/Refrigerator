@@ -9,48 +9,60 @@
 import SwiftUI
 
 struct LaunchView1: View {
+    @State var showNextView = false
+    @State var animationAmount:CGSize = CGSize(width: 0, height: 0)
     var body: some View {
-        NavigationView {
-            VStack {
-                
-                Text("Hey there, welcome to the Refrigerator App!")
-                    .font(.custom("SF Compact Display", size: 35))
-                    .fontWeight(.semibold)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, CGFloat())
-                .padding(.horizontal, CGFloat(20))
-                Spacer()
-                Text("The average american throws away 250 pounds of food each Year.")
-                    .multilineTextAlignment(.center)
-                    .font(.custom("SF Compact Display", size: 27))
-                    .foregroundColor(Color(hex: "3D3D3D"))
-                    .padding(.horizontal, CGFloat(20))
-                    .padding(.bottom, CGFloat(35))
-                Text("lets change that with the refrigerator app!")
-                .multilineTextAlignment(.center)
-                .font(.custom("SF Compact Display", size: 27))
-                .foregroundColor(Color(hex: "3D3D3D"))
-                    .padding(.horizontal, CGFloat(20))
-                .padding(.bottom, CGFloat(35))
-
-                Text("The following  pages will be an intro to the main features of Refrigerator")
-                .multilineTextAlignment(.center)
-                .font(.custom("SF Compact Display", size: 27))
-                .foregroundColor(Color(hex: "3D3D3D"))
-                .padding(.horizontal, CGFloat(20))
-                .padding(.bottom, CGFloat(35))
-
-                Spacer()
-                
-                NavigationLink(destination: LaunchView2(), label: {
-                    Image("Next button")
-                        .renderingMode(.original)
-                })
-                    .padding(.bottom, CGFloat(60))
-                
+        ZStack{
+            Color.white
+            GeometryReader{ geo in
+                ScrollView{
+                ZStack{
+                    Color.white
+                        .edgesIgnoringSafeArea(.all)
+                    VStack {
+                        Spacer()
+                        Text("Hey there, welcome to the Refrigerator App!")
+                            .font(.custom("SF Compact Display", size: 35))
+                            .fontWeight(.semibold)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, CGFloat())
+                            .padding(.horizontal, CGFloat(20))
+                        Spacer()
+                        Text("Manage all of your refrigerators, freezers, and pantries to reduce, diminish, and eventually eliminate food waste with the simple and powerful Refrigerator app.")
+                            .multilineTextAlignment(.center)
+                            .font(.custom("SF Compact Display", size: 27))
+                            .foregroundColor(Color(hex: "3D3D3D"))
+                            .padding(.horizontal, CGFloat(20))
+                            .padding(.bottom, CGFloat(35))
+                        Spacer()
+                        Image("refrigeIcon").renderingMode(.original)
+                            
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: geo.size.width * 0.6)
+                            .offset(self.animationAmount)
+                            .animation(.interpolatingSpring(stiffness: 50, damping: 3))
+                            .onTapGesture(perform: {
+                                if self.animationAmount.height == 0{
+                                    self.animationAmount = CGSize(width: 0, height: self.animationAmount.height - 5)
+                                }else {
+                                    self.animationAmount.height = 0
+                                }
+                            })
+                            .padding()
+                        Spacer()
+                        
+                        
+                        Button(action: {
+                            self.showNextView.toggle()
+                        }, label: {Image("Next button")
+                            .renderingMode(.original)}).padding(.bottom, CGFloat(60))
+                        
+                    }}}}
+            if self.showNextView{
+                LaunchView2()
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
         
         
     }
@@ -78,7 +90,7 @@ extension Color {
         default:
             (a, r, g, b) = (1, 1, 1, 0)
         }
-
+        
         self.init(
             .sRGB,
             red: Double(r) / 255,

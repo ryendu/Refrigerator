@@ -31,13 +31,12 @@ struct IndivisualRefrigeratorView: View {
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var showEatActionSheet = false
-    
-    
-    @State var showingView = "fridge"
+    @Binding var showingView: String?
+    @Binding var scan: VNDocumentCameraScan?
+    @Binding var image: [CGImage]?
     //Variables below for the paramaters of EamineRecieptView
-    @State var scan: VNDocumentCameraScan? = nil
-    @State var image: [CGImage]? = nil
     @State var foodItemTapped: FoodItem? = nil
+
     @State var interstitial: GADInterstitial!
     var adDelegate = MyDInterstitialDelegate()
     func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
@@ -84,6 +83,7 @@ struct IndivisualRefrigeratorView: View {
                         .onTapGesture {}
                         .gesture(LongPressGesture()
                             .onEnded({ i in
+                                simpleSuccess()
                                 self.foodItemTapped = item      // << tapped item
                             }))
                     }
@@ -93,6 +93,8 @@ struct IndivisualRefrigeratorView: View {
                                     var previousInteger = UserDefaults.standard.double(forKey: "eaten")
                                     previousInteger += 1.0
                                     UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                                    let center = UNUserNotificationCenter.current()
+                                    center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                                     self.managedObjectContext.delete(item)
                                     try? self.managedObjectContext.save()
                                 })
@@ -124,6 +126,8 @@ struct IndivisualRefrigeratorView: View {
                                     UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
                                     print(previousData)
                                     print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                                    let center = UNUserNotificationCenter.current()
+                                    center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                                     self.managedObjectContext.delete(item)
                                     try? self.managedObjectContext.save()
                                 })
@@ -133,6 +137,7 @@ struct IndivisualRefrigeratorView: View {
                                 })
                                 
                                 ,.default(Text("Duplicate"), action: {
+                                    let id = UUID()
                                     let newFoodItem = FoodItem(context: self.managedObjectContext)
                                     newFoodItem.staysFreshFor = item.staysFreshFor
                                     newFoodItem.symbol = item.symbol
@@ -141,8 +146,23 @@ struct IndivisualRefrigeratorView: View {
                                     newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
                                     newFoodItem.origion?.storageName = item.origion?.storageName
                                     newFoodItem.origion?.symbolName = item.origion?.symbolName
-                                    newFoodItem.id = UUID()
-                                    Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : item.name ?? ""])
+                                    newFoodItem.id = id
+                                    
+                                    let center = UNUserNotificationCenter.current()
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "Eat This Food Soon"
+                                    let date = Date()
+                                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                                    content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                                    content.sound = UNNotificationSound.default
+                                    var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                                    dateComponents.hour = 10
+                                    dateComponents.minute = 0
+                                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                                    print("dateComponents for notifs: \(dateComponents)")
+                                    let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                                    center.add(request)
+                                    Analytics.logEvent("addedFoodItem", parameters: nil)
                                     do{
                                         try self.managedObjectContext.save()
                                     } catch let error{
@@ -165,16 +185,27 @@ struct IndivisualRefrigeratorView: View {
                     }else {
 
                     }
+                    NavigationLink(destination: ExamineRecieptView(image: self.$image, showingView: self.$showingView, storageIndex: self.storageIndex, scan: self.$scan), tag: "results", selection: self.$showingView, label: {Text("")})
                 }
                 .navigationBarItems(trailing: HStack{
-                    
+                    if self.editFoodItem == false{
                     Button(action: {
                 self.editFoodItem.toggle()
                 
             }, label: {
-                Text("Edit")
+                Text("Edit").layoutPriority(1)
                     
                         }).padding(6)
+                        
+                    }else{
+                        Button(action: {
+                            self.editFoodItem.toggle()
+                            
+                        }, label: {
+                            Text("Done").layoutPriority(1)
+                                
+                                    }).padding(6)
+                    }
                     Button(action: {
                                    self.showingView = "scanner"
                                    
@@ -193,6 +224,8 @@ struct IndivisualRefrigeratorView: View {
                             .renderingMode(.original)
                             
                         }).padding(6)
+                    
+                    
                     
                 })
 
@@ -226,29 +259,14 @@ struct IndivisualRefrigeratorView: View {
                 
             })
             
-            if self.showingView == "scanner" {
-                makeScannerView()
-            } else if self.showingView == "results" {
-                ExamineRecieptView(image: UIImage(cgImage: self.image![0]), storageIndex: self.storageIndex, scan: self.scan)
-            }else {
-                
-            }
+//            if self.showingView == "results" {
+//                ExamineRecieptView(image: self.$image, showingView: self.$showingView, storageIndex: self.storageIndex, scan: self.$scan)
+//            }
         }
         
         
     }
-    private func makeScannerView() -> ScanningView {
-        ScanningView(completion: { (images, scan) in
-            if images == nil && scan == nil {
-                self.showingView = "fridge"
-            } else {
-                self.showingView = "results"
-                self.scan = scan
-                self.image = images
-                
-            }
-        })
-    }
+
 }
 
 

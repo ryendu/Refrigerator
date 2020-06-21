@@ -10,15 +10,14 @@ import UIKit
 import CoreData
 import Firebase
 import GoogleMobileAds
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
- 
         FirebaseApp.configure()
         RemoteConfigManager.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
@@ -27,16 +26,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if (expirationDate?.daysTo(date: Date()))! <= 1 {
             UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
             print("cleared userDefaults")
-
+            
             
             expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
         }
+        
+        if UserDefaults.standard.object(forKey: "InAMonth") != nil{
+            if Date() > UserDefaults.standard.object(forKey: "InAMonth") as! Date {
+                
+                let now = Calendar.current.dateComponents(in: .current, from: Date())
+                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
+                let date = Calendar.current.date(from: tomorrow)
+                let midnight = Calendar.current.startOfDay(for: date!)
+                UserDefaults.standard.set(midnight, forKey: "InAMonth")
+                UserDefaults.standard.set(false, forKey: "didReviewThisMonth")
+                
+            }
+        }
+        
         UserDefaults.standard.set(false, forKey: "RefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "IndivisualRefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "ExamineRecieptViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "SeeMoreViewLoadedAd")
         
-        
+        let pushManager = PushNotificationManager(userID: "currently_logged_in_user_id")
+        pushManager.registerForPushNotifications()
+         
         return true
     }
 
@@ -53,7 +68,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
+    func saveContext () {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
@@ -82,22 +109,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
-
-    // MARK: - Core Data Saving support
-
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
-
 }
 
+class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCenterDelegate {
+    let userID: String
+    init(userID: String) {
+        self.userID = userID
+        super.init()
+    }
+    func registerForPushNotifications() {
+        if #available(iOS 10.0, *) {
+            // For iOS 10 display notification (sent via APNS)
+            UNUserNotificationCenter.current().delegate = self
+            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(
+                options: authOptions,
+                completionHandler: {_, _ in })
+            // For iOS 10 data message (sent via FCM)
+            Messaging.messaging().delegate = self
+        } else {
+            let settings: UIUserNotificationSettings =
+                UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(settings)
+        }
+        UIApplication.shared.registerForRemoteNotifications()
+        updateFirestorePushTokenIfNeeded()
+    }
+    func updateFirestorePushTokenIfNeeded() {
+        if let token = Messaging.messaging().fcmToken {
+            let usersRef = Firestore.firestore().collection("users_table").document(userID)
+            usersRef.setData(["fcmToken": token], merge: true)
+        }
+    }
+    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
+        print(remoteMessage.appData)
+    }
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        updateFirestorePushTokenIfNeeded()
+    }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        print(response)
+    }
+}

@@ -10,6 +10,9 @@ import SwiftUI
 import CoreData
 import GoogleMobileAds
 import Firebase
+import Vision
+import VisionKit
+
 enum storageLocationIcons: String {
     case fridgeGreen = "Fridge pastel icon green"
     case fridgeOrange = "Fridge pastel icon orange"
@@ -51,12 +54,14 @@ struct RefrigeratorView: View {
     }
         @State var interstitial: GADInterstitial!
     var adDelegate = MyDInterstitialDelegate()
-
+    @Binding var showingView: String?
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var isShowingActionSheet = false
     @State var indexOfDelete = 0
+    @Binding var scan: VNDocumentCameraScan?
+    @Binding var image: [CGImage]?
     var body: some View {
         NavigationView {
                 
@@ -67,7 +72,7 @@ struct RefrigeratorView: View {
                     if storageLocation.count > 0{
                     ForEach(self.storageLocation, id: \.self) { item in
                                                 
-                        NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item).environment(\.managedObjectContext, self.managedObjectContext)) {
+                        NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item, showingView: self.$showingView, scan: self.$scan, image: self.$image ).environment(\.managedObjectContext, self.managedObjectContext)) {
                             StorageLocationCell(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: item.foodItemArray.count, storageLocationTitle: item.wrappedStorageName, storage: item).environment(\.managedObjectContext, self.managedObjectContext)
                             }.buttonStyle(PlainButtonStyle())
 
@@ -122,11 +127,5 @@ struct RefrigeratorView: View {
         
 
         
-    }
-}
-
-struct RefrigeratorView_Previews: PreviewProvider {
-    static var previews: some View {
-        RefrigeratorView().environmentObject(refrigerator)
     }
 }

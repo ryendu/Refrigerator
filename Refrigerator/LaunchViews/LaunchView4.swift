@@ -9,26 +9,32 @@
 import SwiftUI
 
 struct LaunchView4: View {
+    @State var showNextView = false
+
     var body: some View {
+        ZStack{
+            Color.white
                 VStack {
             Spacer()
             Image("refrigerator view mock")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
             Spacer()
-            Text("In Your fridge page, You can see all of the places where you store food.")
+            Text("In Your Refrigerator View, You can see all of the places where you store food.")
                 .padding()
                 .layoutPriority(1)
                 
             Spacer()
-            NavigationLink(destination: LaunchView5(), label: {
-                Image("Next button")
-                    .renderingMode(.original)
+            Button(action: {
                 
-                
-            })
-                .padding(.bottom)
+                self.showNextView.toggle()
+            }, label: {Image("Next button")
+                .renderingMode(.original)}).padding(.bottom, CGFloat(60))
         
+        }
+            if self.showNextView{
+                LaunchView5()
+            }
         }
     }
 }

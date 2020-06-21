@@ -10,21 +10,24 @@ import SwiftUI
 
 struct FunFactCell: View {
     @State var funFact: String
+    @State var geo: GeometryProxy
     var body: some View {
-                Text(self.funFact)
+                VStack{
+                    Text(self.funFact)
                     .font(.custom("SF Pro Text", size: 16))
                     .padding()
+                    
+                }
                     .background(Rectangle().cornerRadius(16).padding(.horizontal)
-                    .foregroundColor(Color("cellColor")))
+                    .foregroundColor(Color("cellColor"))
+                    .frame(width: geo.size.width)
+                    )
+                    .frame(width: geo.size.width - 42)
                     .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
+        
     }
 }
 
-
-struct FunFactCell_Previews: PreviewProvider {
-    static var previews: some View {
-        FunFactCell(funFact: "Brocolie has more protein than steak like a lot more protein than steak oh my god.")
-    }
-}
 
 

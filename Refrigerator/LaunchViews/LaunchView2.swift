@@ -11,29 +11,35 @@ import SwiftUI
 struct LaunchView2: View {
     @State private var name = UserDefaults.standard.string(forKey: "name") ?? ""
     @State private var didFinishTyping = false
-    
+    @State var showNextView = false
     var body: some View {
-                VStack {
-            Spacer()
-            Text("👋")
-                .font(.custom("Open Sans", size: CGFloat(60)))
-            Text("Hey there, whats your name?")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                    TextField("name", text: $name)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal, 40)
-            Spacer()
-            NavigationLink(destination: LaunchView3(),isActive: $didFinishTyping , label: {
-                Image("Next button")
-                    .renderingMode(.original)
+        ZStack{
+            Color.white
+            .edgesIgnoringSafeArea(.all)
+            VStack {
+                Spacer()
+                Text("👋")
+                    .font(.custom("Open Sans", size: CGFloat(60)))
+                Text("Hey there, whats your name?")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.center)
+                TextField("name", text: $name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.horizontal, 40)
+                Spacer()
                 
-            }).simultaneousGesture(TapGesture().onEnded({
-                UserDefaults.standard.set(self.name, forKey: "name")
-            }))
-        Spacer()
-                    
+                Button(action: {
+                    UserDefaults.standard.set(self.name, forKey: "name")
+                    self.showNextView.toggle()
+                }, label: {Image("Next button")
+                    .renderingMode(.original)}).padding(.bottom, CGFloat(60))
+                Spacer()
+                
+            }
+            if self.showNextView{
+                LaunchView3()
+            }
         }
     }
 }

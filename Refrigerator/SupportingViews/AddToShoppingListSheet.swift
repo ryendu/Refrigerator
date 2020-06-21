@@ -36,6 +36,7 @@ struct AddToShoppingListSheet: View {
             Text("Add Item To Shopping List")
                 .font(.largeTitle)
                 .layoutPriority(1)
+                .padding()
             HStack {
                 Text("Whats the name of this food")
                     .multilineTextAlignment(.leading)
@@ -106,13 +107,13 @@ struct AddToShoppingListSheet: View {
                 }
 
             })
-            
+            Spacer()
             Button(action: {
                 self.refrigeratorViewModel.isInShoppingListItemAddingView.toggle()
                 let newShoppingItem = ShoppingList(context: self.managedObjectContext)
                 newShoppingItem.name = self.nameOfFood
                 newShoppingItem.icon = self.selectedEmoji
-                
+                newShoppingItem.checked = false
                 do{
                     try self.managedObjectContext.save()
                 } catch let error{
@@ -124,6 +125,7 @@ struct AddToShoppingListSheet: View {
                 Image("addOrange").renderingMode(.original)
                 
             })
+            Spacer()
         }
         
     }

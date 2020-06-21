@@ -9,8 +9,14 @@
 import SwiftUI
 import Firebase
 import GoogleMobileAds
-
+import UserNotifications
+func addDays (days: Int, dateCreated: Date) -> Date{
+    let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
+    print("Modified date: \(modifiedDate)")
+    return modifiedDate
+}
 struct AddFoodItemSheet: View {
+    
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @Environment(\.managedObjectContext) var managedObjectContext
@@ -55,6 +61,7 @@ struct AddFoodItemSheet: View {
                Text("Add a food item")
                    .font(.largeTitle)
                    .layoutPriority(1)
+            .padding()
                HStack {
                    Text("Whats the name of this food")
                        .multilineTextAlignment(.leading)
@@ -124,8 +131,8 @@ struct AddFoodItemSheet: View {
                        }.padding()
                    }
 
-               })
-            
+                }).padding()
+            Spacer()
             HStack{
                 Text("Lasts for ")
                 Picker(selection: self.$lastsFor, label: Text("Picker")) {
@@ -137,7 +144,9 @@ struct AddFoodItemSheet: View {
                 Text(" days")
                 
             }.padding()
+            Spacer()
                Button(action: {
+                let id = UUID()
                    let newFoodItem = FoodItem(context: self.managedObjectContext)
                 newFoodItem.staysFreshFor = Int16(self.lastsFor)
                 newFoodItem.symbol = self.selectedEmoji
@@ -146,13 +155,29 @@ struct AddFoodItemSheet: View {
                 newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
                 newFoodItem.origion?.storageName = self.storage.wrappedStorageName
                 newFoodItem.origion?.symbolName = self.storage.wrappedSymbolName
-                newFoodItem.id = UUID()
-                Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : self.nameOfFood])
+                newFoodItem.id = id
+                
+                Analytics.logEvent("addedFoodItem", parameters: nil)
                    do{
                        try self.managedObjectContext.save()
                    } catch let error{
                    print(error)
                    }
+                
+                let center = UNUserNotificationCenter.current()
+                let content = UNMutableNotificationContent()
+                content.title = "Eat This Food Soon"
+                let date = Date()
+                let twoDaysBefore = addDays(days: self.lastsFor - 2, dateCreated: date)
+                content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                content.sound = UNNotificationSound.default
+                var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                dateComponents.hour = 10
+                dateComponents.minute = 0
+                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                print("dateComponents for notifs: \(dateComponents)")
+                let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                center.add(request)
                 
                    self.presentationMode.wrappedValue.dismiss()
                 }, label: {Image("addOrange").renderingMode(.original)}).padding()

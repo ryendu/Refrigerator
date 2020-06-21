@@ -9,6 +9,7 @@
 import SwiftUI
 import Firebase
 import GoogleMobileAds
+import UserNotifications
 
 struct MoveShoppingItemToStorageSheet: View {
     @Environment(\.presentationMode) var presentationMode
@@ -61,6 +62,7 @@ struct MoveShoppingItemToStorageSheet: View {
                 ForEach(self.storageLocation, id: \.self) { item in
                                             
                     Button(action: {
+                        let id = UUID()
                         let newFoodItem = FoodItem(context: self.managedObjectContext)
                         newFoodItem.staysFreshFor = 7
                         newFoodItem.symbol = self.Item?.wrappedIcon
@@ -69,8 +71,8 @@ struct MoveShoppingItemToStorageSheet: View {
                         newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
                         newFoodItem.origion?.storageName = item.wrappedStorageName
                         newFoodItem.origion?.symbolName = item.wrappedSymbolName
-                        newFoodItem.id = UUID()
-                        Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : self.Item?.wrappedName as Any])
+                        newFoodItem.id = id
+                        Analytics.logEvent("addedFoodItem", parameters: nil)
                         do{
                             try self.managedObjectContext.save()
                         } catch let error{
@@ -78,6 +80,21 @@ struct MoveShoppingItemToStorageSheet: View {
                         }
                         self.managedObjectContext.delete(self.Item!)
                         try?self.managedObjectContext.save()
+                        
+                        let center = UNUserNotificationCenter.current()
+                        let content = UNMutableNotificationContent()
+                        content.title = "Eat This Food Soon"
+                        let date = Date()
+                        let twoDaysBefore = addDays(days: 7 - 2, dateCreated: date)
+                        content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                        content.sound = UNNotificationSound.default
+                        var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                        dateComponents.hour = 10
+                        dateComponents.minute = 0
+                        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                        let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                        center.add(request)
+                        
                         self.presentationMode.wrappedValue.dismiss()
                         
                     }, label: {

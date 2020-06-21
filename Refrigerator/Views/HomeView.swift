@@ -11,7 +11,8 @@ import Firebase
 import GoogleMobileAds
 import UIKit
 import StoreKit
-
+import UserNotifications
+import CoreHaptics
 struct HomeView: View {
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
@@ -21,7 +22,7 @@ struct HomeView: View {
     @State var ref: DocumentReference!
     func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
         func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
-
+            
             var x = top
             var y = bottom
             while (y != 0) {
@@ -38,9 +39,9 @@ struct HomeView: View {
         var returnValue = false
         print(denomenator)
         if Int.random(in: 1...denomenator.newBottom) == 1 {
-        returnValue = true
-      }
-       return returnValue
+            returnValue = true
+        }
+        return returnValue
     }
     
     @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
@@ -49,6 +50,7 @@ struct HomeView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
+    @State var shadowAmount = 0
     @State var addToShoppingList = false
     @State var showEatActionSheet = false
     @State var foodItemTapped: FoodItem? = nil
@@ -57,25 +59,25 @@ struct HomeView: View {
     @State var displayAmount = 0
     @State var moveToStorageLocation: ShoppingList? = nil
     @State var funFactText = ""
+    
     var body: some View {
         NavigationView {
             GeometryReader { geo in
-                VStack {
+//                VStack {
                     ScrollView(.vertical, showsIndicators: true, content: {
                         VStack {
                             
                             VStack{
+                                HStack{
+                                    Text("Here's a fun fact")
+                                        .font(.custom("SF Compact Display", size: 23))
+                                        .padding()
+                                    
+                                    Spacer()
+                                }
                                 
-                                Text(self.funFactText)
-                                    .font(.custom("SF Pro Text", size: 16))
-                                    .foregroundColor(Color("blackAndWhite"))
-                                    .padding(15)
-                                    .background(Rectangle().cornerRadius(16).padding(.horizontal)
-                                        .foregroundColor(Color("cellColor"))
-                                        .frame(width: geo.size.width - 18))
-                            }.padding(.top)
-                                
-                                .multilineTextAlignment(.center)
+                                FunFactCell(funFact: self.funFactText, geo: geo)
+                            }.multilineTextAlignment(.center)
                             
                             if self.foodItem.count >= 10{
                                 HStack{
@@ -84,91 +86,111 @@ struct HomeView: View {
                                     Spacer()
                                 } .padding()
                                 
+                                Text("Long press on any food item or shopping list item to see more options")
+                                    .padding()
+                                    .foregroundColor(Color(hex: "878787"))
+                                
                                 ForEach(0..<10) { index in
                                     
                                     RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince))
                                         
                                         .onTapGesture {}
-                                        .gesture(LongPressGesture()
-                                            .onEnded({ i in
+                                        .onLongPressGesture {
+                                                print("pressed long press")
                                                 self.foodItemTapped = self.foodItem[index]
-                                            }))
+                                        }
                                     
-                                    //TODO: Make a diffrence between eat all and throw away
                                     
-                                }.sheet(item: self.$editFoodItem, content: { item in
-                                    EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
-                                    })
-                                    .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
-                                        ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
-                                            .default(Text("Eat All"), action: {
-                                                var previousInteger = UserDefaults.standard.double(forKey: "eaten")
-                                                previousInteger += 1.0
-                                                UserDefaults.standard.set(previousInteger, forKey: "eaten")
-                                                self.managedObjectContext.delete(item)
-                                                try? self.managedObjectContext.save()
-                                            })
-                                            ,.default(Text("Throw Away"), action: {
-                                                var previousData = [shoppingListItems]()
-                                                if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                                                    do {
-                                                        let decoder = JSONDecoder()
-                                                        let note = try decoder.decode([shoppingListItems].self, from: data)
-                                                        previousData = note
-                                                    } catch {
-                                                        print("Unable to Decode Note (\(error))")
-                                                    }
-                                                }
-                                                previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
-                                                
+                                }.actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                                    ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                                        .default(Text("Eat All"), action: {
+                                            var previousInteger = UserDefaults.standard.double(forKey: "eaten")
+                                            previousInteger += 1.0
+                                            UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                                            let center = UNUserNotificationCenter.current()
+                                            center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                            self.managedObjectContext.delete(item)
+                                            try? self.managedObjectContext.save()
+                                        })
+                                        ,.default(Text("Throw Away"), action: {
+                                            var previousData = [shoppingListItems]()
+                                            if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
                                                 do {
-                                                    let encoder = JSONEncoder()
-                                                    
-                                                    let data = try encoder.encode(previousData)
-                                                    
-                                                    UserDefaults.standard.set(data, forKey: "recentlyDeleted")
-                                                    
+                                                    let decoder = JSONDecoder()
+                                                    let note = try decoder.decode([shoppingListItems].self, from: data)
+                                                    previousData = note
                                                 } catch {
-                                                    print("Unable to Encode previousData (\(error))")
+                                                    print("Unable to Decode Note (\(error))")
                                                 }
-                                                var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
-                                                previousInteger += 1.0
-                                                UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
-                                                print(previousData)
-                                                print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
-                                                self.managedObjectContext.delete(item)
-                                                try? self.managedObjectContext.save()
-                                            })
-                                            ,.default(Text("Eat Some"), action: {
-                                                //TODO: Make this actrually do something
-                                                print("ate some of \(item)")
-                                            })
-                                            ,.default(Text("Edit"), action: {
-                                                //TODO: Make this actrually do something
-                                                self.editFoodItem = item
+                                            }
+                                            previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
+                                            
+                                            do {
+                                                let encoder = JSONEncoder()
                                                 
-                                            })
-                                            ,.default(Text("Duplicate"), action: {
-                                                let newFoodItem = FoodItem(context: self.managedObjectContext)
-                                                newFoodItem.staysFreshFor = item.staysFreshFor
-                                                newFoodItem.symbol = item.symbol
-                                                newFoodItem.name = item.name
-                                                newFoodItem.inStorageSince = Date()
-                                                newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                                                newFoodItem.origion?.storageName = item.origion?.storageName
-                                                newFoodItem.origion?.symbolName = item.origion?.symbolName
-                                                newFoodItem.id = UUID()
-                                                Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : item.name ?? ""])
-                                                do{
-                                                    try self.managedObjectContext.save()
-                                                } catch let error{
-                                                    print(error)
-                                                }
+                                                let data = try encoder.encode(previousData)
                                                 
-                                            })
-                                            ,.default(Text("Cancel"))
-                                        ])
-                                    })
+                                                UserDefaults.standard.set(data, forKey: "recentlyDeleted")
+                                                
+                                            } catch {
+                                                print("Unable to Encode previousData (\(error))")
+                                            }
+                                            var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
+                                            previousInteger += 1.0
+                                            UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
+                                            print(previousData)
+                                            print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                                            
+                                            
+                                            let center = UNUserNotificationCenter.current()
+                                            center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                            self.managedObjectContext.delete(item)
+                                            try? self.managedObjectContext.save()
+                                        })
+                                        ,.default(Text("Eat Some"), action: {
+                                            print("ate some of \(item)")
+                                        })
+                                        ,.default(Text("Edit"), action: {
+                                            self.editFoodItem = item
+                                        })
+                                        
+                                        ,.default(Text("Duplicate"), action: {
+                                            let id = UUID()
+                                            let newFoodItem = FoodItem(context: self.managedObjectContext)
+                                            newFoodItem.staysFreshFor = item.staysFreshFor
+                                            newFoodItem.symbol = item.symbol
+                                            newFoodItem.name = item.name
+                                            newFoodItem.inStorageSince = Date()
+                                            newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+                                            newFoodItem.origion?.storageName = item.origion?.storageName
+                                            newFoodItem.origion?.symbolName = item.origion?.symbolName
+                                            newFoodItem.id = id
+                                            
+                                            let center = UNUserNotificationCenter.current()
+                                            let content = UNMutableNotificationContent()
+                                            content.title = "Eat This Food Soon"
+                                            let date = Date()
+                                            let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                                            content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                                            content.sound = UNNotificationSound.default
+                                            var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                                            dateComponents.hour = 10
+                                            dateComponents.minute = 0
+                                            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                                            print("dateComponents for notifs: \(dateComponents)")
+                                            let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                                            center.add(request)
+                                            Analytics.logEvent("addedFoodItem", parameters: nil)
+                                            do{
+                                                try self.managedObjectContext.save()
+                                            } catch let error{
+                                                print(error)
+                                            }
+                                            
+                                        })
+                                        ,.default(Text("Cancel"))
+                                    ])
+                                })
                                 
                                 NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
                             }else if self.foodItem.count <= 9 && self.foodItem.count > 0 {
@@ -177,91 +199,111 @@ struct HomeView: View {
                                         .font(.custom("SF Compact Display", size: 23))
                                     Spacer()
                                 } .padding()
+                                Text("Long press on any food item or shopping list item to see more options")
+                                    .padding()
+                                    .foregroundColor(Color(hex: "878787"))
                                 
-                                ForEach(0..<self.foodItem.count) { index in
+                                ForEach(self.foodItem, id: \.self) { index in
                                     
-                                    RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince))
+                                    RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince))
                                         .onTapGesture {}
-                                        .gesture(LongPressGesture()
-                                            .onEnded({ i in
-                                                self.foodItemTapped = self.foodItem[index]
-                                            }))
+                                        .onLongPressGesture {
+                                            self.foodItemTapped = index
+                                    }
+                                        
                                     
-                                    //TODO: Make a diffrence between eat all and throw away
                                     
-                                }.sheet(item: self.$editFoodItem, content: { item in
-                                    EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
-                                    })
-                                    .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
-                                        ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
-                                            .default(Text("Eat All"), action: {
-                                                var previousInteger = UserDefaults.standard.double(forKey: "eaten")
-                                                previousInteger += 1.0
-                                                UserDefaults.standard.set(previousInteger, forKey: "eaten")
-                                                self.managedObjectContext.delete(item)
-                                                try? self.managedObjectContext.save()
-                                            })
-                                            ,.default(Text("Throw Away"), action: {
-                                                var previousData = [shoppingListItems]()
-                                                if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                                                    do {
-                                                        let decoder = JSONDecoder()
-                                                        let note = try decoder.decode([shoppingListItems].self, from: data)
-                                                        previousData = note
-                                                    } catch {
-                                                        print("Unable to Decode Note (\(error))")
-                                                    }
-                                                }
-                                                previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
-                                                
+                                }.actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                                    ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                                        .default(Text("Eat All"), action: {
+                                            var previousInteger = UserDefaults.standard.double(forKey: "eaten")
+                                            previousInteger += 1.0
+                                            UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                                            let center = UNUserNotificationCenter.current()
+                                            center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                            self.managedObjectContext.delete(item)
+                                            try? self.managedObjectContext.save()
+                                        })
+                                        ,.default(Text("Throw Away"), action: {
+                                            var previousData = [shoppingListItems]()
+                                            if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
                                                 do {
-                                                    let encoder = JSONEncoder()
-                                                    
-                                                    let data = try encoder.encode(previousData)
-                                                    
-                                                    UserDefaults.standard.set(data, forKey: "recentlyDeleted")
-                                                    
+                                                    let decoder = JSONDecoder()
+                                                    let note = try decoder.decode([shoppingListItems].self, from: data)
+                                                    previousData = note
                                                 } catch {
-                                                    print("Unable to Encode previousData (\(error))")
+                                                    print("Unable to Decode Note (\(error))")
                                                 }
-                                                var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
-                                                previousInteger += 1.0
-                                                UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
-                                                print(previousData)
-                                                print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
-                                                self.managedObjectContext.delete(item)
-                                                try? self.managedObjectContext.save()
-                                            })
-                                            ,.default(Text("Eat Some"), action: {
-                                                //TODO: Make this actrually do something
-                                                print("ate some of \(item)")
-                                            })
-                                            ,.default(Text("Edit"), action: {
-                                                //TODO: Make this actrually do something
-                                                self.editFoodItem = item
+                                            }
+                                            previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
+                                            
+                                            do {
+                                                let encoder = JSONEncoder()
                                                 
-                                            })
-                                            ,.default(Text("Duplicate"), action: {
-                                                let newFoodItem = FoodItem(context: self.managedObjectContext)
-                                                newFoodItem.staysFreshFor = item.staysFreshFor
-                                                newFoodItem.symbol = item.symbol
-                                                newFoodItem.name = item.name
-                                                newFoodItem.inStorageSince = Date()
-                                                newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                                                newFoodItem.origion?.storageName = item.origion?.storageName
-                                                newFoodItem.origion?.symbolName = item.origion?.symbolName
-                                                newFoodItem.id = UUID()
-                                                Analytics.logEvent("addedFoodItem", parameters: ["nameOfFood" : item.name ?? ""])
-                                                do{
-                                                    try self.managedObjectContext.save()
-                                                } catch let error{
-                                                    print(error)
-                                                }
+                                                let data = try encoder.encode(previousData)
                                                 
-                                            })
-                                            ,.default(Text("Cancel"))
-                                        ])
-                                    })
+                                                UserDefaults.standard.set(data, forKey: "recentlyDeleted")
+                                                
+                                            } catch {
+                                                print("Unable to Encode previousData (\(error))")
+                                            }
+                                            var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
+                                            previousInteger += 1.0
+                                            UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
+                                            print(previousData)
+                                            print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                                            
+                                            
+                                            let center = UNUserNotificationCenter.current()
+                                            center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                            self.managedObjectContext.delete(item)
+                                            try? self.managedObjectContext.save()
+                                        })
+                                        ,.default(Text("Eat Some"), action: {
+                                            print("ate some of \(item)")
+                                        })
+                                        ,.default(Text("Edit"), action: {
+                                            self.editFoodItem = item
+                                        })
+                                        
+                                        ,.default(Text("Duplicate"), action: {
+                                            let id = UUID()
+                                            let newFoodItem = FoodItem(context: self.managedObjectContext)
+                                            newFoodItem.staysFreshFor = item.staysFreshFor
+                                            newFoodItem.symbol = item.symbol
+                                            newFoodItem.name = item.name
+                                            newFoodItem.inStorageSince = Date()
+                                            newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+                                            newFoodItem.origion?.storageName = item.origion?.storageName
+                                            newFoodItem.origion?.symbolName = item.origion?.symbolName
+                                            newFoodItem.id = id
+                                            
+                                            let center = UNUserNotificationCenter.current()
+                                            let content = UNMutableNotificationContent()
+                                            content.title = "Eat This Food Soon"
+                                            let date = Date()
+                                            let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                                            content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                                            content.sound = UNNotificationSound.default
+                                            var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                                            dateComponents.hour = 10
+                                            dateComponents.minute = 0
+                                            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                                            print("dateComponents for notifs: \(dateComponents)")
+                                            let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                                            center.add(request)
+                                            Analytics.logEvent("addedFoodItem", parameters: nil)
+                                            do{
+                                                try self.managedObjectContext.save()
+                                            } catch let error{
+                                                print(error)
+                                            }
+                                            
+                                        })
+                                        ,.default(Text("Cancel"))
+                                    ])
+                                })
+                                
                                 
                                 NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
                             }
@@ -270,11 +312,12 @@ struct HomeView: View {
                                     .padding()
                             }
                             
+                            
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
-                            GADBannerViewController()
-                            .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+                                GADBannerViewController()
+                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                             }else {
-
+                                
                             }
                             HStack{
                                 Text("Shopping List")
@@ -296,18 +339,15 @@ struct HomeView: View {
                                 
                                 
                                 ShoppingListCell(icon: item.wrappedIcon, title: item.wrappedName, shoppingItem: item)
-                                .onTapGesture {}
-                                .gesture(LongPressGesture()
-                                .onEnded({ i in
-                                    self.shoppingListItemTapped = item
-                                }))
+                                    .onTapGesture {}
+                                    .onLongPressGesture {
+                                        simpleSuccess()
+                                        self.shoppingListItemTapped = item
+                                }
+                                    
                                 
-                            }
-                                .sheet(item: self.$moveToStorageLocation, content: { _ in
-                                    MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext)
-                            })
-                                .actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
-                                ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                            }.actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
+                                ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this shopping list item"), buttons: [
                                     .default(Text("Delete"), action: {
                                         self.managedObjectContext.delete(item)
                                         try?self.managedObjectContext.save()
@@ -316,7 +356,7 @@ struct HomeView: View {
                                         let newShoppingListItem = ShoppingList(context: self.managedObjectContext)
                                         newShoppingListItem.icon = item.wrappedIcon
                                         newShoppingListItem.name = item.wrappedName
-                                        Analytics.logEvent("addedShoppingItem", parameters: ["shoppingListItem" : item.name ?? ""])
+                                        Analytics.logEvent("addedShoppingItem", parameters: nil)
                                         do{
                                             try self.managedObjectContext.save()
                                         } catch let error{
@@ -324,27 +364,48 @@ struct HomeView: View {
                                         }
                                         
                                     }),
-                                    .default(Text("Move to a storage location"), action: {
+                                     .default(Text("Move to a storage location"), action: {
                                         self.moveToStorageLocation = item
-                                    })
+                                     })
                                     ,.default(Text("Cancel"))
                                 ])
                             })
                             
+                            
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
-                            GADBannerViewController()
-                            .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+                                GADBannerViewController()
+                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                             }else {
                             }
-                        }.padding()
+                        }
                         
+                        
+                        
+                        .sheet(item: self.$moveToStorageLocation, content: { _ in
+                                MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext)
+                            })
                     })
                     
                     
                     
-                    }.padding().navigationBarTitle("Hi, \(UserDefaults.standard.string(forKey: "name") ?? "name not set (go to settings)")")
+                /*}.padding()*/
+                        
+                
+            }.navigationBarTitle("Hi, \(UserDefaults.standard.string(forKey: "name") ?? "name not set (go to settings)")")
+                .sheet(item: self.$editFoodItem, content: { item in
+                    EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+                })
                 
                 .onAppear(perform: {
+                    
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                        if success {
+                        } else if let error = error {
+                            print(error)
+                            
+                        }
+                    }
+                    
                     self.ref = Firestore.firestore().document("Others/funfoodFacts")
                     self.ref.getDocument{(documentSnapshot, error) in
                         guard let docSnapshot = documentSnapshot, docSnapshot.exists else { self.funFactText = "did you know that brocoli contains more protein than steak?"
@@ -356,15 +417,14 @@ struct HomeView: View {
                         let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
                         self.funFactText = arrayOfFoodFacts.randomElement()!
                     }
-                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue){
-                        //FIXME: to actruall review request
-                    SKStoreReviewController.requestReview()
+                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && UserDefaults.standard.bool(forKey: "didReviewThisMonth") == false{
+                        rateApp()
+                        
                         Analytics.logEvent("requestedReview", parameters: nil)
                     }
                 })
-                
-            }
         }
+            
         .navigationBarBackButtonHidden(true)
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $refrigeratorViewModel.isInShoppingListItemAddingView, content: {AddToShoppingListSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext) })
@@ -398,7 +458,7 @@ struct RemoteConfigManager {
                 return
             }
             print("Recieved Values From Remote Config")
-//            RemoteConfig.remoteConfig().activate(completionHandler: nil)
+            //            RemoteConfig.remoteConfig().activate(completionHandler: nil)
         }
     }
     
@@ -411,7 +471,7 @@ struct RemoteConfigManager {
     static func doubleValue(forkey key: String) -> Double{
         return remoteConfig.configValue(forKey: key).numberValue as! Double
     }
-
+    
     
     static func boolValue(forkey key: String) -> Bool{
         return remoteConfig.configValue(forKey: key).boolValue
@@ -443,7 +503,7 @@ struct GADBannerViewController: UIViewControllerRepresentable {
 }
 
 class MyDInterstitialDelegate: NSObject, GADInterstitialDelegate {
-
+    
     func interstitialDidReceiveAd(_ ad: GADInterstitial) {
         if ad.isReady{
             let root = UIApplication.shared.windows.first?.rootViewController
@@ -459,3 +519,20 @@ class MyDInterstitialDelegate: NSObject, GADInterstitialDelegate {
 
 
 
+func rateApp() {
+    if #available(iOS 10.3, *) {
+        SKStoreReviewController.requestReview()
+        
+    } else if let url = URL(string: "itms-apps://itunes.apple.com/app/" + "id1519358764") {
+        if #available(iOS 10, *) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            
+        } else {
+            UIApplication.shared.openURL(url)
+        }
+    }
+}
+func simpleSuccess() {
+    let generator = UINotificationFeedbackGenerator()
+    generator.notificationOccurred(.success)
+}

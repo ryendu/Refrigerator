@@ -16,19 +16,28 @@ struct ShoppingListCell: View {
     var icon: String
     var title: String
     var shoppingItem: ShoppingList
+    @State var press = false
     var body: some View {
         
         HStack {
             Button(action: {
-                self.managedObjectContext.delete(self.shoppingItem)
+                withAnimation(){
+                    self.shoppingItem.checked.toggle()
+                }
             }, label: {
-                
+                if self.shoppingItem.checked == false{
                 Circle()
                     .foregroundColor(Color(hex: "F5F6F8"))
                     .overlay(Capsule().stroke(Color(hex: "999999")))
                     .frame(width: 28, height: 28)
                     .padding(.leading)
-                
+                }else{
+                    Circle()
+                    .foregroundColor(Color(hex: "999999"))
+                    .overlay(Capsule().stroke(Color(hex: "999999")))
+                    .frame(width: 28, height: 28)
+                    .padding(.leading)
+                }
             })
             
             HStack {
@@ -52,6 +61,7 @@ struct ShoppingListCell: View {
             )
             .padding(.bottom)
         }
+        
     
         
     }

@@ -96,8 +96,9 @@ struct DetectItemCoreDataCell: View {
                     .frame(minWidth: 80)
             }
             Button(action: {
-                self.foodsToDisplay.removeFromFoodItem(self.foodsToDisplay)
-                try?self.managedObjectContext.save()
+                
+                self.managedObjectContext.delete(self.foodsToDisplay)
+                try? self.managedObjectContext.save()
                 
             }, label: {
                 Image(systemName: "minus.circle")
@@ -118,6 +119,22 @@ struct DetectItemCoreDataCell: View {
                 self.foodsToDisplay.name = self.title
                 self.foodsToDisplay.symbol = self.icon
                 self.foodsToDisplay.staysFreshFor = Int16(self.lastsFor)
+            let center = UNUserNotificationCenter.current()
+            center.removePendingNotificationRequests(withIdentifiers: [self.foodsToDisplay.wrappedID.uuidString])
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Eat This Food Soon"
+            let date = Date()
+            let twoDaysBefore = addDays(days: self.lastsFor - 2, dateCreated: date)
+            content.body = "Your food item, \(self.foodsToDisplay.wrappedName) is about to go bad in 2 days."
+            content.sound = UNNotificationSound.default
+            var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+            dateComponents.hour = 10
+            dateComponents.minute = 0
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            print("dateComponents for notifs: \(dateComponents)")
+            let request = UNNotificationRequest(identifier: self.foodsToDisplay.wrappedID.uuidString, content: content, trigger: trigger)
+            center.add(request)
                 try?self.managedObjectContext.save()
             })
             

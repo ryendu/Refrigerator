@@ -58,6 +58,10 @@ struct StorageLocationCell: View {
                }        .actionSheet(isPresented: $isShowingActionSheet, content: {
                   ActionSheet(title: Text("Delete?"), message: Text("Are you sure you want to delete this Storage Location?"), buttons: [
                       .default(Text("Yes"), action: {
+                        for food in self.storage.foodItemArray{
+                            let center = UNUserNotificationCenter.current()
+                            center.removePendingNotificationRequests(withIdentifiers: [food.wrappedID.uuidString])
+                        }
                         self.managedObjectContext.delete(self.storage)
                           try? self.managedObjectContext.save()
                   })

@@ -48,6 +48,21 @@ struct EditFoodItemPopUpView: View {
                 self.foodItem.name = self.title
                 self.foodItem.symbol = self.icon
                 self.foodItem.staysFreshFor = Int16(self.lastsFor)
+                let center = UNUserNotificationCenter.current()
+                           center.removePendingNotificationRequests(withIdentifiers: [self.foodItem.wrappedID.uuidString])
+                           
+                           let content = UNMutableNotificationContent()
+                           content.title = "Eat This Food Soon"
+                           let date = Date()
+                           let twoDaysBefore = addDays(days: self.lastsFor - 2, dateCreated: date)
+                           content.body = "Your food item, \(self.foodItem.wrappedName) is about to go bad in 2 days."
+                           content.sound = UNNotificationSound.default
+                           var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                           dateComponents.hour = 10
+                           dateComponents.minute = 0
+                           let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                           let request = UNNotificationRequest(identifier: self.foodItem.wrappedID.uuidString, content: content, trigger: trigger)
+                           center.add(request)
                 try? self.managedObjectContext.save()
                 self.presentationMode.wrappedValue.dismiss()
             }, label: {
