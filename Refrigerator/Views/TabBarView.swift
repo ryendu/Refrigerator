@@ -32,7 +32,7 @@ struct TabBarView: View {
     }
     var body: some View {
         ZStack{
-            
+            Color.white
         TabView(selection: $selection){
             
             HomeView()
