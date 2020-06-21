@@ -34,7 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             if !UserDefaults.standard.bool(forKey: "didLaunchBefore") {
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")
-                UserDefaults.standard.set(false, forKey: "didReviewThisMonth")
+                UserDefaults.standard.set(true, forKey: "didReviewThisMonth")
                 let now = Calendar.current.dateComponents(in: .current, from: Date())
                 let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 30)
                 let date = Calendar.current.date(from: tomorrow)
