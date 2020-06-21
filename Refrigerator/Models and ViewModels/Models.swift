@@ -7,8 +7,6 @@
 //
 
 import Foundation
-//TODO: add quantity to the refrige items
-//TODO: all of these items below are only temporary and will be replaced by coredata once ui is done
 struct refrigeItem:  Identifiable, Hashable {
     var id = UUID()
     var icon: String

@@ -190,10 +190,8 @@ struct ProgressView: View {
                                 
                                 if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
                                     do {
-                                        // Create JSON Decoder
                                         let decoder = JSONDecoder()
 
-                                        // Decode Note
                                         let note = try decoder.decode([shoppingListItems].self, from: data)
                                         self.foodsThrownAwayInThePastWeek = note
                                     } catch {

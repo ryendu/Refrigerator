@@ -84,9 +84,7 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
         textField.isScrollEnabled = false
         textField.backgroundColor = UIColor.clear
 
-//        if nil != onDone {
-//            textField.returnKeyType = .done
-//        }
+
 
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return textField
@@ -132,14 +130,7 @@ fileprivate struct UITextViewWrapper: UIViewRepresentable {
             onDone!()
         }
         
-//        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-//            if let onDone = self.onDone, text == "\n" {
-//                textView.resignFirstResponder()
-//                onDone()
-//                return false
-//            }
-//            return true
-//        }
+
     }
 
 }

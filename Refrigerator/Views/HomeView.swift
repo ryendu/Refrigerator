@@ -63,7 +63,6 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             GeometryReader { geo in
-//                VStack {
                     ScrollView(.vertical, showsIndicators: true, content: {
                         VStack {
                             
@@ -413,7 +412,6 @@ struct HomeView: View {
                             return}
                         
                         let myData = docSnapshot.data()
-                        //TODO: add more to this default list
                         let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
                         self.funFactText = arrayOfFoodFacts.randomElement()!
                     }
@@ -443,22 +441,20 @@ struct RemoteConfigManager {
     private static var remoteConfig: RemoteConfig{
         let remoteConfig = RemoteConfig.remoteConfig()
         
-        //FIXME: before going into production configure minimum fetch interval for commercial use? idk just look into it.
         let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0
+        settings.minimumFetchInterval = 3600
         remoteConfig.configSettings = settings
         remoteConfig.setDefaults(refrigerator.defaultValues)
         return remoteConfig
     }
-    //FIXME: before going into production change the following 0.0 into 3600.0
-    static func configure(experationDuration: TimeInterval = 0.0) {
-        remoteConfig.fetch(withExpirationDuration: experationDuration) {(staus, err) in
+    static func configure() {
+        remoteConfig.fetch() {(staus, err) in
             if let err = err {
                 print(err.localizedDescription)
                 return
             }
             print("Recieved Values From Remote Config")
-            //            RemoteConfig.remoteConfig().activate(completionHandler: nil)
+                        RemoteConfig.remoteConfig().activate(completionHandler: nil)
         }
     }
     
@@ -484,8 +480,7 @@ struct GADBannerViewController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let view = GADBannerView(adSize: kGADAdSizeBanner)
         let viewController = UIViewController()
-        //FIXME: Before Production, change the adUnitID to my adUnitID
-        view.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        view.adUnitID = "ca-app-pub-2772723693967190/3388696730"
         view.rootViewController = viewController
         viewController.view.addSubview(view)
         viewController.view.frame = CGRect(origin: .zero, size: kGADAdSizeBanner.size)

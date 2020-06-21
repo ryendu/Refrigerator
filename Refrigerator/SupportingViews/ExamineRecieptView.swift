@@ -99,7 +99,6 @@ struct ExamineRecieptView: View {
                     }).simultaneousGesture(TapGesture().onEnded{
                         self.showingView = "fridge"
                         for i in self.foodsToDisplay{
-                            //save
                             let id = UUID()
                                let newFoodItem = FoodItem(context: self.managedObjectContext)
                             newFoodItem.staysFreshFor = Int16(i.daysLeft)
@@ -157,7 +156,6 @@ struct ExamineRecieptView: View {
                         return}
                     
                     let myData = docSnapshot.data()
-                    //TODO: add more to this default list
                     let secondArrayOfFoods = myData?["data"] as? [[String: Any]]
                     secondArray = secondArrayOfFoods
                     print("secondArrayOfFoods: \(secondArrayOfFoods)")
@@ -165,8 +163,7 @@ struct ExamineRecieptView: View {
                 
                 
                 if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 3 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "ExamineRecieptViewLoadedAd") == false{
-                    //FIXME: Change the Adunit ID To My AdUNITID that i didnt set yet but will set when i create a new Interetitial ad in admob
-                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-2772723693967190/6970289452")
                     self.interstitial.delegate = self.adDelegate
                     
                     let req = GADRequest()
@@ -188,7 +185,6 @@ struct ExamineRecieptView: View {
                             print("The observations are of an unexpected type.")
                             return
                         }
-                        // Concatenate the recognised text from all the observations.
                         for observation in observations {
                             guard let bestCandidate = observation.topCandidates(1).first else { continue }
                             for (word,emoji) in self.newArrayOfFoods {

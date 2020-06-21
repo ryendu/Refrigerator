@@ -18,14 +18,12 @@ import Firebase
 
 struct IndivisualRefrigeratorView: View {
     var storageIndex: StorageLocation
-    // use vision software to recognize the text from the image below.
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
         print("Modified date: \(modifiedDate)")
         return modifiedDate
     }
     
-//    var interstitial:Interstitial
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
@@ -34,7 +32,6 @@ struct IndivisualRefrigeratorView: View {
     @Binding var showingView: String?
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
-    //Variables below for the paramaters of EamineRecieptView
     @State var foodItemTapped: FoodItem? = nil
 
     @State var interstitial: GADInterstitial!
@@ -132,7 +129,6 @@ struct IndivisualRefrigeratorView: View {
                                     try? self.managedObjectContext.save()
                                 })
                                 ,.default(Text("Eat Some"), action: {
-                                    //TODO: Make this actrually do something
                                     print("ate some of \(item)")
                                 })
                                 
@@ -232,8 +228,7 @@ struct IndivisualRefrigeratorView: View {
             .navigationBarTitle(storageIndex.wrappedStorageName)
             .onAppear(perform: {
                 if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 9 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "IndivisualRefrigeratorViewLoadedAd") == false{
-                    //FIXME: Change the Adunit ID To My AdUNITID that i didnt set yet but will set when i create a new Interetitial ad in admob
-                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-2772723693967190/6970289452")
                     self.interstitial.delegate = self.adDelegate
                     
                     let req = GADRequest()
@@ -259,9 +254,7 @@ struct IndivisualRefrigeratorView: View {
                 
             })
             
-//            if self.showingView == "results" {
-//                ExamineRecieptView(image: self.$image, showingView: self.$showingView, storageIndex: self.storageIndex, scan: self.$scan)
-//            }
+
         }
         
         

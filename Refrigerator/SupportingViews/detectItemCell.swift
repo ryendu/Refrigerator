@@ -145,5 +145,4 @@ struct DetectItemCoreDataCell: View {
     .padding(.bottom)
 }
 }
-//TODO: When I get back, start esembling the progress view
         

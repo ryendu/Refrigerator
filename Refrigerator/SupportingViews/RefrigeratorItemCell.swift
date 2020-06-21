@@ -30,7 +30,6 @@ struct RefrigeratorItemCell: View {
                 }
                 
                 HStack {
-                    //TODO: fix this
                     Text("lasts for \(daysLeft) days")
                         .font(.custom("SF Compact Display", size: 16))
                         .foregroundColor(Color(hex: "868686"))
@@ -43,7 +42,6 @@ struct RefrigeratorItemCell: View {
         }.onAppear(perform: {
             let calendar = Calendar.current
 
-            // Replace the hour (time) of both dates with 00:00
             let date1 = calendar.startOfDay(for: Date())
             let date2 = calendar.startOfDay(for: self.lastsUntil)
 
@@ -72,11 +70,10 @@ public extension Date {
     func daysTo(date: Date) -> Int {
         let calendar = Calendar.current
 
-        // Replace the hour (time) of both dates with 00:00
         let date1 = calendar.startOfDay(for: self)
         let date2 = calendar.startOfDay(for: date)
 
         let components = calendar.dateComponents([.day], from: date1, to: date2)
-        return components.day!  // This will return the number of day(s) between dates
+        return components.day!  
     }
 }

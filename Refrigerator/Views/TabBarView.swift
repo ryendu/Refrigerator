@@ -34,7 +34,6 @@ struct TabBarView: View {
         ZStack{
             
         TabView(selection: $selection){
-            //TODO: make the tab items when not displayed not filled and when displayed filled
             
             HomeView()
                 .tabItem {
