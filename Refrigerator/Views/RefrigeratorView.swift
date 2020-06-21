@@ -101,7 +101,7 @@ struct RefrigeratorView: View {
                     
                 .onAppear(perform: {
                     if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false{
-                        self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-2772723693967190/6970289452")
+                        self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
                         self.interstitial.delegate = self.adDelegate
                         
                         let req = GADRequest()
