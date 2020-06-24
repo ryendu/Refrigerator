@@ -79,7 +79,7 @@ struct RefrigeratorView: View {
 
                     }
                     } else {
-                        Text("Start by adding a new Storage location with the plus button above")
+                        Text("Start by adding a new Storage location with the plus button above").padding()
                     }
                     
                     if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){

@@ -67,15 +67,19 @@ struct HomeView: View {
                         VStack {
                             
                             VStack{
-                                HStack{
-                                    Text("Here's a fun fact")
-                                        .font(.custom("SF Compact Display", size: 23))
-                                        .padding()
-                                    
-                                    Spacer()
-                                }
                                 
+                                if self.funFactText != "" {
+                                    HStack{
+                                        Text("Here's a fun fact")
+                                            .font(.custom("SF Compact Display", size: 23))
+                                            .padding()
+                                        
+                                        Spacer()
+                                    }
                                 FunFactCell(funFact: self.funFactText, geo: geo)
+                                }else {
+                                    
+                                }
                             }.multilineTextAlignment(.center)
                             
                             if self.foodItem.count >= 10{
