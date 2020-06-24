@@ -51,6 +51,7 @@
 		949C1EC8247EAE190064D326 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 949C1EC7247EAE180064D326 /* GoogleService-Info.plist */; };
 		94A2C7AD247EDC1D003DC68B /* EditFoodItemPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */; };
 		94A2C7AF247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */; };
+		94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */; };
 		94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +127,7 @@
 		949C1EC7247EAE180064D326 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFoodItemPopUpView.swift; sourceTree = "<group>"; };
 		94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveShoppingItemToStorageSheet.swift; sourceTree = "<group>"; };
+		94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamineRecieptView.swift; sourceTree = "<group>"; };
 		ACAD8F1CD146A75D064E861E /* Pods-Refrigerator-RefrigeratorUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Refrigerator-RefrigeratorUITests.release.xcconfig"; path = "Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D3430B2FF85E6460D942D0F9 /* Pods-RefrigeratorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RefrigeratorTests.debug.xcconfig"; path = "Target Support Files/Pods-RefrigeratorTests/Pods-RefrigeratorTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 			files = (
 				9482EE34247B077000704674 /* SwiftUICharts in Frameworks */,
 				6BC3E3E935E6A2F9201172EA /* Pods_Refrigerator.framework in Frameworks */,
+				94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +166,7 @@
 		573CE28C0F4EBBEC0CD09FEC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */,
 				80C4032977C3A5BFB255F727 /* Pods_Refrigerator.framework */,
 				1677FF8B1FF5DE65F960D0BF /* Pods_Refrigerator_RefrigeratorUITests.framework */,
 				08456528A27BC24789159CAB /* Pods_RefrigeratorTests.framework */,
