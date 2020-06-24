@@ -48,9 +48,9 @@
 		9482EE34247B077000704674 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 9482EE33247B077000704674 /* SwiftUICharts */; };
 		948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */; };
 		948BCDFE245F0DBB00ED10A2 /* AddToShoppingListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */; };
-		949C1EC8247EAE190064D326 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 949C1EC7247EAE180064D326 /* GoogleService-Info.plist */; };
 		94A2C7AD247EDC1D003DC68B /* EditFoodItemPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */; };
 		94A2C7AF247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */; };
+		94D7C7A024A4007B00B6E2C5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 94D7C79F24A4007B00B6E2C5 /* GoogleService-Info.plist */; };
 		94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */; };
 /* End PBXBuildFile section */
 
@@ -123,9 +123,9 @@
 		9482EE2D2479A5B400704674 /* ShoppingList+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShoppingList+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDialougView.swift; sourceTree = "<group>"; };
 		948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToShoppingListSheet.swift; sourceTree = "<group>"; };
-		949C1EC7247EAE180064D326 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFoodItemPopUpView.swift; sourceTree = "<group>"; };
 		94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveShoppingItemToStorageSheet.swift; sourceTree = "<group>"; };
+		94D7C79F24A4007B00B6E2C5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamineRecieptView.swift; sourceTree = "<group>"; };
 		ACAD8F1CD146A75D064E861E /* Pods-Refrigerator-RefrigeratorUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Refrigerator-RefrigeratorUITests.release.xcconfig"; path = "Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D3430B2FF85E6460D942D0F9 /* Pods-RefrigeratorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RefrigeratorTests.debug.xcconfig"; path = "Target Support Files/Pods-RefrigeratorTests/Pods-RefrigeratorTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -217,8 +217,8 @@
 				94EA3D37245B5D03001FCB5A /* LaunchViews */,
 				94598D192458E23000456333 /* Assets.xcassets */,
 				94598D1E2458E23000456333 /* LaunchScreen.storyboard */,
-				949C1EC7247EAE180064D326 /* GoogleService-Info.plist */,
 				94598D212458E23000456333 /* Info.plist */,
+				94D7C79F24A4007B00B6E2C5 /* GoogleService-Info.plist */,
 				94598D142458E22700456333 /* Refrigerator.xcdatamodeld */,
 				94598D1B2458E23000456333 /* Preview Content */,
 			);
@@ -445,8 +445,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */,
+				94D7C7A024A4007B00B6E2C5 /* GoogleService-Info.plist in Resources */,
 				94598D1D2458E23000456333 /* Preview Assets.xcassets in Resources */,
-				949C1EC8247EAE190064D326 /* GoogleService-Info.plist in Resources */,
 				94598D1A2458E23000456333 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

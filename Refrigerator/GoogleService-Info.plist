@@ -32,5 +32,7 @@
 	<string>1:751967040402:ios:0013d8ae6b247b6fa9c74b</string>
 	<key>DATABASE_URL</key>
 	<string>https://refrigerator-be2e2.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-2772723693967190~1846430648</string>
 </dict>
 </plist>
