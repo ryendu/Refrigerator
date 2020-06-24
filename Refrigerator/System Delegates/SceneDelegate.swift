@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")
                 UserDefaults.standard.set(true, forKey: "didReviewThisMonth")
                 let now = Calendar.current.dateComponents(in: .current, from: Date())
-                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 30)
+                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
                 let date = Calendar.current.date(from: tomorrow)
                 let midnight = Calendar.current.startOfDay(for: date!)
                 UserDefaults.standard.set(midnight, forKey: "InAMonth")

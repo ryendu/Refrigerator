@@ -44,7 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
             }
         }
-        
         UserDefaults.standard.set(false, forKey: "RefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "IndivisualRefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "ExamineRecieptViewLoadedAd")

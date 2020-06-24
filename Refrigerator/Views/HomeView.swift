@@ -415,8 +415,14 @@ struct HomeView: View {
                         let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
                         self.funFactText = arrayOfFoodFacts.randomElement()!
                     }
-                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && UserDefaults.standard.bool(forKey: "didReviewThisMonth") == false{
+                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && UserDefaults.standard.bool(forKey: "didReviewThisMonth") == false && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfReview.rawValue)){
                         rateApp()
+                        let now = Calendar.current.dateComponents(in: .current, from: Date())
+                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
+                        let date = Calendar.current.date(from: tomorrow)
+                        let midnight = Calendar.current.startOfDay(for: date!)
+                        UserDefaults.standard.set(midnight, forKey: "InAMonth")
+                        UserDefaults.standard.set(false, forKey: "didReviewThisMonth")
                         
                         Analytics.logEvent("requestedReview", parameters: nil)
                     }
