@@ -496,12 +496,19 @@ struct GADBannerViewController: UIViewControllerRepresentable {
         view.load(GADRequest())
         return viewController
     }
+    
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         bannerView.alpha = 0
         UIView.animate(withDuration: 1, animations: {
             bannerView.alpha = 1
         })
     }
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
+        let gadErrorCode = GADErrorCode(rawValue: error.code)
+        print("gadErrorCode: \(gadErrorCode)")
+        Analytics.logEvent("gadErrorCode", parameters: ["gadErrorCode": gadErrorCode])
+    }
+    
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
