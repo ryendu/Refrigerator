@@ -52,13 +52,11 @@ struct SeeMoreView: View {
             ScrollView(.vertical, showsIndicators: false, content: {
                 ForEach(self.foodItem, id: \.self) { item in
                     RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
-                        .onTapGesture{}
-                        .gesture(LongPressGesture()
-                            .onEnded({ i in
-                                 simpleSuccess()
-                                self.foodItemTapped = item
-                            })
-                    )
+                        .onTapGesture{
+                            simpleSuccess()
+                            self.foodItemTapped = item
+                    }
+                    
                         
                 }
                 .sheet(item: self.$editFoodItem, content: { item in
@@ -67,6 +65,8 @@ struct SeeMoreView: View {
                 .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                     ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                         .default(Text("Eat All"), action: {
+                            addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                             var previousInteger = UserDefaults.standard.double(forKey: "eaten")
                             previousInteger += 1.0
                             UserDefaults.standard.set(previousInteger, forKey: "eaten")
@@ -109,9 +109,13 @@ struct SeeMoreView: View {
                             try? self.managedObjectContext.save()
                         })
                         ,.default(Text("Eat Some"), action: {
+                            addToDailyGoal()
+                            refreshDailyGoalAndStreak()
                             print("ate some of \(item)")
                         })
                         ,.default(Text("Edit"), action: {
+                            addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                             self.editFoodItem = item
                         })
                         ,.default(Text("Duplicate"), action: {
@@ -125,7 +129,8 @@ struct SeeMoreView: View {
                             newFoodItem.origion?.storageName = item.origion?.storageName
                             newFoodItem.origion?.symbolName = item.origion?.symbolName
                             newFoodItem.id = id
-                            
+                            addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                             let center = UNUserNotificationCenter.current()
                             let content = UNMutableNotificationContent()
                             content.title = "Eat This Food Soon"

@@ -40,6 +40,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let date = Calendar.current.date(from: tomorrow)
                 let midnight = Calendar.current.startOfDay(for: date!)
                 UserDefaults.standard.set(midnight, forKey: "InAMonth")
+                let tomorrow1 = DateComponents(year: now.year, month: now.month, day: now.day! + 1)
+                let date1 = Calendar.current.date(from: tomorrow1)
+                let midnight1 = Calendar.current.startOfDay(for: date1!)
+                UserDefaults.standard.set(midnight1, forKey: "streakDueDate")
+                UserDefaults.standard.set(midnight1, forKey: "midnightTomorrow")
+                UserDefaults.standard.set(0, forKey: "streak")
+                UserDefaults.standard.set(0, forKey: "dailyGoalStatus")
                 window.rootViewController = UIHostingController(rootView: launchView1.environmentObject(refrigerator))
             } else {
                 window.rootViewController = UIHostingController(rootView: tabBarView.environmentObject(refrigerator))

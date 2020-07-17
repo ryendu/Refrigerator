@@ -27,7 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
             print("cleared userDefaults")
             
-            
             expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
         }
         
@@ -43,9 +42,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
             }
         }
+
+
         
-        
-    
+        if UserDefaults.standard.object(forKey: "midnightTomorrow") != nil{
+            if Date() > UserDefaults.standard.object(forKey: "midnightTomorrow") as! Date {
+                
+                let now = Calendar.current.dateComponents(in: .current, from: Date())
+                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
+                let date = Calendar.current.date(from: tomorrow)
+                let midnight = Calendar.current.startOfDay(for: date!)
+                UserDefaults.standard.set(midnight, forKey: "midnightTomorrow")
+                UserDefaults.standard.set(0, forKey: "dailyGoalStatus")
+                
+        }
+        }
+        if UserDefaults.standard.object(forKey: "streakDueDate") != nil{
+            if Date() > UserDefaults.standard.object(forKey: "streakDueDate") as! Date {
+                
+                let now = Calendar.current.dateComponents(in: .current, from: Date())
+                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
+                let date = Calendar.current.date(from: tomorrow)
+                let midnight = Calendar.current.startOfDay(for: date!)
+                UserDefaults.standard.set(midnight, forKey: "streakDueDate")
+                UserDefaults.standard.set(0, forKey: "streak")
+                
+        }
+        }
         
         UserDefaults.standard.set(false, forKey: "RefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "IndivisualRefrigeratorViewLoadedAd")

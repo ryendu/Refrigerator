@@ -22,7 +22,7 @@ struct LaunchView1: View {
                     VStack {
                         Spacer()
                         Text("Hey there, welcome to the Refrigerator App!")
-                            .font(.custom("SF Compact Display", size: 35))
+                            .font(.custom("SFCompactDisplay", size: 35))
                             .fontWeight(.semibold)
                             .multilineTextAlignment(.center)
                             .padding(.top, CGFloat())
@@ -30,7 +30,7 @@ struct LaunchView1: View {
                         Spacer()
                         Text("Manage all of your refrigerators, freezers, and pantries to reduce, diminish, and eventually eliminate food waste with the simple and powerful Refrigerator app.")
                             .multilineTextAlignment(.center)
-                            .font(.custom("SF Compact Display", size: 27))
+                            .font(.custom("SFCompactDisplay", size: 27))
                             .foregroundColor(Color(hex: "3D3D3D"))
                             .padding(.horizontal, CGFloat(20))
                             .padding(.bottom, CGFloat(35))

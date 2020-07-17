@@ -72,21 +72,23 @@ struct IndivisualRefrigeratorView: View {
                     
                     if editFoodItem == false {
                         Text("Long hold for more options").padding()
-                        .font(.custom("SF Compact Display", size: 16))
+                        .font(.custom("SFCompactDisplay", size: 16))
                         .foregroundColor(.gray)
                     
                     ForEach(self.storageIndex.foodItemArray, id: \.self) { item in
                        RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
-                        .onTapGesture {}
-                        .gesture(LongPressGesture()
-                            .onEnded({ i in
-                                simpleSuccess()
-                                self.foodItemTapped = item      // << tapped item
-                            }))
+                        .onTapGesture {
+                            simpleSuccess()
+                            self.foodItemTapped = item
+                       }
+                        
+                        .padding(.bottom)
                     }
                         .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                             ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                                 .default(Text("Eat All"), action: {
+                                    addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                                     var previousInteger = UserDefaults.standard.double(forKey: "eaten")
                                     previousInteger += 1.0
                                     UserDefaults.standard.set(previousInteger, forKey: "eaten")
@@ -130,9 +132,13 @@ struct IndivisualRefrigeratorView: View {
                                 })
                                 ,.default(Text("Eat Some"), action: {
                                     print("ate some of \(item)")
+                                    addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                                 })
                                 
                                 ,.default(Text("Duplicate"), action: {
+                                    addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                                     let id = UUID()
                                     let newFoodItem = FoodItem(context: self.managedObjectContext)
                                     newFoodItem.staysFreshFor = item.staysFreshFor
@@ -196,7 +202,8 @@ struct IndivisualRefrigeratorView: View {
                     }else{
                         Button(action: {
                             self.editFoodItem.toggle()
-                            
+                            addToDailyGoal()
+                                            refreshDailyGoalAndStreak()
                         }, label: {
                             Text("Done").layoutPriority(1)
                                 

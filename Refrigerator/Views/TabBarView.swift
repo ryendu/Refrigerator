@@ -47,11 +47,17 @@ struct TabBarView: View {
             .tag(1)
             SettingsView()
                 .tabItem {
-                    selection == 2 ?  Image("Settings icon filled") : Image("Settings icon")
-            }
+                    Image(systemName: "gear").font(.system(size: 25))
+            }.accentColor(.orange)
         .tag(2)
+            FoodPlannerView().environmentObject(refrigerator)
+            .tabItem {
+                Image(systemName: "calendar").font(.system(size: 26))
+            }
+        .tag(3)
         
         }
+        .accentColor(.orange)
         .navigationBarBackButtonHidden(true)
         .font(.headline)
             

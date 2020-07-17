@@ -145,7 +145,7 @@ struct ProgressView: View {
                             
                             if self.foodsThrownAwayInThePastWeek != nil{
                                 Text("Foods You Threw away Today")
-                                .font(.custom("SF Compact Display", size: 22))
+                                .font(.custom("SFCompactDisplay", size: 22))
                                 .fontWeight(.semibold)
                                 ScrollView(.vertical, showsIndicators: true, content: {
                                     ForEach(self.foodsThrownAwayInThePastWeek!, id: \.self){ item in
@@ -159,7 +159,7 @@ struct ProgressView: View {
                                                 VStack {
                                                     HStack {
                                                         Text(item.title)
-                                                            .font(.custom("SF Pro Text", size: 16))
+                                                            .font(.custom("SFProDisplay", size: 16))
                                                             .multilineTextAlignment(.leading)
                                                         Spacer()
                                                     }
