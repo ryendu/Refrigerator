@@ -1,22 +1,24 @@
 //
-//  RefrigeratorItemCell.swift
+//  FoodItemCellFoodPlannerSelection.swift
 //  Refrigerator
 //
-//  Created by Ryan Du on 5/1/20.
+//  Created by Ryan Du on 7/17/20.
 //  Copyright © 2020 Ryan Du. All rights reserved.
 //
 
 import SwiftUI
 
-struct RefrigeratorItemCell: View {
+struct FoodItemCellFoodPlannerSelection: View {
     var icon: String
     var title: String
     var lastsUntil: Date
     var storageLocationIcon: String
     let calendar = Calendar.current
+    @Binding var selection: FoodItem?
+    var item: FoodItem
+    @State var backgroundColor = "whiteAndGray"
     @State var daysLeft = Int()
 
-    
     var body: some View {
             HStack {
                 Text(self.icon)
@@ -57,22 +59,34 @@ struct RefrigeratorItemCell: View {
             })
             .padding()
             .background(Rectangle().cornerRadius(12)
-            .foregroundColor(Color("whiteAndGray"))
+                .foregroundColor(Color(self.backgroundColor))
             .shadow(color: Color("shadows"), radius: 3)
             )
             .padding(.horizontal)
+                .padding(.leading)
+        .onReceive(NotificationCenter.default.publisher(for: .shouldRefreshFoodPlannerSelection)) {_ in
+
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                self.refreshSelection()
+           }
+        }
         
+        
+    }
+    func refreshSelection () {
+        if self.selection == self.item{
+            self.backgroundColor = "orange"
+            print("self is selection")
+        }else {
+            self.backgroundColor =  "whiteAndBlack"//TODO: Make a color
+            print("self is not selection")
+        }
     }
 }
 
-public extension Date {
-    func daysTo(date: Date) -> Int {
-        let calendar = Calendar.current
+extension Notification.Name {
 
-        let date1 = calendar.startOfDay(for: self)
-        let date2 = calendar.startOfDay(for: date)
-
-        let components = calendar.dateComponents([.day], from: date1, to: date2)
-        return components.day!  
+    static var shouldRefreshFoodPlannerSelection: Notification.Name {
+        return Notification.Name("shouldRefreshFoodPlannerSelection")
     }
 }

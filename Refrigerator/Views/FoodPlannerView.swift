@@ -8,11 +8,13 @@
 
 import SwiftUI
 import Firebase
+import CoreData
 
 struct FoodPlannerView: View {
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @State var date = ""
-    @Environment(\.managedObjectContext) var managedObjectContext
+    var trackDate: String
+
     var body: some View {
         NavigationView {
             GeometryReader{ geo in
@@ -23,7 +25,6 @@ struct FoodPlannerView: View {
                                     let calendar = Calendar.current
                                     let date1 = self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)
                                     var dateComponent = DateComponents()
-                                    var stringMonth = ""
                                     let components1 = calendar.dateComponents([.year, .month, .day], from: date1!)
                                     let month1 = components1.month
                                     let day1 = components1.day
@@ -34,6 +35,7 @@ struct FoodPlannerView: View {
                                         let futureDate = Calendar.current.date(byAdding: dateComponent, to: self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)!)
                                         print("future date: \(String(describing: futureDate))")
                                         self.refrigeratorViewModel.trackDate = self.refrigeratorViewModel.getTrackDate(with: futureDate!)
+                                        
                                     } else {
                                         var specialComponents = DateComponents()
                                         let currentYear = Calendar.current.component(.year, from: self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)!)
@@ -44,40 +46,11 @@ struct FoodPlannerView: View {
                                         self.refrigeratorViewModel.trackDate = self.refrigeratorViewModel.getTrackDate(with: futureDate!)
                                     }
                                     
-                                    let date = self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)
-                                    let components = calendar.dateComponents([.year, .month, .day], from: date!)
-                                    let year =  components.year
-                                    let month = components.month
-                                    let day = components.day
                                     
-                                    if month == 1 {
-                                        stringMonth = "January"
-                                    } else if month == 2 {
-                                        stringMonth = "Febuary"
-                                    } else if month == 3 {
-                                        stringMonth = "March"
-                                    } else if month == 4 {
-                                        stringMonth = "April"
-                                    } else if month == 5 {
-                                        stringMonth = "May"
-                                    } else if month == 6 {
-                                        stringMonth = "June"
-                                    } else if month == 7{
-                                        stringMonth = "July"
-                                    } else if month == 8 {
-                                        stringMonth = "August"
-                                    } else if month == 9 {
-                                        stringMonth = "September"
-                                    } else if month == 10 {
-                                        stringMonth = "October"
-                                    } else if month == 11 {
-                                        stringMonth = "November"
-                                    } else if month == 12 {
-                                        stringMonth = "December"
-                                    }
+                                    self.updateSelfDate()
                                     Analytics.logEvent("navigatedThroughFoodPlannerViewsDays", parameters: nil)
-                                    self.date = "\(stringMonth) \(day!), \(year!)"
-                                    print(self.date)
+
+                                    
                                 }, label: {
                                     Image(systemName: "chevron.left")
                                 }).padding()
@@ -88,9 +61,7 @@ struct FoodPlannerView: View {
                                     let calendar = Calendar.current
                                     let date = self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)
                                     var dateComponent = DateComponents()
-                                    var stringMonth = ""
                                     let components = calendar.dateComponents([.year, .month, .day], from: date!)
-                                    let year =  components.year
                                     let month = components.month
                                     let day = components.day
                                     
@@ -110,49 +81,19 @@ struct FoodPlannerView: View {
                                         let futureDate = Calendar.current.date(byAdding: dateComponent, to: self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)!)
                                         self.refrigeratorViewModel.trackDate = self.refrigeratorViewModel.getTrackDate(with: futureDate!)
                                         
-                                        
-                                        
                                     }
                                     
-                                    
-                                    if month == 1 {
-                                        stringMonth = "January"
-                                    } else if month == 2 {
-                                        stringMonth = "Febuary"
-                                    } else if month == 3 {
-                                        stringMonth = "March"
-                                    } else if month == 4 {
-                                        stringMonth = "April"
-                                    } else if month == 5 {
-                                        stringMonth = "May"
-                                    } else if month == 6 {
-                                        stringMonth = "June"
-                                    } else if month == 7{
-                                        stringMonth = "July"
-                                    } else if month == 8 {
-                                        stringMonth = "August"
-                                    } else if month == 9 {
-                                        stringMonth = "September"
-                                    } else if month == 10 {
-                                        stringMonth = "October"
-                                    } else if month == 11 {
-                                        stringMonth = "November"
-                                    } else if month == 12 {
-                                        stringMonth = "December"
-                                    }
-                                    Analytics.logEvent("navigatedThroughTodayViewsDays", parameters: nil)
-                                    self.date = "\(stringMonth) \(day!), \(year!)"
-                                    print(self.date)
+                                    self.updateSelfDate()
+                                    Analytics.logEvent("navigatedThroughFoodPlannerViewsDays", parameters: nil)
                                 }, label: {
                                     Image(systemName: "chevron.right")
                                 }).padding()
                             }
                             //MARK: Below is the divider
-                            RoundedRectangle(cornerRadius: 2)
-                                .padding(.horizontal, 14.0)
-                                .frame(height: 1)
-                                .foregroundColor(Color("lightGray"))
+                            Divider()
                             Spacer()
+                            //MARK: SHOW THE FOOD PLANNER HERE
+                            FoodPlannerCellView()
                             
                             
                             Spacer()
@@ -161,45 +102,7 @@ struct FoodPlannerView: View {
                     }
                     .navigationBarTitle("Food Planner")
                         .onAppear(perform: {
-                            
-                            self.refrigeratorViewModel.trackDate = self.refrigeratorViewModel.getTrackDate(with: Date())
-                            let date = self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)
-                            let calendar = Calendar.current
-                            let components = calendar.dateComponents([.year, .month, .day], from: date!)
-                            
-                            var stringMonth = ""
-                            let year =  components.year
-                            let month = components.month
-                            let day = components.day
-                            
-                            if month == 1 {
-                                stringMonth = "January"
-                            } else if month == 2 {
-                                stringMonth = "Febuary"
-                            } else if month == 3 {
-                                stringMonth = "March"
-                            } else if month == 4 {
-                                stringMonth = "April"
-                            } else if month == 5 {
-                                stringMonth = "May"
-                            } else if month == 6 {
-                                stringMonth = "June"
-                            } else if month == 7{
-                                stringMonth = "July"
-                            } else if month == 8 {
-                                stringMonth = "August"
-                            } else if month == 9 {
-                                stringMonth = "September"
-                            } else if month == 10 {
-                                stringMonth = "October"
-                            } else if month == 11 {
-                                stringMonth = "November"
-                            } else if month == 12 {
-                                stringMonth = "December"
-                            }
-                            
-                            self.date = "\(stringMonth) \(day!), \(year!)"
-                            print(self.date)
+                            self.updateSelfDate()
                             
                     })
                     
@@ -211,10 +114,42 @@ struct FoodPlannerView: View {
         }.navigationViewStyle(StackNavigationViewStyle())
         
     }
-}
-
-struct FoodPlannerView_Previews: PreviewProvider {
-    static var previews: some View {
-        FoodPlannerView()
+    func updateSelfDate() {
+        let calendar = Calendar.current
+        var stringMonth = ""
+        let date = self.refrigeratorViewModel.getDate(from: self.refrigeratorViewModel.trackDate)
+        let components = calendar.dateComponents([.year, .month, .day], from: date!)
+        let year =  components.year
+        let month = components.month
+        let day = components.day
+        if month == 1 {
+            stringMonth = "January"
+        } else if month == 2 {
+            stringMonth = "Febuary"
+        } else if month == 3 {
+            stringMonth = "March"
+        } else if month == 4 {
+            stringMonth = "April"
+        } else if month == 5 {
+            stringMonth = "May"
+        } else if month == 6 {
+            stringMonth = "June"
+        } else if month == 7{
+            stringMonth = "July"
+        } else if month == 8 {
+            stringMonth = "August"
+        } else if month == 9 {
+            stringMonth = "September"
+        } else if month == 10 {
+            stringMonth = "October"
+        } else if month == 11 {
+            stringMonth = "November"
+        } else if month == 12 {
+            stringMonth = "December"
+        }
+        self.date = "\(stringMonth) \(day!), \(year!)"
+        print("trackDate: \(self.refrigeratorViewModel.trackDate)")
+        print(self.date)
+        
     }
 }

@@ -76,7 +76,7 @@ struct IndivisualRefrigeratorView: View {
                         .foregroundColor(.gray)
                     
                     ForEach(self.storageIndex.foodItemArray, id: \.self) { item in
-                       RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince))
+                        RefrigeratorItemCell(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince), storageLocationIcon: item.origion?.symbolName ?? "")
                         .onTapGesture {
                             simpleSuccess()
                             self.foodItemTapped = item

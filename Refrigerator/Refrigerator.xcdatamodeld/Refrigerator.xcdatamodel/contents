@@ -7,18 +7,24 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="staysFreshFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="symbol" optional="YES" attributeType="String"/>
-        <relationship name="foodPlanner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodPlannerMeal" inverseName="foodItems" inverseEntity="FoodPlannerMeal"/>
+        <relationship name="foodPlanner" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodPlannerMeal" inverseName="foodItems" inverseEntity="FoodPlannerMeal"/>
         <relationship name="origion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StorageLocation" inverseName="foodItem" inverseEntity="StorageLocation"/>
     </entity>
     <entity name="FoodPlanner" representedClassName="FoodPlanner" syncable="YES">
-        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="trackDate" optional="YES" attributeType="String"/>
         <relationship name="meals" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodPlannerMeal" inverseName="planner" inverseEntity="FoodPlannerMeal"/>
     </entity>
     <entity name="FoodPlannerMeal" representedClassName="FoodPlannerMeal" syncable="YES">
         <attribute name="mealTitle" optional="YES" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="foodItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodItem" inverseName="foodPlanner" inverseEntity="FoodItem"/>
+        <relationship name="mealItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MealItem" inverseName="foodPlanner" inverseEntity="MealItem"/>
         <relationship name="planner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodPlanner" inverseName="meals" inverseEntity="FoodPlanner"/>
+    </entity>
+    <entity name="MealItem" representedClassName="MealItem" syncable="YES">
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="foodPlanner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FoodPlannerMeal" inverseName="mealItems" inverseEntity="FoodPlannerMeal"/>
     </entity>
     <entity name="ShoppingList" representedClassName="ShoppingList" syncable="YES">
         <attribute name="checked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -37,9 +43,10 @@
     </entity>
     <elements>
         <element name="FoodItem" positionX="-54" positionY="-9" width="128" height="163"/>
+        <element name="FoodPlanner" positionX="-45" positionY="54" width="128" height="73"/>
+        <element name="FoodPlannerMeal" positionX="-36" positionY="63" width="128" height="118"/>
         <element name="ShoppingList" positionX="-45" positionY="45" width="128" height="88"/>
         <element name="StorageLocation" positionX="-36" positionY="9" width="128" height="88"/>
-        <element name="FoodPlanner" positionX="-45" positionY="54" width="128" height="73"/>
-        <element name="FoodPlannerMeal" positionX="-36" positionY="63" width="128" height="103"/>
+        <element name="MealItem" positionX="-45" positionY="63" width="128" height="88"/>
     </elements>
 </model>

@@ -50,7 +50,7 @@ struct TabBarView: View {
                     Image(systemName: "gear").font(.system(size: 25))
             }.accentColor(.orange)
         .tag(2)
-            FoodPlannerView().environmentObject(refrigerator)
+            FoodPlannerView(trackDate: refrigerator.trackDate).environmentObject(refrigerator)
             .tabItem {
                 Image(systemName: "calendar").font(.system(size: 26))
             }

@@ -13,6 +13,8 @@ import UIKit
 import StoreKit
 import UserNotifications
 import CoreHaptics
+
+
 struct HomeView: View {
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
@@ -116,7 +118,7 @@ struct HomeView: View {
                                         
                                     ForEach(0..<10) { index in
                                         
-                                        RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince))
+                                        RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince), storageLocationIcon: self.foodItem[index].origion?.symbolName ?? "")
                                             .onTapGesture {
                                                 print("pressed long press")
                                                 self.foodItemTapped = self.foodItem[index]
@@ -247,7 +249,7 @@ struct HomeView: View {
                                     }
                                     ForEach(self.foodItem, id: \.self) { index in
                                         
-                                        RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince))
+                                        RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince), storageLocationIcon: index.origion?.symbolName ?? "")
                                             .onTapGesture {
                                                 self.foodItemTapped = index
                                         }

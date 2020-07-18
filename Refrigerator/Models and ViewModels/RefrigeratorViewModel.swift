@@ -46,6 +46,9 @@ class RefrigeratorViewModel: ObservableObject {
     @Published var isInWhichView = WhichView.homeView
     @Published var trackDate = "07302020"
     // 1 2 3 0 2 0 2 0
+    init(){
+        self.trackDate = self.getTrackDate(with: Date())
+    }
     func getDate(from trackDate: String) -> Date? {
         let calendar = Calendar.current
         let digits = trackDate.digits

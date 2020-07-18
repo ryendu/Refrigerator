@@ -66,5 +66,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SF-Pro-Display-Regular</string>
+		<string>SF-Compact-Display-Regular</string>
+	</array>
 </dict>
 </plist>
