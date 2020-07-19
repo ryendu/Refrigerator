@@ -21,7 +21,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         RemoteConfigManager.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        let db = Firestore.firestore()
+        
+        var user: [User]? = nil
+        let managedContext =
+            self.persistentContainer.viewContext
+        let fetchRequest =
+          NSFetchRequest<NSManagedObject>(entityName: "User")
+        do {
+          user = try managedContext.fetch(fetchRequest) as? [User]
+        } catch let error as NSError {
+          print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        
         var expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
         if (expirationDate?.daysTo(date: Date()))! <= 1 {
             UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
@@ -29,47 +41,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
         }
-        
-        if UserDefaults.standard.object(forKey: "InAMonth") != nil{
-            if Date() > UserDefaults.standard.object(forKey: "InAMonth") as! Date {
+        if let usrs = user{
+            if usrs.count > 0{
+                let usr = usrs[0]
+                if usr.inAMonth != nil{
+                    if Date() > usr.inAMonth!{
+                        
+                        let now = Calendar.current.dateComponents(in: .current, from: Date())
+                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
+                        let date = Calendar.current.date(from: tomorrow)
+                        let midnight = Calendar.current.startOfDay(for: date!)
+                        usr.inAMonth = midnight
+                        usr.didReviewThisMonth = false
+                        
+                        try? managedContext.save()
+                        
+                    }
+                }
+
+
                 
-                let now = Calendar.current.dateComponents(in: .current, from: Date())
-                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
-                let date = Calendar.current.date(from: tomorrow)
-                let midnight = Calendar.current.startOfDay(for: date!)
-                UserDefaults.standard.set(midnight, forKey: "InAMonth")
-                UserDefaults.standard.set(false, forKey: "didReviewThisMonth")
-                
+                if usr.midnightTomorrow != nil{
+                    if Date() > usr.midnightTomorrow! {
+                        
+                        let now = Calendar.current.dateComponents(in: .current, from: Date())
+                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
+                        let date = Calendar.current.date(from: tomorrow)
+                        let midnight = Calendar.current.startOfDay(for: date!)
+                        usr.midnightTomorrow = midnight
+                        usr.dailyGoal = 0
+                        try? managedContext.save()
+                        
+                }
+                }
+                if usr.streakDueDate != nil{
+                    if Date() > usr.streakDueDate! {
+                        
+                        let now = Calendar.current.dateComponents(in: .current, from: Date())
+                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
+                        let date = Calendar.current.date(from: tomorrow)
+                        let midnight = Calendar.current.startOfDay(for: date!)
+                        usr.streakDueDate = midnight
+                        usr.streak = 0
+                        try? managedContext.save()
+                }
+                }
             }
+            }else {
+            print("user14 is nil app delegate")
         }
-
-
-        
-        if UserDefaults.standard.object(forKey: "midnightTomorrow") != nil{
-            if Date() > UserDefaults.standard.object(forKey: "midnightTomorrow") as! Date {
-                
-                let now = Calendar.current.dateComponents(in: .current, from: Date())
-                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
-                let date = Calendar.current.date(from: tomorrow)
-                let midnight = Calendar.current.startOfDay(for: date!)
-                UserDefaults.standard.set(midnight, forKey: "midnightTomorrow")
-                UserDefaults.standard.set(0, forKey: "dailyGoalStatus")
-                
-        }
-        }
-        if UserDefaults.standard.object(forKey: "streakDueDate") != nil{
-            if Date() > UserDefaults.standard.object(forKey: "streakDueDate") as! Date {
-                
-                let now = Calendar.current.dateComponents(in: .current, from: Date())
-                let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
-                let date = Calendar.current.date(from: tomorrow)
-                let midnight = Calendar.current.startOfDay(for: date!)
-                UserDefaults.standard.set(midnight, forKey: "streakDueDate")
-                UserDefaults.standard.set(0, forKey: "streak")
-                
-        }
-        }
-        
         UserDefaults.standard.set(false, forKey: "RefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "IndivisualRefrigeratorViewLoadedAd")
         UserDefaults.standard.set(false, forKey: "ExamineRecieptViewLoadedAd")
@@ -96,6 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     func saveContext () {
         let context = persistentContainer.viewContext
+        context.automaticallyMergesChangesFromParent = true
         if context.hasChanges {
             do {
                 try context.save()

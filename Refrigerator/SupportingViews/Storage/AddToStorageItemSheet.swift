@@ -48,6 +48,14 @@ struct AddToStorageItemSheet: View {
     @State var selectedIcon = storageLocationIcons.fridgeGreen
        var body: some View {
            VStack {
+            HStack{
+                Spacer()
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Text("Cancel").foregroundColor(.orange)
+                    }).padding()
+            }
                Text("Add A Storage Location")
                    .font(.largeTitle)
                    .layoutPriority(1)

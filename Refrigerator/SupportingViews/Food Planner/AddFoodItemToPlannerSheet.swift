@@ -20,108 +20,119 @@ struct AddFoodItemToPlannerSheet: View {
     @State var customSelection = false
     @State var showErroMessage = false
     var body: some View {
-        VStack{
-            Text("Add A Food Item To Your Planner")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+        ScrollView{
+            VStack{
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Text("Cancel").foregroundColor(.orange)
+                        }).padding()
+                }
+                Text("Add A Food Item To Your Planner")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding()
+                Text("Select a food Item to add to your planner Or add a custom meal")
+                .font(.body)
                 .padding()
-            Text("Select a food Item to add to your planner Or add a custom meal")
-            .font(.caption)
-            .padding()
-            
-            //MARK: Custom Meal
-            Group{
-                Text("Custom Meal")
+                
+                //MARK: Custom Meal
+                Group{
+                    Text("Custom Meal")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .padding()
+                    HStack{
+                        
+                        TextField("emoji", text: self.$customIcon, onEditingChanged: {_ in
+                            self.customSelection = true
+                            self.selection = nil
+                        }, onCommit: {
+                            self.customSelection = true
+                            self.selection = nil
+                        })
+                                .font(.custom("SFProDisplay", size: 16))
+                                .padding(.leading, 8)
+                        TextField("meal name", text: self.$customTitle, onEditingChanged: {_ in
+                            self.customSelection = true
+                            self.selection = nil
+                        }, onCommit: {
+                            self.customSelection = true
+                            self.selection = nil
+                        })
+                                .font(.custom("SFProDisplay", size: 16))
+                                .multilineTextAlignment(.leading)
+                                    
+                        Spacer()
+                                
+                        
+                        
+                    }
+                    .padding()
+                    .background(Rectangle().cornerRadius(12)
+                    .foregroundColor(Color(self.customSelection ? "orange" : "whiteAndGray"))
+                    .shadow(color: Color("shadows"), radius: 3)
+                    .onTapGesture {
+                        self.customSelection.toggle()
+                        if self.customSelection == true{
+                            self.selection = nil
+                        }
+                        }
+                    )
+                    .padding(.horizontal)
+                }
+                
+                Text("Existing Food Items")
                 .font(.headline)
                 .fontWeight(.semibold)
                 .padding()
-                HStack{
-                    
-                    TextField("emoji", text: self.$customIcon, onEditingChanged: {_ in
-                        self.customSelection = true
-                        self.selection = nil
-                    }, onCommit: {
-                        self.customSelection = true
-                        self.selection = nil
-                    })
-                            .font(.custom("SFProDisplay", size: 16))
-                            .padding(.leading, 8)
-                    TextField("meal name", text: self.$customTitle, onEditingChanged: {_ in
-                        self.customSelection = true
-                        self.selection = nil
-                    }, onCommit: {
-                        self.customSelection = true
-                        self.selection = nil
-                    })
-                            .font(.custom("SFProDisplay", size: 16))
-                            .multilineTextAlignment(.leading)
-                                
-                    Spacer()
-                            
-                    
-                    
+                ForEach(self.storageLocations, id: \.self){storageLocation in
+                    StorageLocationDropDownView(customSelection: self.$customSelection, selection: self.$selection, item: storageLocation).environment(\.managedObjectContext, self.managedObjectContext).padding()
                 }
-                .padding()
-                .background(Rectangle().cornerRadius(12)
-                .foregroundColor(Color(self.customSelection ? "orange" : "whiteAndGray"))
-                .shadow(color: Color("shadows"), radius: 3)
-                .onTapGesture {
-                    self.customSelection.toggle()
-                    if self.customSelection == true{
-                        self.selection = nil
-                    }
-                    }
-                )
-                .padding(.horizontal)
-            }
-            
-            Text("Existing Food Items")
-            .font(.headline)
-            .fontWeight(.semibold)
-            .padding()
-            ForEach(self.storageLocations, id: \.self){storageLocation in
-                StorageLocationDropDownView(customSelection: self.$customSelection, selection: self.$selection, item: storageLocation).environment(\.managedObjectContext, self.managedObjectContext).padding()
-            }
-            
-            if self.showErroMessage{
-                Text("Please select a food item or select a custom food item")
-                    .foregroundColor(.red)
-                    .padding()
-            }
-            Button(action: {
-                if self.selection != nil && self.customSelection == false{
-                    self.showErroMessage = false
-                    self.meal.addToFoodItems(self.selection!)
-                    do{
-                        try self.managedObjectContext.save()
-                        simpleSuccess()
-                        self.presentationMode.wrappedValue.dismiss()
-                    }catch{
-                        print(error)
-                    }
-                }else if self.customSelection == true{
-                    self.showErroMessage = false
-                    let newMealItem = MealItem(context: self.managedObjectContext)
-                    newMealItem.name = self.customTitle
-                    newMealItem.icon = self.customIcon
-                    self.meal.addToMealItems(newMealItem)
-                    do{
-                        try self.managedObjectContext.save()
-                        simpleSuccess()
-                        self.presentationMode.wrappedValue.dismiss()
-                    }catch{
-                        print(error)
-                    }
-                    
-                }else{
-                    self.showErroMessage = true
+                
+                if self.showErroMessage{
+                    Text("Please select a food item or select a custom food item")
+                        .foregroundColor(.red)
+                        .padding()
                 }
+                Button(action: {
+                    if self.selection != nil && self.customSelection == false{
+                        self.showErroMessage = false
+                        self.meal.addToFoodItems(self.selection!)
+                        do{
+                            try self.managedObjectContext.save()
+                            simpleSuccess()
+                            self.presentationMode.wrappedValue.dismiss()
+                        }catch{
+                            print(error)
+                        }
+                    }else if self.customSelection == true{
+                        self.showErroMessage = false
+                        let newMealItem = MealItem(context: self.managedObjectContext)
+                        newMealItem.name = self.customTitle
+                        newMealItem.icon = self.customIcon
+                        self.meal.addToMealItems(newMealItem)
+                        do{
+                            try self.managedObjectContext.save()
+                            simpleSuccess()
+                            self.presentationMode.wrappedValue.dismiss()
+                        }catch{
+                            print(error)
+                        }
+                        
+                    }else{
+                        self.showErroMessage = true
+                    }
+                }
+                    , label: {
+                        Image("addOrange").renderingMode(.original)
+                }
+                    
+    )
+                Spacer()
             }
-                , label: {
-                    Image("addOrange").renderingMode(.original)
-            }
-)
-            Spacer()
         }
     }
 }

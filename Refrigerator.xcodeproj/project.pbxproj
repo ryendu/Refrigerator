@@ -13,14 +13,19 @@
 		940F7F3D24C21DFE006076AA /* MealCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F3C24C21DFE006076AA /* MealCell.swift */; };
 		940F7F3F24C23204006076AA /* FoodPlannerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F3E24C23204006076AA /* FoodPlannerCellView.swift */; };
 		940F7F4524C23925006076AA /* AddFoodItemToPlannerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F4424C23925006076AA /* AddFoodItemToPlannerSheet.swift */; };
-		940F7F4724C24432006076AA /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 940F7F4624C24432006076AA /* SF-Pro-Display-Regular.otf */; };
-		940F7F4924C2445B006076AA /* SF-Compact-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 940F7F4824C2445B006076AA /* SF-Compact-Display-Regular.otf */; };
 		940F7F4B24C25FE9006076AA /* StorageCellFoodPlannerSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F4A24C25FE9006076AA /* StorageCellFoodPlannerSelection.swift */; };
 		940F7F4D24C279E7006076AA /* FoodItemCellFoodPlannerSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F4C24C279E7006076AA /* FoodItemCellFoodPlannerSelection.swift */; };
 		940F7F5024C2959C006076AA /* FoodPlannerMeal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F4F24C2959B006076AA /* FoodPlannerMeal+CoreDataClass.swift */; };
 		940F7F5124C2959C006076AA /* FoodPlannerMeal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F4E24C2959B006076AA /* FoodPlannerMeal+CoreDataProperties.swift */; };
 		940F7F5424C29A22006076AA /* MealItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F5324C29A22006076AA /* MealItem+CoreDataClass.swift */; };
 		940F7F5524C29A22006076AA /* MealItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F5224C29A21006076AA /* MealItem+CoreDataProperties.swift */; };
+		94311DF424C387AB00F8671B /* EditCustomMealSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94311DF324C387AB00F8671B /* EditCustomMealSheet.swift */; };
+		94311DF724C3A85D00F8671B /* SF-Compact-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 940F7F4824C2445B006076AA /* SF-Compact-Display-Regular.otf */; };
+		94311DF824C3A85D00F8671B /* SFProDisplayRegular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 940F7F4624C24432006076AA /* SFProDisplayRegular.otf */; };
+		94311DFB24C3A9C500F8671B /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94311DF924C3A95A00F8671B /* SF-Pro-Display-Bold.otf */; };
+		94311DFC24C3A9C900F8671B /* SF-Pro-Display-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94311DFA24C3A95C00F8671B /* SF-Pro-Display-Thin.otf */; };
+		94311DFE24C3AB0D00F8671B /* SF-Compact-Text-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 94311DFD24C3AB0600F8671B /* SF-Compact-Text-Thin.otf */; };
+		94311E0024C3BF3600F8671B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94311DFF24C3BF3600F8671B /* CloudKit.framework */; };
 		94408209249AFB0C006490AD /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94408208249AFB0C006490AD /* FeedbackView.swift */; };
 		9444E64E24673137006B6215 /* StorageLocation+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */; };
 		9444E64F24673137006B6215 /* StorageLocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9444E64B24673137006B6215 /* StorageLocation+CoreDataProperties.swift */; };
@@ -99,7 +104,7 @@
 		940F7F3C24C21DFE006076AA /* MealCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCell.swift; sourceTree = "<group>"; };
 		940F7F3E24C23204006076AA /* FoodPlannerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPlannerCellView.swift; sourceTree = "<group>"; };
 		940F7F4424C23925006076AA /* AddFoodItemToPlannerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodItemToPlannerSheet.swift; sourceTree = "<group>"; };
-		940F7F4624C24432006076AA /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
+		940F7F4624C24432006076AA /* SFProDisplayRegular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SFProDisplayRegular.otf; sourceTree = "<group>"; };
 		940F7F4824C2445B006076AA /* SF-Compact-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Compact-Display-Regular.otf"; sourceTree = "<group>"; };
 		940F7F4A24C25FE9006076AA /* StorageCellFoodPlannerSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCellFoodPlannerSelection.swift; sourceTree = "<group>"; };
 		940F7F4C24C279E7006076AA /* FoodItemCellFoodPlannerSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodItemCellFoodPlannerSelection.swift; sourceTree = "<group>"; };
@@ -107,6 +112,11 @@
 		940F7F4F24C2959B006076AA /* FoodPlannerMeal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FoodPlannerMeal+CoreDataClass.swift"; path = "/Users/ryan/Desktop/coding_projects/Swift/Refrigerator/Refrigerator/Refrigerator/CoreData/FoodPlannerMeal+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		940F7F5224C29A21006076AA /* MealItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MealItem+CoreDataProperties.swift"; path = "/Users/ryan/Desktop/coding_projects/Swift/Refrigerator/Refrigerator/Refrigerator/CoreData/MealItem+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		940F7F5324C29A22006076AA /* MealItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MealItem+CoreDataClass.swift"; path = "/Users/ryan/Desktop/coding_projects/Swift/Refrigerator/Refrigerator/Refrigerator/CoreData/MealItem+CoreDataClass.swift"; sourceTree = "<absolute>"; };
+		94311DF324C387AB00F8671B /* EditCustomMealSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomMealSheet.swift; sourceTree = "<group>"; };
+		94311DF924C3A95A00F8671B /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
+		94311DFA24C3A95C00F8671B /* SF-Pro-Display-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Thin.otf"; sourceTree = "<group>"; };
+		94311DFD24C3AB0600F8671B /* SF-Compact-Text-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Compact-Text-Thin.otf"; sourceTree = "<group>"; };
+		94311DFF24C3BF3600F8671B /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		943FA83B249C595100BE3A9F /* Refrigerator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Refrigerator.entitlements; sourceTree = "<group>"; };
 		94408208249AFB0C006490AD /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageLocation+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -171,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9482EE34247B077000704674 /* SwiftUICharts in Frameworks */,
+				94311E0024C3BF3600F8671B /* CloudKit.framework in Frameworks */,
 				6BC3E3E935E6A2F9201172EA /* Pods_Refrigerator.framework in Frameworks */,
 				94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */,
 			);
@@ -198,6 +209,7 @@
 		573CE28C0F4EBBEC0CD09FEC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				94311DFF24C3BF3600F8671B /* CloudKit.framework */,
 				94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */,
 				80C4032977C3A5BFB255F727 /* Pods_Refrigerator.framework */,
 				1677FF8B1FF5DE65F960D0BF /* Pods_Refrigerator_RefrigeratorUITests.framework */,
@@ -211,6 +223,7 @@
 			children = (
 				940F7F3C24C21DFE006076AA /* MealCell.swift */,
 				940F7F4424C23925006076AA /* AddFoodItemToPlannerSheet.swift */,
+				94311DF324C387AB00F8671B /* EditCustomMealSheet.swift */,
 				940F7F3E24C23204006076AA /* FoodPlannerCellView.swift */,
 				940F7F4A24C25FE9006076AA /* StorageCellFoodPlannerSelection.swift */,
 				940F7F4C24C279E7006076AA /* FoodItemCellFoodPlannerSelection.swift */,
@@ -227,6 +240,7 @@
 				940F7F4E24C2959B006076AA /* FoodPlannerMeal+CoreDataProperties.swift */,
 				9473C71324C14165008BB219 /* FoodPlanner+CoreDataClass.swift */,
 				9473C71124C14165008BB219 /* FoodPlanner+CoreDataProperties.swift */,
+				948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */,
 				9482EE2C2479A5B400704674 /* ShoppingList+CoreDataClass.swift */,
 				9482EE2D2479A5B400704674 /* ShoppingList+CoreDataProperties.swift */,
 				9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */,
@@ -263,10 +277,13 @@
 			isa = PBXGroup;
 			children = (
 				943FA83B249C595100BE3A9F /* Refrigerator.entitlements */,
+				94311DF924C3A95A00F8671B /* SF-Pro-Display-Bold.otf */,
+				94311DFA24C3A95C00F8671B /* SF-Pro-Display-Thin.otf */,
+				94311DFD24C3AB0600F8671B /* SF-Compact-Text-Thin.otf */,
 				940F7F4824C2445B006076AA /* SF-Compact-Display-Regular.otf */,
-				940F7F4624C24432006076AA /* SF-Pro-Display-Regular.otf */,
-				9444E65224673145006B6215 /* CoreData */,
+				940F7F4624C24432006076AA /* SFProDisplayRegular.otf */,
 				946A6D21245E0A15006845CC /* System Delegates */,
+				9444E65224673145006B6215 /* CoreData */,
 				946A6D22245E0A1C006845CC /* Views */,
 				946A6D23245E0A22006845CC /* SupportingViews */,
 				946A6D24245E0A2E006845CC /* Models and ViewModels */,
@@ -320,7 +337,6 @@
 			isa = PBXGroup;
 			children = (
 				946A6D0F245E09DF006845CC /* HomeView.swift */,
-				948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */,
 				946A6D0E245E09DF006845CC /* SettingsView.swift */,
 				946A6D0D245E09DF006845CC /* TabBarView.swift */,
 				94408208249AFB0C006490AD /* FeedbackView.swift */,
@@ -529,11 +545,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94311DFE24C3AB0D00F8671B /* SF-Compact-Text-Thin.otf in Resources */,
+				94311DFC24C3A9C900F8671B /* SF-Pro-Display-Thin.otf in Resources */,
+				94311DFB24C3A9C500F8671B /* SF-Pro-Display-Bold.otf in Resources */,
+				94311DF724C3A85D00F8671B /* SF-Compact-Display-Regular.otf in Resources */,
 				94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */,
+				94311DF824C3A85D00F8671B /* SFProDisplayRegular.otf in Resources */,
 				94598D1D2458E23000456333 /* Preview Assets.xcassets in Resources */,
-				940F7F4924C2445B006076AA /* SF-Compact-Display-Regular.otf in Resources */,
 				949C1EC8247EAE190064D326 /* GoogleService-Info.plist in Resources */,
-				940F7F4724C24432006076AA /* SF-Pro-Display-Regular.otf in Resources */,
 				94598D1A2458E23000456333 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -709,6 +728,7 @@
 				946C569B245A2104007C2986 /* LaunchView5.swift in Sources */,
 				946A6D1C245E09E0006845CC /* ShoppingListCell.swift in Sources */,
 				9473C70F24C12FC1008BB219 /* FoodPlannerView.swift in Sources */,
+				94311DF424C387AB00F8671B /* EditCustomMealSheet.swift in Sources */,
 				946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */,
 				94EE905324BFAD5B000C2FC2 /* DailyGoalCell.swift in Sources */,
 				94598D162458E22700456333 /* Refrigerator.xcdatamodeld in Sources */,

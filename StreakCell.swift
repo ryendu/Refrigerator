@@ -10,8 +10,10 @@ import SwiftUI
 
 struct StreakCell: View {
     @State var geo: GeometryProxy
-    @State var streak = UserDefaults.standard.integer(forKey: "streak")
+    @State var streak = 0
     @State var rotation = 0.0
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @Environment(\.managedObjectContext) var managedObjectContext
     var body: some View {
         ZStack{
             Rectangle()
@@ -46,11 +48,15 @@ struct StreakCell: View {
                     .multilineTextAlignment(.center)
                     .font(.custom("SFProDisplayThin", size: 13))
                     .padding()
-            }.onReceive(NotificationCenter.default.publisher(for: .refreshStreak)) {_ in
+            }
+            .onAppear{
+                self.streak = Int(self.user[0].streak)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .refreshStreak)) {_ in
 
                 DispatchQueue.main.asyncAfter(deadline: .now()) {
                     withAnimation(.interpolatingSpring(stiffness: 4, damping: 1)){
-                        self.streak = UserDefaults.standard.integer(forKey: "streak")
+                        self.streak = Int(self.user[0].streak)
                     }
                }
             }

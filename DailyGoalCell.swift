@@ -12,7 +12,9 @@ struct DailyGoalCell: View {
     @State var ringWidth: CGFloat = 200.0
     @State var geo: GeometryProxy
     @State var rotation = 0.0
-    @State var goalStatus = UserDefaults.standard.integer(forKey: "dailyGoalStatus")
+    @State var goalStatus = 0
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     var body: some View {
         ZStack{
             Rectangle()
@@ -48,6 +50,9 @@ struct DailyGoalCell: View {
                     .padding()
                     
             }
+            .onAppear{
+                self.goalStatus = Int(self.user[0].dailyGoal)
+            }
         .onReceive(NotificationCenter.default.publisher(for: .refreshDailyGoal)) {_ in
 
             DispatchQueue.main.asyncAfter(deadline: .now()) {
@@ -61,7 +66,7 @@ struct DailyGoalCell: View {
     }
     func refresh() {
         withAnimation(.interpolatingSpring(stiffness: 4, damping: 1)){
-            self.goalStatus = UserDefaults.standard.integer(forKey: "dailyGoalStatus")
+            self.goalStatus = Int(self.user[0].dailyGoal)
         }
     }
 }

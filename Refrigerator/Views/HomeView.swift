@@ -13,6 +13,7 @@ import UIKit
 import StoreKit
 import UserNotifications
 import CoreHaptics
+import CoreData
 
 
 struct HomeView: View {
@@ -61,6 +62,7 @@ struct HomeView: View {
     @State var displayAmount = 0
     @State var moveToStorageLocation: ShoppingList? = nil
     @State var funFactText = ""
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @State var showMoreInfoOnShoppingList = false
     @State var showMoreInfoOnFoodsToEatSoon = false
     var body: some View {
@@ -253,7 +255,6 @@ struct HomeView: View {
                                             .onTapGesture {
                                                 self.foodItemTapped = index
                                         }
-                                        .padding()
                                             
                                         
                                         
@@ -451,17 +452,31 @@ struct HomeView: View {
                     })
                     
                     
-                    
-                /*}.padding()*/
-                        
+                                            
                 
-            }.navigationBarTitle("Hello, \(UserDefaults.standard.string(forKey: "name") ?? "name not set (go to settings)")!")
+            }.navigationBarTitle("Hello, \(self.user[0].name ?? "name not set (go to settings)")!")
                 .sheet(item: self.$editFoodItem, content: { item in
                     EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
                 })
                 
                 .onAppear(perform: {
-                    
+                    if self.user.count == 0 {
+                        let newUser = User(context: self.managedObjectContext)
+                        newUser.name = ""
+                        newUser.dailyGoal = Int16(0)
+                        newUser.streak = Int16(0)
+                        try? self.managedObjectContext.save()
+                    }else if self.user.count == 1{
+                        
+                    }else {
+                        Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
+                        for indx in 0...self.user.count - 1{
+                            if indx != 0 {
+                                self.managedObjectContext.delete(self.user[indx])
+                                try? self.managedObjectContext.save()
+                            }
+                        }
+                    }
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
                         if success {
                         } else if let error = error {
@@ -480,7 +495,7 @@ struct HomeView: View {
                         let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
                         self.funFactText = arrayOfFoodFacts.randomElement()!
                     }
-                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && UserDefaults.standard.bool(forKey: "didReviewThisMonth") == false{
+                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user[0].didReviewThisMonth == false{
                         rateApp()
                         
                         Analytics.logEvent("requestedReview", parameters: nil)
@@ -598,17 +613,36 @@ func simpleSuccess() {
 }
 
 func addToDailyGoal(){
+    guard let appDelegate =
+      UIApplication.shared.delegate as? AppDelegate else {
+      return
+    }
+    var user: [User]? = nil
+    let managedContext =
+        appDelegate.persistentContainer.viewContext
+    let fetchRequest =
+      NSFetchRequest<NSManagedObject>(entityName: "User")
+    do {
+      user = try managedContext.fetch(fetchRequest) as? [User]
+    } catch let error as NSError {
+      print("Could not fetch. \(error), \(error.userInfo)")
+    }
     
-    let previousDG = UserDefaults.standard.integer(forKey: "dailyGoalStatus")
-    UserDefaults.standard.set(previousDG + 1, forKey: "dailyGoalStatus")
-    if UserDefaults.standard.integer(forKey: "dailyGoalStatus") == 3{
+    let previousDG = user![0].dailyGoal
+    user![0].dailyGoal = previousDG + 1
+    if user![0].dailyGoal == 3{
         let now = Calendar.current.dateComponents(in: .current, from: Date())
         let tomorrow1 = DateComponents(year: now.year, month: now.month, day: now.day! + 1, hour: now.hour! + 6)
         let date1 = Calendar.current.date(from: tomorrow1)
         let midnight = Calendar.current.startOfDay(for: date1!)
-        UserDefaults.standard.set(midnight, forKey: "streakDueDate")
-        let prevStreak = UserDefaults.standard.integer(forKey: "streak")
-        UserDefaults.standard.set(prevStreak + 1, forKey: "streak")
+        user![0].streakDueDate = midnight
+        let prevStreak = user![0].streak
+        user![0].streak = prevStreak + 1
     }
-    
+    do{
+        try managedContext.save()
+    }catch{
+        print(error)
+        Analytics.logEvent("errorSavingUserAddToDailyGoal", parameters: ["error": error.localizedDescription])
+    }
 }

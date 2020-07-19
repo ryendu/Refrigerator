@@ -34,8 +34,9 @@ struct SettingsView: View{
       }
        return returnValue
     }
-
-    @State var name = UserDefaults.standard.string(forKey: "name") ?? ""
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @State var name = ""
     var body: some View{
         NavigationView{
             GeometryReader{ geo in
@@ -47,7 +48,8 @@ struct SettingsView: View{
                             TextField("name", text: self.$name)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             Button(action: {
-                                UserDefaults.standard.set(self.name, forKey: "name")
+                                self.user[0].name = self.name
+                                try? self.managedObjectContext.save()
                             }, label: {
                                 Text("Save")
                                 })
@@ -88,7 +90,9 @@ struct SettingsView: View{
             
         }
         }.navigationViewStyle(StackNavigationViewStyle())
-        
+            .onAppear{
+                self.name = self.user[0].name ?? ""
+        }
     }
 }
 struct ProgressView: View {

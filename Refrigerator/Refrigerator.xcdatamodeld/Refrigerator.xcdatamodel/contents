@@ -41,12 +41,22 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
+        <attribute name="dailyGoal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="didReviewThisMonth" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="inAMonth" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="midnightTomorrow" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="streak" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="streakDueDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
     <elements>
         <element name="FoodItem" positionX="-54" positionY="-9" width="128" height="163"/>
         <element name="FoodPlanner" positionX="-45" positionY="54" width="128" height="73"/>
         <element name="FoodPlannerMeal" positionX="-36" positionY="63" width="128" height="118"/>
+        <element name="MealItem" positionX="-45" positionY="63" width="128" height="88"/>
         <element name="ShoppingList" positionX="-45" positionY="45" width="128" height="88"/>
         <element name="StorageLocation" positionX="-36" positionY="9" width="128" height="88"/>
-        <element name="MealItem" positionX="-45" positionY="63" width="128" height="88"/>
+        <element name="User" positionX="-45" positionY="72" width="128" height="28"/>
     </elements>
 </model>

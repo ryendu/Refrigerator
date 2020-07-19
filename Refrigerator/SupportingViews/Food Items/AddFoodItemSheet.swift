@@ -58,6 +58,14 @@ struct AddFoodItemSheet: View {
        
        var body: some View {
            VStack {
+            HStack{
+                Spacer()
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Text("Cancel").foregroundColor(.orange)
+                    }).padding()
+            }
                Text("Add a food item")
                    .font(.largeTitle)
                    .layoutPriority(1)
@@ -132,6 +140,7 @@ struct AddFoodItemSheet: View {
                    }
 
                 }).padding()
+            Group{
             Spacer()
             HStack{
                 Text("Lasts for ")
@@ -188,7 +197,8 @@ struct AddFoodItemSheet: View {
             .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
             }else {
 
-            }
+            }}
+            
            }
            
        }

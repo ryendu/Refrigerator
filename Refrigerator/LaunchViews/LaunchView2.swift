@@ -7,9 +7,13 @@
 //
 
 import SwiftUI
+import CoreData
+import Firebase
 
 struct LaunchView2: View {
-    @State private var name = UserDefaults.standard.string(forKey: "name") ?? ""
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @State private var name = ""
     @State private var didFinishTyping = false
     @State var showNextView = false
     var body: some View {
@@ -30,7 +34,12 @@ struct LaunchView2: View {
                 Spacer()
                 
                 Button(action: {
-                    UserDefaults.standard.set(self.name, forKey: "name")
+                    self.user[0].name = self.name
+                    do{
+                        try self.managedObjectContext.save()
+                    }catch{
+                        print(error)
+                    }
                     self.showNextView.toggle()
                 }, label: {Image("Next button")
                     .renderingMode(.original)}).padding(.bottom, CGFloat(60))
@@ -39,6 +48,28 @@ struct LaunchView2: View {
             }
             if self.showNextView{
                 LaunchView3()
+            }
+        }.onAppear{
+            if self.user.count == 0 {
+                let newUser = User(context: self.managedObjectContext)
+                newUser.name = self.name
+                newUser.dailyGoal = Int16(0)
+                newUser.streak = Int16(0)
+                do{
+                    try self.managedObjectContext.save()
+                }catch{
+                    print(error)
+                }
+            }else if self.user.count == 1{
+                self.name = self.user[0].name ?? ""
+            }else {
+                Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
+                for indx in 0...self.user.count - 1{
+                    if indx != 0 {
+                        self.managedObjectContext.delete(self.user[indx])
+                        try? self.managedObjectContext.save()
+                    }
+                }
             }
         }
     }
