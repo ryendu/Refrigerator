@@ -35,7 +35,7 @@ struct TabBarView: View {
             
         TabView(selection: $selection){
             
-            HomeView()
+            HomeView(showingView: self.$showingView, scan: self.$scan, image: self.$image)
                 .tabItem {
                     selection == 0 ? Image("Home icon filled") : Image("Home icon")
                 }

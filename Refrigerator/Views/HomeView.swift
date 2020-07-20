@@ -14,6 +14,8 @@ import StoreKit
 import UserNotifications
 import CoreHaptics
 import CoreData
+import VisionKit
+import Vision
 
 struct ShoppingListItem: Hashable, Identifiable{
     var name: String
@@ -55,60 +57,34 @@ struct HomeView: View {
     @FetchRequest(entity: StorageLocation.entity(),sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @FetchRequest(entity: ShoppingList.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \ShoppingList.name, ascending: true)]) var shoppingList: FetchedResults<ShoppingList>
     @Environment(\.managedObjectContext) var managedObjectContext
-    
+    @Binding var showingView: String?
+    @Binding var scan: VNDocumentCameraScan?
+    @Binding var image: [CGImage]?
     @State var showAddToShoppingListAlert: ShoppingListItem? = nil
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @State var shadowAmount = 0
-    @State var addToShoppingList = false
     @State var showEatActionSheet = false
     @State var foodItemTapped: FoodItem? = nil
     @State var shoppingListItemTapped: ShoppingList? = nil
     @State var editFoodItem: FoodItem? = nil
     @State var displayAmount = 0
     @State var moveToStorageLocation: ShoppingList? = nil
-    @State var funFactText = ""
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @State var showMoreInfoOnShoppingList = false
     @State var showMoreInfoOnFoodsToEatSoon = false
-    @State var showAddFoodItemSheet = false
     var body: some View {
         NavigationView {
             GeometryReader { geo in
-                    ScrollView(.vertical, showsIndicators: false, content: {
+                    ScrollView(.vertical, showsIndicators: false){
                         VStack {
-                            Divider()
-                                .foregroundColor(.black)
-                            
-                                if self.funFactText != "" {
-                                    Text("Here's a fun fact, \(self.funFactText)")
-                                        .font(.custom("SFProDisplayThin", size: 18))
-                                        .fontWeight(.thin)
-                                        .foregroundColor(Color(hex: "555555"))
-                                        .padding(.horizontal)
-                                    
-                                }
-                            //MARK: DAILY HABIT AND STREAK
-                            HStack{
-                                DailyGoalCell(geo: geo).padding()
-                                StreakCell(geo: geo).padding(.vertical).padding(.trailing)
+                            VStack{
+                             HomeViewDashboardFeatures(geo: geo, showingView: self.$showingView, scan: self.$scan, image: self.$image)
                             }
-                            
-                               
-                            
-                                
-                            Button(action: {
-                                self.showAddFoodItemSheet.toggle()
-                            }, label: {
-                                Image("AddFoodItemButton")
-                                    .renderingMode(.original)
-                                .padding()
-                                
-                            })
-                            
                             
                             //MARK: FOODS TO EAT SOON
                             Group{
                                 if self.foodItem.count >= 10{
+                                    Group{
                                     VStack(alignment: .leading){
                                         HStack{
                                             Text("Foods To Eat Soon")
@@ -132,7 +108,7 @@ struct HomeView: View {
                                         
                                     ForEach(0..<10) { index in
                                         
-                                        RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince), storageLocationIcon: self.foodItem[index].origion?.symbolName ?? "")
+                                        RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince), storageLocationIcon: self.foodItem[index].origion?.symbolName ?? "", item: self.foodItem[index])
                                             .onTapGesture {
                                                 print("pressed long press")
                                                 self.foodItemTapped = self.foodItem[index]
@@ -257,7 +233,14 @@ struct HomeView: View {
                                     })
                                     
                                     NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
+                                    .sheet(item: self.$moveToStorageLocation, content: { _ in
+                                        MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext)
+                                    })
+                                    }.sheet(item: self.$editFoodItem, content: { item in
+                                        EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+                                    })
                                 }else if self.foodItem.count <= 9 && self.foodItem.count > 0 {
+                                    Group{
                                     VStack(alignment: .leading){
                                         HStack{
                                             Text("Foods To Eat Soon")
@@ -280,7 +263,7 @@ struct HomeView: View {
                                     }
                                     ForEach(self.foodItem, id: \.self) { index in
                                         
-                                        RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince), storageLocationIcon: index.origion?.symbolName ?? "")
+                                        RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince), storageLocationIcon: index.origion?.symbolName ?? "", item: index)
                                             .onTapGesture {
                                                 self.foodItemTapped = index
                                         }
@@ -404,11 +387,16 @@ struct HomeView: View {
                                     
                                     
                                     NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
+                                    
+                                    }.sheet(item: self.$editFoodItem, content: { item in
+                                        EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+                                    })
                                 }
                                 else {
                                     Text(RemoteConfigManager.stringValue(forkey: RCKeys.noFoodItemsText.rawValue))
                                         .padding()
                                 }
+                                
                             }
                             
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
@@ -433,6 +421,7 @@ struct HomeView: View {
                                             Image(systemName: self.showMoreInfoOnShoppingList ? "questionmark.circle.fill":"questionmark.circle")
                                         })
                                         Spacer()
+                                        Group{
                                         Button(action: {
                                             
                                             self.refrigeratorViewModel.isInShoppingListItemAddingView.toggle()
@@ -440,7 +429,8 @@ struct HomeView: View {
                                             Image("plus")
                                             }).padding()
                                     }.padding(.horizontal)
-                                
+                                        .sheet(isPresented: self.$refrigeratorViewModel.isInShoppingListItemAddingView, content: {AddToShoppingListSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext) })
+                                    }
                                 }
                                 if self.showMoreInfoOnShoppingList{
                                 Text(RemoteConfigManager.stringValue(forkey: RCKeys.shoppingListDescriptionHomeView.rawValue))
@@ -449,7 +439,7 @@ struct HomeView: View {
                                     .foregroundColor(Color(hex: "878787"))
                                     .animation(.spring())
                                 }
-                                
+                                Group{
                                 ForEach(self.shoppingList, id: \.self) { item in
                                     
                                     
@@ -458,6 +448,7 @@ struct HomeView: View {
                                             simpleSuccess()
                                             self.shoppingListItemTapped = item
                                     }
+                                    
                                         
                                     
                                 }.actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
@@ -484,6 +475,10 @@ struct HomeView: View {
                                         ,.default(Text("Cancel"))
                                     ])
                                 })
+                                .sheet(item: self.$moveToStorageLocation, content: { _ in
+                                    MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext)
+                                })
+                                    }
                             }
                             
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
@@ -495,26 +490,25 @@ struct HomeView: View {
                         
                         
                         
-                        .sheet(item: self.$moveToStorageLocation, content: { _ in
-                                MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext)
-                            })
-                    })
+                        
+                    }
                     
                     
                                             
                 
-            }.navigationBarTitle("Hello, \(self.user[0].name ?? "name not set (go to settings)")!")
-                .sheet(item: self.$editFoodItem, content: { item in
-                    EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
-                })
-                .sheet(isPresented: self.$showAddFoodItemSheet, content: {
-                    AddAnyFoodItemsSheet()
-                })
+            }
+            
+            .navigationBarTitle("Hello, \(self.user.first?.name ?? "name not set (go to settings)")!")
+                
+                
                 
                 .onAppear(perform: {
                     if self.user.count == 0 {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
+                        if UserDefaults.standard.string(forKey: "name") != "" {
+                            newUser.name = UserDefaults.standard.string(forKey: "name")
+                        }
                         newUser.dailyGoal = Int16(0)
                         newUser.streak = Int16(0)
                         try? self.managedObjectContext.save()
@@ -537,16 +531,7 @@ struct HomeView: View {
                         }
                     }
                     
-                    self.ref = Firestore.firestore().document("Others/funfoodFacts")
-                    self.ref.getDocument{(documentSnapshot, error) in
-                        guard let docSnapshot = documentSnapshot, docSnapshot.exists else { self.funFactText = "did you know that brocoli contains more protein than steak?"
-                            print("docSnapshot does not exist")
-                            return}
-                        
-                        let myData = docSnapshot.data()
-                        let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
-                        self.funFactText = arrayOfFoodFacts.randomElement()!
-                    }
+                    
                     if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user[0].didReviewThisMonth == false{
                         rateApp()
                         
@@ -557,17 +542,90 @@ struct HomeView: View {
             
         .navigationBarBackButtonHidden(true)
         .navigationViewStyle(StackNavigationViewStyle())
-        .sheet(isPresented: $refrigeratorViewModel.isInShoppingListItemAddingView, content: {AddToShoppingListSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext) })
-    }
-}
-
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView().environmentObject(refrigerator)
+        
     }
 }
 
 
+
+struct HomeViewDashboardFeatures: View {
+    @State var geo: GeometryProxy
+    @State var funFactText = ""
+    @Binding var showingView: String?
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @Binding var scan: VNDocumentCameraScan?
+    @Binding var image: [CGImage]?
+    @State var showAddFoodItemSheet = false
+    @State var showAddStorageLocationSheet = false
+    @FetchRequest(entity: StorageLocation.entity(),sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
+
+    var body: some View{
+        VStack{
+            Divider()
+                .foregroundColor(.black)
+            
+                if self.funFactText != "" {
+                    Text("Here's a fun fact, \(self.funFactText)")
+                        .font(.custom("SFProDisplayThin", size: 18))
+                        .fontWeight(.thin)
+                        .foregroundColor(Color(hex: "555555"))
+                        .padding(.horizontal)
+                    
+                }
+            //MARK: DAILY HABIT AND STREAK
+            HStack{
+                DailyGoalCell(geo: geo).padding()
+                StreakCell(geo: geo).padding(.vertical).padding(.trailing)
+            }.onAppear{
+                let ref = Firestore.firestore().document("Others/funfoodFacts")
+                ref.getDocument{(documentSnapshot, error) in
+                    guard let docSnapshot = documentSnapshot, docSnapshot.exists else { self.funFactText = "did you know that brocoli contains more protein than steak?"
+                        print("docSnapshot does not exist")
+                        return}
+                    
+                    let myData = docSnapshot.data()
+                    let arrayOfFoodFacts = myData?["data"] as? [String] ?? ["did you know that brocoli contains more protein than steak"]
+                    self.funFactText = arrayOfFoodFacts.randomElement()!
+                }
+            }
+            
+               
+            
+            if self.storageLocation.count > 0{
+                Group{
+            Button(action: {
+                self.showAddFoodItemSheet.toggle()
+                print("storage locations: \(self.storageLocation.count)")
+            }, label: {
+                Image("AddFoodItemButton")
+                    .renderingMode(.original)
+                .padding()
+                
+            }).sheet(isPresented: self.$showAddFoodItemSheet, content: {
+                AddAnyFoodItemsSheet(showingView: self.$showingView, scan: self.$scan, image: self.$image).environment(\.managedObjectContext, self.managedObjectContext)
+            })
+            }
+            }else{
+                Group{
+            Button(action: {
+                print("storage locations: \(self.storageLocation.count)")
+                self.showAddStorageLocationSheet.toggle()
+            }, label: {
+                Image("AddStorageLocationButtonOrange")
+                    .renderingMode(.original)
+                .padding()
+                })
+                .sheet(isPresented: self.$showAddStorageLocationSheet, content: {
+                AddToStorageItemSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext)
+                })
+            }
+            }
+            
+            
+        }
+        
+    }
+}
 struct RemoteConfigManager {
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     private static var remoteConfig: RemoteConfig{

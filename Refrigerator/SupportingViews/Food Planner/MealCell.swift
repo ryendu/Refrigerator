@@ -76,7 +76,7 @@ struct MealCell: View {
             Group{
                 ForEach(self.meal.foodItemsArray, id: \.self){ index in
                     
-                    RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince), storageLocationIcon: index.origion?.symbolName ?? "")
+                    RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince), storageLocationIcon: index.origion?.symbolName ?? "", item: index)
                         .onTapGesture {
                             self.foodItemTapped = index
                     }

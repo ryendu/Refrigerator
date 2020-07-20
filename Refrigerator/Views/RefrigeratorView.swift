@@ -55,13 +55,14 @@ struct RefrigeratorView: View {
         @State var interstitial: GADInterstitial!
     var adDelegate = MyDInterstitialDelegate()
     @Binding var showingView: String?
+    @Binding var scan: VNDocumentCameraScan?
+    @Binding var image: [CGImage]?
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var isShowingActionSheet = false
     @State var indexOfDelete = 0
-    @Binding var scan: VNDocumentCameraScan?
-    @Binding var image: [CGImage]?
+    
 
     var body: some View {
         NavigationView {

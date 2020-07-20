@@ -14,14 +14,23 @@ struct RefrigeratorItemCell: View {
     var lastsUntil: Date
     var storageLocationIcon: String
     let calendar = Calendar.current
+    @State var item: FoodItem
     @State var daysLeft = Int()
 
     
     var body: some View {
             HStack {
+                if self.item.usesImage == false{
                 Text(self.icon)
                     .font(.largeTitle)
                     .padding(.leading, 8)
+                }else {
+                    Image(uiImage: UIImage(data: self.item.image) ?? UIImage(named: "placeholder")!)
+                    .resizable()
+                    .scaledToFit()
+                        .frame(width: 55, height: 55, alignment: .leading)
+                    .padding()
+                }
                 VStack {
                     HStack {
                         Text(self.title)

@@ -15,6 +15,8 @@ struct AddFoodItemsListView: View {
     @State var autoCompleteResults: [AutoCompleteObject] = []
     @State var searchResults: [SearchDisplayObject] = []
     @State var showAddList = false
+    @State var selectedResults: [SearchDisplayObject] = []
+    @Environment(\.managedObjectContext) var moc
     var body: some View {
         GeometryReader{ geo in
             VStack{
@@ -117,11 +119,46 @@ struct AddFoodItemsListView: View {
                         }
                         
                         ForEach(self.searchResults, id:\.self){result in
-                            SearchResultsCell(text: result.title, image: Image(uiImage: result.image), geo: geo)
+//                            Button(action: {
+                                
+//                            }, label: {
+                                SearchResultsCell(selectedItems: self.$selectedResults, text: result.title, image: Image(uiImage: result.image), geo: geo, currentItem: result)
+//                            }).buttonStyle(PlainButtonStyle())
+                            
+                            
                         }
                     }.navigationBarTitle(Text("Search For Foods"))
                 }
                 //Add Foods Button
+                if self.selectedResults.count > 0{
+                    NavigationLink(destination: AddSelectedFoodsToRefrigeratorsView(searchResults: self.$selectedResults)){
+                        Image("Next button").renderingMode(.original).padding().environment(\.managedObjectContext, self.moc)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct AddSelectedFoodsToRefrigeratorsView: View{
+    @Environment(\.managedObjectContext) var moc
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var searchResults: [SearchDisplayObject]
+    var body: some View{
+        ScrollView{
+            VStack{
+                ForEach(self.searchResults, id: \.self){result in
+                    AddFoodItemListEditCell(searchResults: self.$searchResults, searchResult: result, title: result.title, lastsFor: 7).environment(\.managedObjectContext, self.moc)
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    NotificationCenter.default.post(name: .addSelecedFoodItems, object: nil)
+                    self.presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Image("addOrange").renderingMode(.original).padding()
+                })
             }
         }
     }
@@ -166,9 +203,13 @@ struct AutoCompleteResultsCell:View {
     }
 }
 struct SearchResultsCell:View {
+    @Binding var selectedItems: [SearchDisplayObject]
     @State var text: String
     @State var image: Image?
     @State var geo: GeometryProxy
+    @State var currentItem: SearchDisplayObject
+    @State var animationAmount:CGSize = CGSize(width: 0, height: 0)
+    @State var selected = false
     var body: some View{
         HStack{
             if self.image != nil{
@@ -181,14 +222,64 @@ struct SearchResultsCell:View {
         }
         .padding()
         
-            .background(Rectangle().padding(.horizontal)
-                .foregroundColor(Color("whiteAndGray"))
-                .frame(width: geo.size.width).cornerRadius(12)
+            .background(Rectangle().cornerRadius(12)
+            .foregroundColor(Color(self.selected ? "orange": "whiteAndGray"))
+                .frame(width: geo.size.width).padding(.horizontal)
             ).padding()
             .shadow(color: Color("shadows"), radius: 4)
             .frame(width: geo.size.width - 42)
             .padding(.bottom)
             .fixedSize(horizontal: false, vertical: true)
+            .offset(self.animationAmount)
+            .animation(.interpolatingSpring(stiffness: 50, damping: 3))
+            .padding(.horizontal)
+            .onTapGesture(perform: {
+                print("tapped 13")
+                if self.selectedItems.contains(self.currentItem){
+                    print("atempting to remove 13")
+                    if let indx = self.selectedItems.firstIndex(of: self.currentItem){
+                        self.selectedItems.remove(at: indx)
+                        print("removed 13")
+                    }
+                }else {
+                    print("added 13")
+                    self.selectedItems.append(self.currentItem)
+                }
+                NotificationCenter.default.post(name: .refreshSearchListSelection, object: nil)
+                if self.animationAmount.height == 0{
+                self.animationAmount = CGSize(width: 0, height: self.animationAmount.height - 5)
+                }else {
+                    self.animationAmount.height = 0
+                }
+            })
+        .onReceive(NotificationCenter.default.publisher(for: .refreshSearchListSelection)) {_ in
+
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                self.selected = self.isSelected()
+           }
+        }
+        .onAppear{
+            self.selected = self.isSelected()
+        }
+    }
+    
+    func isSelected ()-> Bool {
+        if self.selectedItems.contains(self.currentItem){
+            return true
+        }else {
+            return false
+        }
+    }
+}
+
+
+ extension Notification.Name {
+
+    static var refreshSearchListSelection: Notification.Name {
+        return Notification.Name("refreshSearchListSelection")
+    }
+    static var addSelecedFoodItems: Notification.Name {
+        return Notification.Name("addSelecedFoodItems")
     }
 }
 

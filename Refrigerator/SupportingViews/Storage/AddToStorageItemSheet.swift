@@ -43,10 +43,13 @@ struct AddToStorageItemSheet: View {
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     var listOfIcons1 = [storageLocationIcons.fridgeGreen, .fridgeTurquoise,.fridgeOrange,.fridgePurple,.fridgeRed,.fridgeYellow]
     var listOfIcons2 = [storageLocationIcons.pantryPurple,.pantryTurquoice,.pantryYellow,.pantryOrange,.pantryGreen,.pantryRed]
-
+    @State var storageType: String = DefaultStorageLocation.refrigerator.rawValue
        @State var nameOfStorageLocation = ""
+    @State var isDefaultStorage = false
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @State var selectedIcon = storageLocationIcons.fridgeGreen
        var body: some View {
+        ScrollView{
            VStack {
             HStack{
                 Spacer()
@@ -122,18 +125,74 @@ ForEach(listOfIcons1, id: \.self) {emoji in
 
                })
                
+            Picker(selection: self.$storageType, label: Text("Type of Storage")){
+                Text("Refrigerator").tag(DefaultStorageLocation.refrigerator.rawValue)
+                Text("Freezer").tag(DefaultStorageLocation.freezer.rawValue)
+                Text("Pantry").tag(DefaultStorageLocation.pantry.rawValue)
+            }.pickerStyle(SegmentedPickerStyle()).labelsHidden().padding()
+            
+            
+            if self.storageType == DefaultStorageLocation.refrigerator.rawValue{
+                if self.user.first?.defaultFridge != nil{
+                Toggle(isOn: self.$isDefaultStorage) {
+                    Text("Set as default Refrigerator?")
+                }.padding()
+                }else {
+                    Toggle(isOn: self.$isDefaultStorage, label: {
+                        Text("This will be set as your default Refrigerator")
+                    }).disabled(true).padding()
+                    .onAppear {
+                        self.isDefaultStorage = true
+                    }
+                }
+            }else if self.storageType == DefaultStorageLocation.freezer.rawValue{
+                if self.user.first?.defaultFreezer != nil{
+                Toggle(isOn: self.$isDefaultStorage) {
+                    Text("Set as default Freezer?")
+                }.padding()
+                }else {
+                    Toggle(isOn: self.$isDefaultStorage, label: {
+                        Text("This will be set as your default Freezer")
+                    }).disabled(true).padding()
+                    .onAppear {
+                        self.isDefaultStorage = true
+                    }
+                }
+            } else {
+                if self.user.first?.defaultPantry != nil{
+                Toggle(isOn: self.$isDefaultStorage) {
+                    Text("Set as default Pantry?")
+                }.padding()
+                }else {
+                    Toggle(isOn: self.$isDefaultStorage, label: {
+                        Text("This will be set as your default Pantry")
+                    }).disabled(true).padding()
+                    .onAppear {
+                        self.isDefaultStorage = true
+                    }
+                }
+            }
+            
                Button(action: {
 
                 let newStorageLocation = StorageLocation(context: self.managedObjectContext)
                 newStorageLocation.storageName = self.nameOfStorageLocation
                 newStorageLocation.symbolName = self.selectedIcon.rawValue
-                
+                if self.isDefaultStorage{
+                    if self.storageType == DefaultStorageLocation.refrigerator.rawValue{
+                        self.user.first?.defaultFridge = newStorageLocation
+                    }else if self.storageType == DefaultStorageLocation.freezer.rawValue{
+                        self.user.first?.defaultFreezer = newStorageLocation
+                    } else {
+                        self.user.first?.defaultPantry = newStorageLocation
+                    }
+                }
                 do{
                     try self.managedObjectContext.save()
                 } catch let error{
                 print(error)
                 }
-
+                
                 
                 
                 self.presentationMode.wrappedValue.dismiss()
@@ -147,7 +206,7 @@ ForEach(listOfIcons1, id: \.self) {emoji in
 
             }
         }
-           
+        }
        }
 }
 
