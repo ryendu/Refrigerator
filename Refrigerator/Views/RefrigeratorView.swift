@@ -62,6 +62,7 @@ struct RefrigeratorView: View {
     @State var indexOfDelete = 0
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
+
     var body: some View {
         NavigationView {
                 

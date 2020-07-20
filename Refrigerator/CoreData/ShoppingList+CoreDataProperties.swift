@@ -20,7 +20,8 @@ extension ShoppingList : Identifiable{
     @NSManaged public var name: String?
     @NSManaged public var icon: String?
     @NSManaged public var checked: Bool
-    
+    @NSManaged public var usesImage: Bool
+    @NSManaged public var image: Data
     public var wrappedName: String {
         name ?? "unkown name"
     }

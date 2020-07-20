@@ -33,6 +33,7 @@ struct IndivisualRefrigeratorView: View {
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
     @State var foodItemTapped: FoodItem? = nil
+    @State var showAddToShoppingListAlert: ShoppingListItem? = nil
 
     @State var interstitial: GADInterstitial!
     var adDelegate = MyDInterstitialDelegate()
@@ -84,6 +85,21 @@ struct IndivisualRefrigeratorView: View {
                         
                         .padding(.bottom)
                     }
+                        .alert(item: self.$showAddToShoppingListAlert, content: { item in
+                            Alert(title: Text("Add \(item.name) to shopping list?"), message: Text("Click add to add \(item.name) to your shopping list."), primaryButton:
+                                .default(Text("add"), action: {
+                                    let newShoppingItem = ShoppingList(context: self.managedObjectContext)
+                                    newShoppingItem.name = item.name
+                                    newShoppingItem.icon = item.icon
+                                    newShoppingItem.checked = false
+                                    do{
+                                        try self.managedObjectContext.save()
+                                    } catch let error{
+                                    print(error)
+                                    }
+                                    Analytics.logEvent("addedShoppingListItem", parameters: nil)
+                                }), secondaryButton: .cancel(Text("Don't Add")))
+                        })
                         .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                             ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                                 .default(Text("Eat All"), action: {
@@ -94,6 +110,7 @@ struct IndivisualRefrigeratorView: View {
                                     UserDefaults.standard.set(previousInteger, forKey: "eaten")
                                     let center = UNUserNotificationCenter.current()
                                     center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                    self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
                                     self.managedObjectContext.delete(item)
                                     try? self.managedObjectContext.save()
                                 })

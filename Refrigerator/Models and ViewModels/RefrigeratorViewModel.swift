@@ -32,7 +32,7 @@ class RefrigeratorViewModel: ObservableObject {
         "homeCustomMessage" : "" as NSObject,
         "chanceOfPopups" : 0.2 as NSObject,
         "numberOfAdsInHomeView" : 1 as NSObject,
-        "shoppingListDescriptionHomeView" : "Making a shopping list for your weekly grocery run helps prevent food waste and helps you eat healthier" as NSObject,
+        "shoppingListDescriptionHomeView" : "Making a shopping list for your weekly grocery run helps prevent buying extra food, helps you eat healthier, and helps prevent food waste. Tap the ring to mark the shopping list item as bought." as NSObject,
         "noFoodItemsText" : "Start by adding a food to one of your fridges by going to the Refrigerator Tab in the middle down below 👇." as NSObject,
         "numberOfAdsNonHomeView" : 6 as NSObject,
         "chanceOfBanners" : 0.25 as NSObject,

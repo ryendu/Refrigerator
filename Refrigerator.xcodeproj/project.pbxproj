@@ -68,6 +68,8 @@
 		9482EE34247B077000704674 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 9482EE33247B077000704674 /* SwiftUICharts */; };
 		948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */; };
 		948BCDFE245F0DBB00ED10A2 /* AddToShoppingListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */; };
+		9494314B24C4CFBC005EA24A /* AddFoodItemsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9494314A24C4CFBB005EA24A /* AddFoodItemsListView.swift */; };
+		9494314D24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9494314C24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift */; };
 		949C1EC8247EAE190064D326 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 949C1EC7247EAE180064D326 /* GoogleService-Info.plist */; };
 		94A2C7AD247EDC1D003DC68B /* EditFoodItemPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */; };
 		94A2C7AF247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */; };
@@ -165,6 +167,8 @@
 		9482EE2D2479A5B400704674 /* ShoppingList+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShoppingList+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDialougView.swift; sourceTree = "<group>"; };
 		948BCDFD245F0DBB00ED10A2 /* AddToShoppingListSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToShoppingListSheet.swift; sourceTree = "<group>"; };
+		9494314A24C4CFBB005EA24A /* AddFoodItemsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodItemsListView.swift; sourceTree = "<group>"; };
+		9494314C24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAnyFoodItemsSheet.swift; sourceTree = "<group>"; };
 		949C1EC7247EAE180064D326 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFoodItemPopUpView.swift; sourceTree = "<group>"; };
 		94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveShoppingItemToStorageSheet.swift; sourceTree = "<group>"; };
@@ -400,6 +404,8 @@
 				94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */,
 				9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */,
 				94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */,
+				9494314A24C4CFBB005EA24A /* AddFoodItemsListView.swift */,
+				9494314C24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift */,
 				946A6D11245E09E0006845CC /* RefrigeratorItemCell.swift */,
 				9482EE2A2476FF8800704674 /* detectItemCell.swift */,
 			);
@@ -720,6 +726,7 @@
 				948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */,
 				94A2C7AD247EDC1D003DC68B /* EditFoodItemPopUpView.swift in Sources */,
 				94598D112458E22700456333 /* AppDelegate.swift in Sources */,
+				9494314D24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift in Sources */,
 				946A6D1B245E09E0006845CC /* RefrigeratorItemCell.swift in Sources */,
 				9444E64E24673137006B6215 /* StorageLocation+CoreDataClass.swift in Sources */,
 				946A6D17245E09E0006845CC /* TabBarView.swift in Sources */,
@@ -735,6 +742,7 @@
 				940F7F4B24C25FE9006076AA /* StorageCellFoodPlannerSelection.swift in Sources */,
 				9473C70924C0DC91008BB219 /* StreakCell.swift in Sources */,
 				946A6D18245E09E0006845CC /* SettingsView.swift in Sources */,
+				9494314B24C4CFBC005EA24A /* AddFoodItemsListView.swift in Sources */,
 				946C5693245A1D75007C2986 /* LaunchView1.swift in Sources */,
 				9473C71624C14165008BB219 /* FoodPlanner+CoreDataProperties.swift in Sources */,
 				9470A4A02461F107006CBC6F /* IndivisualRefrigeratorView.swift in Sources */,

@@ -24,7 +24,8 @@ extension FoodItem : Identifiable{
     @NSManaged public var symbol: String?
     @NSManaged public var origion: StorageLocation?
     @NSManaged public var id: UUID?
-
+    @NSManaged public var usesImage: Bool
+    @NSManaged public var image: Data
 
     public var wrappedInStorageSince: Date {
         inStorageSince ?? Date()

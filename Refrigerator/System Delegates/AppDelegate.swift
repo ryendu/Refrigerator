@@ -53,9 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         let midnight = Calendar.current.startOfDay(for: date!)
                         usr.inAMonth = midnight
                         usr.didReviewThisMonth = false
-                        
                         try? managedContext.save()
-                        
                     }
                 }
 

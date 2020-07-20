@@ -15,7 +15,11 @@ import UserNotifications
 import CoreHaptics
 import CoreData
 
-
+struct ShoppingListItem: Hashable, Identifiable{
+    var name: String
+    var icon: String
+    var id = UUID()
+}
 struct HomeView: View {
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
@@ -52,6 +56,7 @@ struct HomeView: View {
     @FetchRequest(entity: ShoppingList.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \ShoppingList.name, ascending: true)]) var shoppingList: FetchedResults<ShoppingList>
     @Environment(\.managedObjectContext) var managedObjectContext
     
+    @State var showAddToShoppingListAlert: ShoppingListItem? = nil
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @State var shadowAmount = 0
     @State var addToShoppingList = false
@@ -65,6 +70,7 @@ struct HomeView: View {
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @State var showMoreInfoOnShoppingList = false
     @State var showMoreInfoOnFoodsToEatSoon = false
+    @State var showAddFoodItemSheet = false
     var body: some View {
         NavigationView {
             GeometryReader { geo in
@@ -87,12 +93,18 @@ struct HomeView: View {
                                 StreakCell(geo: geo).padding(.vertical).padding(.trailing)
                             }
                             
+                               
+                            
+                                
                             Button(action: {
-                                //TODO: SHOW WAY TO ADD FOOD ITEMS (IMAGE, SCAN, SINGLE ADD)
+                                self.showAddFoodItemSheet.toggle()
                             }, label: {
                                 Image("AddFoodItemButton")
                                     .renderingMode(.original)
-                            }).padding()
+                                .padding()
+                                
+                            })
+                            
                             
                             //MARK: FOODS TO EAT SOON
                             Group{
@@ -126,7 +138,23 @@ struct HomeView: View {
                                                 self.foodItemTapped = self.foodItem[index]
                                             }
                                         
-                                    }.actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                                    }
+                                        .alert(item: self.$showAddToShoppingListAlert, content: { item in
+                                            Alert(title: Text("Add \(item.name) to shopping list?"), message: Text("Click add to add \(item.name) to your shopping list."), primaryButton:
+                                                .default(Text("add"), action: {
+                                                    let newShoppingItem = ShoppingList(context: self.managedObjectContext)
+                                                    newShoppingItem.name = item.name
+                                                    newShoppingItem.icon = item.icon
+                                                    newShoppingItem.checked = false
+                                                    do{
+                                                        try self.managedObjectContext.save()
+                                                    } catch let error{
+                                                    print(error)
+                                                    }
+                                                    Analytics.logEvent("addedShoppingListItem", parameters: nil)
+                                                }), secondaryButton: .cancel(Text("Don't Add")))
+                                        })
+                                        .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                                         ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                                             .default(Text("Eat All"), action: {
                                                 var previousInteger = UserDefaults.standard.double(forKey: "eaten")
@@ -134,6 +162,7 @@ struct HomeView: View {
                                                 UserDefaults.standard.set(previousInteger, forKey: "eaten")
                                                 let center = UNUserNotificationCenter.current()
                                                 center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                                self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
                                                 self.managedObjectContext.delete(item)
                                                 try? self.managedObjectContext.save()
                                                 addToDailyGoal()
@@ -258,7 +287,23 @@ struct HomeView: View {
                                             
                                         
                                         
-                                    }.actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                                    }
+                                    .alert(item: self.$showAddToShoppingListAlert, content: { item in
+                                        Alert(title: Text("Add \(item.name) to shopping list?"), message: Text("Click add to add \(item.name) to your shopping list."), primaryButton:
+                                            .default(Text("add"), action: {
+                                                let newShoppingItem = ShoppingList(context: self.managedObjectContext)
+                                                newShoppingItem.name = item.name
+                                                newShoppingItem.icon = item.icon
+                                                newShoppingItem.checked = false
+                                                do{
+                                                    try self.managedObjectContext.save()
+                                                } catch let error{
+                                                print(error)
+                                                }
+                                                Analytics.logEvent("addedShoppingListItem", parameters: nil)
+                                            }), secondaryButton: .cancel(Text("Don't Add")))
+                                    })
+                                        .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                                         ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                                             .default(Text("Eat All"), action: {
                                                 addToDailyGoal()
@@ -268,6 +313,7 @@ struct HomeView: View {
                                                 UserDefaults.standard.set(previousInteger, forKey: "eaten")
                                                 let center = UNUserNotificationCenter.current()
                                                 center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                                self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
                                                 self.managedObjectContext.delete(item)
                                                 try? self.managedObjectContext.save()
                                             })
@@ -380,7 +426,9 @@ struct HomeView: View {
                                             .multilineTextAlignment(.leading)
                                             .padding()
                                         Button(action: {
-                                            self.showMoreInfoOnShoppingList.toggle()
+                                            withAnimation(){
+                                                self.showMoreInfoOnShoppingList.toggle()
+                                            }
                                         }, label: {
                                             Image(systemName: self.showMoreInfoOnShoppingList ? "questionmark.circle.fill":"questionmark.circle")
                                         })
@@ -399,6 +447,7 @@ struct HomeView: View {
                                     .font(.custom("SFProDisplayLight", size: 18))
                                     .padding(.horizontal)
                                     .foregroundColor(Color(hex: "878787"))
+                                    .animation(.spring())
                                 }
                                 
                                 ForEach(self.shoppingList, id: \.self) { item in
@@ -457,6 +506,9 @@ struct HomeView: View {
             }.navigationBarTitle("Hello, \(self.user[0].name ?? "name not set (go to settings)")!")
                 .sheet(item: self.$editFoodItem, content: { item in
                     EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+                })
+                .sheet(isPresented: self.$showAddFoodItemSheet, content: {
+                    AddAnyFoodItemsSheet()
                 })
                 
                 .onAppear(perform: {

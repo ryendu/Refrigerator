@@ -2,11 +2,13 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="FoodItem" representedClassName=".FoodItem" syncable="YES">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="image" optional="YES" attributeType="Binary"/>
         <attribute name="inStorageSince" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="inWhichStorage" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="staysFreshFor" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="symbol" optional="YES" attributeType="String"/>
+        <attribute name="usesImage" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="foodPlanner" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodPlannerMeal" inverseName="foodItems" inverseEntity="FoodPlannerMeal"/>
         <relationship name="origion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StorageLocation" inverseName="foodItem" inverseEntity="StorageLocation"/>
     </entity>
@@ -29,7 +31,9 @@
     <entity name="ShoppingList" representedClassName="ShoppingList" syncable="YES">
         <attribute name="checked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="Binary"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="usesImage" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
     </entity>
     <entity name="StorageLocation" representedClassName=".StorageLocation" syncable="YES">
         <attribute name="storageName" optional="YES" attributeType="String"/>
@@ -51,11 +55,11 @@
         <attribute name="streakDueDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <elements>
-        <element name="FoodItem" positionX="-54" positionY="-9" width="128" height="163"/>
+        <element name="FoodItem" positionX="-54" positionY="-9" width="128" height="193"/>
         <element name="FoodPlanner" positionX="-45" positionY="54" width="128" height="73"/>
         <element name="FoodPlannerMeal" positionX="-36" positionY="63" width="128" height="118"/>
         <element name="MealItem" positionX="-45" positionY="63" width="128" height="88"/>
-        <element name="ShoppingList" positionX="-45" positionY="45" width="128" height="88"/>
+        <element name="ShoppingList" positionX="-45" positionY="45" width="128" height="118"/>
         <element name="StorageLocation" positionX="-36" positionY="9" width="128" height="88"/>
         <element name="User" positionX="-45" positionY="72" width="128" height="28"/>
     </elements>

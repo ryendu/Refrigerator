@@ -22,6 +22,7 @@ struct MealCell: View {
     @State var showAddFoodItemSheet = false
     @State var customMealTapped: MealItem? = nil
     @State var editCustomMealSheet: MealItem? = nil
+    @State var showAddToShoppingListAlert: ShoppingListItem? = nil
     var body: some View {
         VStack{
             HStack(){
@@ -85,6 +86,22 @@ struct MealCell: View {
                 .sheet(item: self.$editFoodItem, content: { item in
                     EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
                 })
+
+                    .alert(item: self.$showAddToShoppingListAlert, content: { item in
+                        Alert(title: Text("Add \(item.name) to shopping list?"), message: Text("Click add to add \(item.name) to your shopping list."), primaryButton:
+                            .default(Text("add"), action: {
+                                let newShoppingItem = ShoppingList(context: self.managedObjectContext)
+                                newShoppingItem.name = item.name
+                                newShoppingItem.icon = item.icon
+                                newShoppingItem.checked = false
+                                do{
+                                    try self.managedObjectContext.save()
+                                } catch let error{
+                                print(error)
+                                }
+                                Analytics.logEvent("addedShoppingListItem", parameters: nil)
+                            }), secondaryButton: .cancel(Text("Don't Add")))
+                    })
                     .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                         ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                             .default(Text("Eat All"), action: {
@@ -95,6 +112,7 @@ struct MealCell: View {
                                 UserDefaults.standard.set(previousInteger, forKey: "eaten")
                                 let center = UNUserNotificationCenter.current()
                                 center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
                                 self.managedObjectContext.delete(item)
                                 try? self.managedObjectContext.save()
                             })
