@@ -95,6 +95,90 @@ struct SettingsView: View{
         }
     }
 }
+
+struct SettingsViewiPad: View{
+    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+            var x = top
+            var y = bottom
+            while (y != 0) {
+                let buffer = y
+                y = x % y
+                x = buffer
+            }
+            let hcfVal = x
+            let newTopVal = top/hcfVal
+            let newBottomVal = bottom/hcfVal
+            return(newTopVal, newBottomVal)
+        }
+        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+        var returnValue = false
+        print(denomenator)
+        if Int.random(in: 1...denomenator.newBottom) == 1 {
+        returnValue = true
+      }
+       return returnValue
+    }
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @State var name = ""
+    var body: some View{
+            GeometryReader{ geo in
+                List{
+                    Section{
+                   Text("Name")
+                    .font(.title)
+                        HStack{
+                            TextField("name", text: self.$name)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            Button(action: {
+                                self.user[0].name = self.name
+                                try? self.managedObjectContext.save()
+                            }, label: {
+                                Text("Save")
+                                })
+                        }
+                    }
+                    
+                    Section{
+                        Text("Progress")
+                        .font(.title)
+                    NavigationLink(destination: ProgressView(), label: {
+                        Text("See Your Progress")
+                    })
+                     }
+                    Section{
+                    NavigationLink(destination: AboutDialougView(), label: {
+                        Text("about dialoug")
+                    })
+                     }
+                    Section{
+                        if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                        GADBannerViewController()
+                        .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+                        }else {
+
+                        }
+                        
+                    }
+                    
+                    Section{
+                    NavigationLink(destination: FeedbackView(), label: {
+                        Text("send feedback")
+                    })
+                     }
+                    }.listStyle(GroupedListStyle())
+                
+            .navigationBarTitle("Settings")
+            
+            
+        }
+            .onAppear{
+                self.name = self.user[0].name ?? ""
+        }
+    }
+}
 struct ProgressView: View {
     func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
         func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {

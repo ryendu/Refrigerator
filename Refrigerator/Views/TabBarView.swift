@@ -45,16 +45,17 @@ struct TabBarView: View {
                     selection == 1 ? Image("Fridge icon fillied") : Image("Fridge icon")
             }
             .tag(1)
+            FoodPlannerView(trackDate: refrigerator.trackDate).environmentObject(refrigerator)
+                .tabItem {
+                    Image(systemName: "calendar").font(.system(size: 26))
+                }
+            .tag(2)
             SettingsView()
                 .tabItem {
                     Image(systemName: "gear").font(.system(size: 25))
             }.accentColor(.orange)
-        .tag(2)
-            FoodPlannerView(trackDate: refrigerator.trackDate).environmentObject(refrigerator)
-            .tabItem {
-                Image(systemName: "calendar").font(.system(size: 26))
-            }
         .tag(3)
+            
         
         }
         .accentColor(.orange)

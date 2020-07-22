@@ -68,7 +68,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 
                 window.rootViewController = UIHostingController(rootView: launchView1.environmentObject(refrigerator))
             } else {
+                if UIDevice.current.userInterfaceIdiom == .phone{
                 window.rootViewController = UIHostingController(rootView: tabBarView.environmentObject(refrigerator))
+                }else if UIDevice.current.userInterfaceIdiom == .pad{
+                    window.rootViewController = UIHostingController(rootView: IpadSidebarView().environmentObject(refrigerator).environment(\.managedObjectContext, context))
+                }
             }
             self.window = window
             window.makeKeyAndVisible()

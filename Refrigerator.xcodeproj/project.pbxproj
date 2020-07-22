@@ -54,6 +54,7 @@
 		946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5696245A20E2007C2986 /* LaunchView4.swift */; };
 		946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5698245A20F7007C2986 /* LaunchView2.swift */; };
 		946C569B245A2104007C2986 /* LaunchView5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C569A245A2104007C2986 /* LaunchView5.swift */; };
+		946D065D24C796B7006D74EC /* IpadSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946D065C24C796B7006D74EC /* IpadSidebarView.swift */; };
 		9470A49E2461E508006CBC6F /* AddToStorageItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */; };
 		9470A4A02461F107006CBC6F /* IndivisualRefrigeratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */; };
 		9470A4A22461F649006CBC6F /* AddFoodItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */; };
@@ -154,6 +155,7 @@
 		946C5696245A20E2007C2986 /* LaunchView4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView4.swift; sourceTree = "<group>"; };
 		946C5698245A20F7007C2986 /* LaunchView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView2.swift; sourceTree = "<group>"; };
 		946C569A245A2104007C2986 /* LaunchView5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView5.swift; sourceTree = "<group>"; };
+		946D065C24C796B7006D74EC /* IpadSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpadSidebarView.swift; sourceTree = "<group>"; };
 		9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStorageItemSheet.swift; sourceTree = "<group>"; };
 		9470A49F2461F107006CBC6F /* IndivisualRefrigeratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndivisualRefrigeratorView.swift; sourceTree = "<group>"; };
 		9470A4A12461F649006CBC6F /* AddFoodItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodItemSheet.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 			isa = PBXGroup;
 			children = (
 				946A6D0F245E09DF006845CC /* HomeView.swift */,
+				946D065C24C796B7006D74EC /* IpadSidebarView.swift */,
 				946A6D0E245E09DF006845CC /* SettingsView.swift */,
 				946A6D0D245E09DF006845CC /* TabBarView.swift */,
 				94408208249AFB0C006490AD /* FeedbackView.swift */,
@@ -734,6 +737,7 @@
 				946A6D19245E09E0006845CC /* HomeView.swift in Sources */,
 				946C569B245A2104007C2986 /* LaunchView5.swift in Sources */,
 				946A6D1C245E09E0006845CC /* ShoppingListCell.swift in Sources */,
+				946D065D24C796B7006D74EC /* IpadSidebarView.swift in Sources */,
 				9473C70F24C12FC1008BB219 /* FoodPlannerView.swift in Sources */,
 				94311DF424C387AB00F8671B /* EditCustomMealSheet.swift in Sources */,
 				946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */,

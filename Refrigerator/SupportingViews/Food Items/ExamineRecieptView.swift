@@ -504,7 +504,6 @@ struct ExamineRecieptView: View {
     
     @Binding var image: [CGImage]?
     @Binding var showingView: String?
-    var storageIndex: StorageLocation
     @State var ref: DocumentReference!
     @State var foodsToDisplay = [refrigeItem]()
     @State private var animateActivityIndicator = true
@@ -515,29 +514,38 @@ struct ExamineRecieptView: View {
         return listOfEmojis.randomElement()!.emoji
         
     }
-    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
-        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
-            
-            var x = top
-            var y = bottom
-            while (y != 0) {
-                let buffer = y
-                y = x % y
-                x = buffer
+func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+    func contains(x: Int, numerator: Int)-> Bool{
+        var returnObj = false
+        for index in 1...numerator{
+            if index == x{
+                returnObj = true
             }
-            let hcfVal = x
-            let newTopVal = top/hcfVal
-            let newBottomVal = bottom/hcfVal
-            return(newTopVal, newBottomVal)
         }
-        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
-        var returnValue = false
-        print(denomenator)
-        if Int.random(in: 1...denomenator.newBottom) == 1 {
-            returnValue = true
-        }
-        return returnValue
+        return returnObj
     }
+    func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+        var x = top
+        var y = bottom
+        while (y != 0) {
+            let buffer = y
+            y = x % y
+            x = buffer
+        }
+        let hcfVal = x
+        let newTopVal = top/hcfVal
+        let newBottomVal = bottom/hcfVal
+        return(newTopVal, newBottomVal)
+    }
+    let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+    var returnValue = false
+    print(denomenator)
+    if contains(x: Int.random(in: 1...denomenator.newBottom), numerator: denomenator.newTop) {
+    returnValue = true
+  }
+   return returnValue
+}
     @Binding var scan: VNDocumentCameraScan?
     @State var percentDone = 0.0
     @Environment(\.managedObjectContext) var managedObjectContext
@@ -579,10 +587,7 @@ struct ExamineRecieptView: View {
                                 self.showingView = "fridge"
                             }
                             
-                            NavigationLink(destination: RefrigeratorView(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
-                                Image("addOrange")
-                                    .renderingMode(.original)
-                            }).simultaneousGesture(TapGesture().onEnded{
+                            Button(action: {
                                 addToDailyGoal()
                                 refreshDailyGoalAndStreak()
                                 self.showingView = "fridge"
@@ -619,8 +624,9 @@ struct ExamineRecieptView: View {
                                     }
                                     Analytics.logEvent("addedFoodItem", parameters: nil)
                                 }
-                                
-                                
+                            }, label: {
+                                Image("addOrange")
+                                    .renderingMode(.original)
                             })
                                 .padding(.top, 200)
                             
