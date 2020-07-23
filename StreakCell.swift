@@ -24,7 +24,8 @@ struct StreakCell: View {
                 HStack{
                     Text("Streak")
                         .font(.headline)
-                }.padding()
+                    .fixedSize(horizontal: false, vertical: true)
+                }.padding(.vertical)
                 Spacer()
                 ZStack(alignment: .center){
                     PercentageRing(ringWidth: 17, percent: Double(100 + (self.streak * 10)), backgroundColor: Color.orange.opacity(0.2), foregroundColors: [Color(hex: "FF0000"), Color(hex: "FF3A3A"), Color(hex: "FF6E38")])
@@ -32,6 +33,7 @@ struct StreakCell: View {
                         .padding()
                         .rotationEffect(Angle(degrees: self.rotation))
                         .onTapGesture {
+                            simpleSuccess()
                             withAnimation(.interpolatingSpring(stiffness: 5, damping: 0.4)){
                                 self.rotation += 45
                             }

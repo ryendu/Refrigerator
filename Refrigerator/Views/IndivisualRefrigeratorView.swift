@@ -15,7 +15,6 @@ import UIKit
 import Firebase
 
 
-
 struct IndivisualRefrigeratorView: View {
     var storageIndex: StorageLocation
     func addDays (days: Int, dateCreated: Date) -> Date{
@@ -61,6 +60,7 @@ struct IndivisualRefrigeratorView: View {
        return returnValue
     }
     @State var editFoodItem = false
+    @State var showAddFoodItemSheet = false
 
     var body: some View {
         ZStack {
@@ -120,24 +120,21 @@ struct IndivisualRefrigeratorView: View {
                                 
                                     }).padding(6)
                     }
+                    
+//                    Button(action: {
+//                        self.refrigeratorViewModel.isInAddFridgeItemView.toggle()
+//                    }, label: {
+//                        Image("plus")
+//                            .renderingMode(.original)
+//
+//                        }).padding(6)
+                    
                     Button(action: {
-                                   self.showingView = "scanner"
-                                   
-                               }, label: {
-                                   Image("scanIcon")
-                                       .resizable()
-                                       .renderingMode(.original)
-                                       .aspectRatio(contentMode: .fit)
-                                       .frame(width: 30, height: 30)
-                                       
-                               }).padding(6)
-                    Button(action: {
-                        self.refrigeratorViewModel.isInAddFridgeItemView.toggle()
-                    }, label: {
-                        Image("plus")
-                            .renderingMode(.original)
-                            
-                        }).padding(6)
+                        self.showAddFoodItemSheet.toggle()
+                    },label: {
+                        Image(systemName: "plus")
+                        
+                    })
                     
                     
                     
@@ -247,7 +244,12 @@ struct IndivisualRefrigeratorView: View {
                     let id = UUID()
                     let newFoodItem = FoodItem(context: self.managedObjectContext)
                     newFoodItem.staysFreshFor = item.staysFreshFor
-                    newFoodItem.symbol = item.symbol
+                    if item.usesImage{
+                        newFoodItem.usesImage = true
+                        newFoodItem.image = item.image
+                    }else{
+                        newFoodItem.symbol = item.symbol
+                    }
                     newFoodItem.name = item.name
                     newFoodItem.inStorageSince = Date()
                     newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
@@ -279,6 +281,9 @@ struct IndivisualRefrigeratorView: View {
                 })
                 ,.default(Text("Cancel"))
             ])
+        })
+        .sheet(isPresented: self.$showAddFoodItemSheet, content: {
+            AddAnyFoodItemsSheet(showingView: self.$showingView, scan: self.$scan, image: self.$image).environment(\.managedObjectContext, self.managedObjectContext)
         })
         
         

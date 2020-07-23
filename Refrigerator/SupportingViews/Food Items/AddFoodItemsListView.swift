@@ -147,6 +147,7 @@ struct AddSelectedFoodsToRefrigeratorsView: View{
     var body: some View{
         ScrollView{
             VStack{
+                Text("Tap on the storage icon to toggle between storages to add to").padding()
                 ForEach(self.searchResults, id: \.self){result in
                     AddFoodItemListEditCell(searchResults: self.$searchResults, searchResult: result, title: result.title, lastsFor: 7).environment(\.managedObjectContext, self.moc)
                 }
@@ -235,6 +236,7 @@ struct SearchResultsCell:View {
             .padding(.horizontal)
             .onTapGesture(perform: {
                 print("tapped 13")
+                simpleSuccess()
                 if self.selectedItems.contains(self.currentItem){
                     print("atempting to remove 13")
                     if let indx = self.selectedItems.firstIndex(of: self.currentItem){

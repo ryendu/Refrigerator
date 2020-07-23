@@ -15,11 +15,8 @@ struct LaunchView2: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @State private var name = ""
     @State private var didFinishTyping = false
-    @State var showNextView = false
     var body: some View {
         ZStack{
-            Color.white
-            .edgesIgnoringSafeArea(.all)
             VStack {
                 Spacer()
                 Text("👋")
@@ -27,29 +24,28 @@ struct LaunchView2: View {
                 Text("Hey there, whats your name?")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .foregroundColor(.black)
                     .multilineTextAlignment(.center)
                 TextField("name", text: $name)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal, 40)
                 Spacer()
                 
-                Button(action: {
-                    self.user[0].name = self.name
-                    do{
-                        try self.managedObjectContext.save()
-                    }catch{
-                        print(error)
-                    }
-                    self.showNextView.toggle()
-                }, label: {Image("Next button")
-                    .renderingMode(.original)}).padding(.bottom, CGFloat(60))
+                
                 Spacer()
                 
             }
-            if self.showNextView{
-                LaunchView3()
+            
+        }
+        .onDisappear{
+            self.user[0].name = self.name
+            do{
+                try self.managedObjectContext.save()
+            }catch{
+                print(error)
             }
-        }.onAppear{
+        }
+        .onAppear{
             if self.user.count == 0 {
                 let newUser = User(context: self.managedObjectContext)
                 newUser.name = self.name

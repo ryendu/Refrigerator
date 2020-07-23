@@ -9,34 +9,26 @@
 import SwiftUI
 
 struct LaunchView5: View {
-    @State var showNextView = false
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     var body: some View {
-        ZStack{
-            Color.white
         VStack {
             Spacer()
-            Text("\(self.user[0].name ?? "Guess What"), You are Ready to Go! Start saving food from going to the trash! Take a minute to create a fridge and take note of what is in your fridge.")
+            Text("\((self.user[0].name == "" ? "Guess What" : self.user[0].name) ?? "Guess What"), You are Ready to Go! Start saving food from going to the trash! Take a minute to create a fridge and take note of what is in your fridge.")
                 .font(.largeTitle)
-                .bold()
-                .padding()
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+                .padding(.top, CGFloat())
+                .padding(.horizontal, CGFloat(20))
             Spacer()
             
             
-            Button(action: {
-                
-                self.showNextView.toggle()
-            }, label: {
-                Image("Next button")
-                .renderingMode(.original)
-                .padding(.bottom, 50)
-            })
             
             
-        }
-           if self.showNextView{
-                TabBarView()
-            }
+            
+            
+        
+          
             
         }
     }

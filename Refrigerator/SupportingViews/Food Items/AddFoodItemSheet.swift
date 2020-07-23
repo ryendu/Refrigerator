@@ -29,12 +29,13 @@ struct AddFoodItemSheet: View {
     @State var selectedEmoji = ""
     @State var nameOfFood = ""
     
-    @State var listOfEmojis1 = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄"),emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚")]
+    @State var listOfEmojis1 = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄")]
     
-    @State var listOfEmojis2 = [emoji(emoji: "🍳"),emoji(emoji: "🧈"),emoji(emoji: "🥞"),emoji(emoji: "🧇"),emoji(emoji: "🥓"),emoji(emoji: "🥩"),emoji(emoji: "🍗"),emoji(emoji: "🍖"),emoji(emoji: "🦴"),emoji(emoji: "🌭"),emoji(emoji: "🍔"),emoji(emoji: "🍟"),emoji(emoji: "🍕"),emoji(emoji: "🥪"),emoji(emoji: "🥙"),emoji(emoji: "🧆"),emoji(emoji: "🌮"),emoji(emoji: "🌯"),emoji(emoji: "🥗"),emoji(emoji: "🥘"),emoji(emoji: "🥫"),emoji(emoji: "🍝"),emoji(emoji: "🍜"),emoji(emoji: "🍲"),emoji(emoji: "🍛"),emoji(emoji: "🍣"),emoji(emoji: "🍱"),emoji(emoji: "🥟"),emoji(emoji: "🍙"),emoji(emoji: "🍚"),emoji(emoji: "🍘"),emoji(emoji: "🍥"),emoji(emoji: "🥠"),emoji(emoji: "🥮"),emoji(emoji: "🍢")]
+    @State var listOfEmojis2 = [emoji(emoji: "🍳"),emoji(emoji: "🧈"),emoji(emoji: "🥞"),emoji(emoji: "🧇"),emoji(emoji: "🥓"),emoji(emoji: "🥩"),emoji(emoji: "🍗"),emoji(emoji: "🍖"),emoji(emoji: "🦴"),emoji(emoji: "🌭"),emoji(emoji: "🍔"),emoji(emoji: "🍟"),emoji(emoji: "🍕"),emoji(emoji: "🥪"),emoji(emoji: "🥙"),emoji(emoji: "🧆"),emoji(emoji: "🌮"),emoji(emoji: "🌯"),emoji(emoji: "🥗"),emoji(emoji: "🥘"),emoji(emoji: "🥫"),emoji(emoji: "🍝"),emoji(emoji: "🍜"),emoji(emoji: "🍲"),emoji(emoji: "🍛"),emoji(emoji: "🍣")]
     
-    @State var listOfEmojis3 = [emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")]
-    
+    @State var listOfEmojis3 = [emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺")]
+    @State var listOfEmojis4 = [emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚"),emoji(emoji: "🍱"),emoji(emoji: "🥟"),emoji(emoji: "🍙"),emoji(emoji: "🍚"),emoji(emoji: "🍘"),emoji(emoji: "🍥"),emoji(emoji: "🥠"),emoji(emoji: "🥮"),emoji(emoji: "🍢"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")
+    ]
 func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     func contains(x: Int, numerator: Int)-> Bool{
         var returnObj = false
@@ -72,20 +73,12 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     var body: some View {
         ScrollView{
             VStack {
-                HStack{
-                    Spacer()
-                    Button(action: {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }, label: {
-                        Text("Cancel").foregroundColor(.orange)
-                    }).padding()
-                }
-                Text("Add a food item")
-                    .font(.largeTitle)
-                    .layoutPriority(1)
-                    .padding()
+                
                 HStack {
                     Text("Whats the name of this food")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .padding()
                         .multilineTextAlignment(.leading)
                     Spacer()
                 }.padding(.horizontal)
@@ -96,6 +89,9 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                 
                 HStack {
                     Text("chose an emoji for this food")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .padding()
                     Spacer()
                 }.padding(.horizontal)
                 ScrollView(.horizontal, showsIndicators: true, content: {
@@ -106,6 +102,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                 Button(action: {self.selectedEmoji = emoji.emoji}, label:{
                                     if self.selectedEmoji == emoji.emoji{
                                         Text(emoji.emoji)
+                                            .font(.system(size: 20))
                                             .background(Image("Rectangle")
                                                 .resizable()
                                                 .renderingMode(.original)
@@ -123,6 +120,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                 Button(action: {self.selectedEmoji = emoji.emoji}, label:{
                                     if self.selectedEmoji == emoji.emoji{
                                         Text(emoji.emoji)
+                                            .font(.system(size: 20))
                                             .background(Image("Rectangle")
                                                 .resizable()
                                                 .renderingMode(.original)
@@ -140,6 +138,25 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                 Button(action: {self.selectedEmoji = emoji.emoji}, label:{
                                     if self.selectedEmoji == emoji.emoji{
                                         Text(emoji.emoji)
+                                            .font(.system(size: 20))
+                                            .background(Image("Rectangle")
+                                                .resizable()
+                                                .renderingMode(.original)
+                                        )
+                                        
+                                    }else {
+                                        Text(emoji.emoji)
+                                    }
+                                })
+                            }
+                        }.padding()
+                        HStack{
+                            ForEach(listOfEmojis4, id: \.self) {emoji in
+                                
+                                Button(action: {self.selectedEmoji = emoji.emoji}, label:{
+                                    if self.selectedEmoji == emoji.emoji{
+                                        Text(emoji.emoji)
+                                            .font(.system(size: 20))
                                             .background(Image("Rectangle")
                                                 .resizable()
                                                 .renderingMode(.original)
@@ -157,9 +174,16 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                 Group{
                     Spacer()
                     HStack{
+                        Text("How Long Does This Food last for?")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .padding()
+                        Spacer()
+                    }
+                    HStack{
                         Text("Lasts for ")
                         Picker(selection: self.$lastsFor, label: Text("Picker")) {
-                            ForEach(1...366,id: \.self){ numb in
+                            ForEach(1...999,id: \.self){ numb in
                                 Text("\(numb)").tag(numb)
                             }
                             }.labelsHidden().frame(width: 100, height: 100)
@@ -167,7 +191,13 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         Text(" days")
                         
                     }.padding()
-                    Text("Pick a storage Location").font(.headline).fontWeight(.semibold).padding()
+                    HStack{
+                        Text("Pick a storage Location")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .padding()
+                        Spacer()
+                    }
                     Picker(selection: self.$selectionIndx, label: Text("Pick a storage Location")) {
                         ForEach(0...self.storageLocation.count - 1, id: \.self){ index in
                             Text(self.storageLocation[index].wrappedStorageName).tag(index)
@@ -233,7 +263,12 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                     }}
                 
             }
-        }
+        }.navigationBarTitle(Text("Add A Food Manually"))
+        .navigationBarItems(trailing: Button(action: {
+            self.presentationMode.wrappedValue.dismiss()
+        }, label: {
+            Text("Cancel").foregroundColor(.orange)
+        }).padding())
     }
 }
 

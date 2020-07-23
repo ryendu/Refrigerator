@@ -464,6 +464,7 @@ struct FoodsToEatSoonView: View{
                             
                             RefrigeratorItemCell(icon: self.foodItem[index].wrappedSymbol, title: self.foodItem[index].wrappedName, lastsUntil: self.addDays(days: Int(self.foodItem[index].wrappedStaysFreshFor), dateCreated: self.foodItem[index].wrappedInStorageSince), storageLocationIcon: self.foodItem[index].origion?.symbolName ?? "", item: self.foodItem[index])
                                 .onTapGesture {
+                                    simpleSuccess()
                                     print("pressed long press")
                                     self.foodItemTapped = self.foodItem[index]
                                 }
@@ -502,6 +503,7 @@ struct FoodsToEatSoonView: View{
                             
                             RefrigeratorItemCell(icon: index.wrappedSymbol, title: index.wrappedName, lastsUntil: self.addDays(days: Int(index.wrappedStaysFreshFor), dateCreated: index.wrappedInStorageSince), storageLocationIcon: index.origion?.symbolName ?? "", item: index)
                                 .onTapGesture {
+                                    simpleSuccess()
                                     self.foodItemTapped = index
                             }
                                 
@@ -606,7 +608,12 @@ struct FoodsToEatSoonView: View{
                         let id = UUID()
                         let newFoodItem = FoodItem(context: self.managedObjectContext)
                         newFoodItem.staysFreshFor = item.staysFreshFor
-                        newFoodItem.symbol = item.symbol
+                        if item.usesImage{
+                            newFoodItem.usesImage = true
+                            newFoodItem.image = item.image
+                        }else{
+                            newFoodItem.symbol = item.symbol
+                        }
                         newFoodItem.name = item.name
                         newFoodItem.inStorageSince = Date()
                         newFoodItem.origion = StorageLocation(context: self.managedObjectContext)

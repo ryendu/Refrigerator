@@ -166,7 +166,12 @@ struct MealCell: View {
                                 let id = UUID()
                                 let newFoodItem = FoodItem(context: self.managedObjectContext)
                                 newFoodItem.staysFreshFor = item.staysFreshFor
-                                newFoodItem.symbol = item.symbol
+                                if item.usesImage{
+                                    newFoodItem.usesImage = true
+                                    newFoodItem.image = item.image
+                                }else{
+                                    newFoodItem.symbol = item.symbol
+                                }
                                 newFoodItem.name = item.name
                                 newFoodItem.inStorageSince = Date()
                                 newFoodItem.origion = StorageLocation(context: self.managedObjectContext)

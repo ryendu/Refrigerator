@@ -22,23 +22,36 @@ struct AddToShoppingListSheet: View {
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     
     @State var selectedEmoji = ""
-    @State var listOfEmojis1 = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄"),emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚")]
+    @State var listOfEmojis1 = [emoji(emoji: "🍏"), emoji(emoji: "🍎"), emoji(emoji: "🍐"),emoji(emoji: "🍊"),emoji(emoji: "🍋"),emoji(emoji: "🍌"),emoji(emoji: "🍉"),emoji(emoji: "🍇"),emoji(emoji: "🍓"),emoji(emoji: "🍈"),emoji(emoji: "🍒"),emoji(emoji: "🍑"),emoji(emoji: "🥭"),emoji(emoji: "🍍"),emoji(emoji: "🥥"),emoji(emoji: "🥝"),emoji(emoji: "🍅"),emoji(emoji: "🍆"),emoji(emoji: "🥑"),emoji(emoji: "🥦"),emoji(emoji: "🥬"),emoji(emoji: "🥒"),emoji(emoji: "🌶"),emoji(emoji: "🌽"),emoji(emoji: "🥕"),emoji(emoji: "🧄")]
     
-    @State var listOfEmojis2 = [emoji(emoji: "🍳"),emoji(emoji: "🧈"),emoji(emoji: "🥞"),emoji(emoji: "🧇"),emoji(emoji: "🥓"),emoji(emoji: "🥩"),emoji(emoji: "🍗"),emoji(emoji: "🍖"),emoji(emoji: "🦴"),emoji(emoji: "🌭"),emoji(emoji: "🍔"),emoji(emoji: "🍟"),emoji(emoji: "🍕"),emoji(emoji: "🥪"),emoji(emoji: "🥙"),emoji(emoji: "🧆"),emoji(emoji: "🌮"),emoji(emoji: "🌯"),emoji(emoji: "🥗"),emoji(emoji: "🥘"),emoji(emoji: "🥫"),emoji(emoji: "🍝"),emoji(emoji: "🍜"),emoji(emoji: "🍲"),emoji(emoji: "🍛"),emoji(emoji: "🍣"),emoji(emoji: "🍱"),emoji(emoji: "🥟"),emoji(emoji: "🍙"),emoji(emoji: "🍚"),emoji(emoji: "🍘"),emoji(emoji: "🍥"),emoji(emoji: "🥠"),emoji(emoji: "🥮"),emoji(emoji: "🍢")]
+    @State var listOfEmojis2 = [emoji(emoji: "🍳"),emoji(emoji: "🧈"),emoji(emoji: "🥞"),emoji(emoji: "🧇"),emoji(emoji: "🥓"),emoji(emoji: "🥩"),emoji(emoji: "🍗"),emoji(emoji: "🍖"),emoji(emoji: "🦴"),emoji(emoji: "🌭"),emoji(emoji: "🍔"),emoji(emoji: "🍟"),emoji(emoji: "🍕"),emoji(emoji: "🥪"),emoji(emoji: "🥙"),emoji(emoji: "🧆"),emoji(emoji: "🌮"),emoji(emoji: "🌯"),emoji(emoji: "🥗"),emoji(emoji: "🥘"),emoji(emoji: "🥫"),emoji(emoji: "🍝"),emoji(emoji: "🍜"),emoji(emoji: "🍲"),emoji(emoji: "🍛"),emoji(emoji: "🍣")]
     
-    @State var listOfEmojis3 = [emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")]
-        
+    @State var listOfEmojis3 = [emoji(emoji: "🍡"),emoji(emoji: "🍧"),emoji(emoji: "🍨"),emoji(emoji: "🍦"),emoji(emoji: "🥧"),emoji(emoji: "🧁"),emoji(emoji: "🍰"),emoji(emoji: "🎂"),emoji(emoji: "🍮"),emoji(emoji: "🍭"),emoji(emoji: "🍬"),emoji(emoji: "🍫"),emoji(emoji: "🍿"),emoji(emoji: "🍩"),emoji(emoji: "🍪"),emoji(emoji: "🌰"),emoji(emoji: "🥜"),emoji(emoji: "🍯"),emoji(emoji: "🥛"),emoji(emoji: "🍼"),emoji(emoji: "☕️"),emoji(emoji: "🍵"),emoji(emoji: "🧃"),emoji(emoji: "🥤"),emoji(emoji: "🍶"),emoji(emoji: "🍺")]
+    @State var listOfEmojis4 = [emoji(emoji: "🥔"),emoji(emoji: "🍠"),emoji(emoji: "🥐"),emoji(emoji: "🥯"),emoji(emoji: "🍞"),emoji(emoji: "🥖"),emoji(emoji: "🥨"),emoji(emoji: "🧀"),emoji(emoji: "🥚"),emoji(emoji: "🍱"),emoji(emoji: "🥟"),emoji(emoji: "🍙"),emoji(emoji: "🍚"),emoji(emoji: "🍘"),emoji(emoji: "🍥"),emoji(emoji: "🥠"),emoji(emoji: "🥮"),emoji(emoji: "🍢"),emoji(emoji: "🍻"),emoji(emoji: "🥂"),emoji(emoji: "🍷"),emoji(emoji: "🥃"),emoji(emoji: "🍸"),emoji(emoji: "🍹"),emoji(emoji: "🧉"),emoji(emoji: "🍾"),emoji(emoji: "🧊")
+    ]
         
     
     @State var nameOfFood = ""
     var body: some View {
         VStack {
+            HStack{
+                Spacer()
+                Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                },label: {
+                    Text("Cancel").foregroundColor(.orange)
+                    }).padding()
+            }.padding(.top)
             Text("Add Item To Shopping List")
                 .font(.largeTitle)
                 .layoutPriority(1)
                 .padding()
+                
             HStack {
                 Text("Whats the name of this food")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .padding()
                     .multilineTextAlignment(.leading)
                 Spacer()
             }.padding(.horizontal)
@@ -49,64 +62,88 @@ struct AddToShoppingListSheet: View {
             
             HStack {
                 Text("chose an emoji for this food")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .padding()
                 Spacer()
             }.padding(.horizontal)
             ScrollView(.horizontal, showsIndicators: true, content: {
                 VStack {
                     HStack{
-                    ForEach(listOfEmojis1, id: \.self) {emoji in
-                        
-                        Button(action: {self.selectedEmoji = emoji.emoji}, label:{
-                            if self.selectedEmoji == emoji.emoji{
-                                Text(emoji.emoji)
-                                    .background(Image("Rectangle")
-                                        .resizable()
-                                        .renderingMode(.original)
-                                )
-                                
-                            }else {
-                                Text(emoji.emoji)
-                            }
-                        })
-                    }
+                        ForEach(listOfEmojis1, id: \.self) {emoji in
+                            
+                            Button(action: {self.selectedEmoji = emoji.emoji}, label:{
+                                if self.selectedEmoji == emoji.emoji{
+                                    Text(emoji.emoji)
+                                        .font(.system(size: 20))
+                                        .background(Image("Rectangle")
+                                            .resizable()
+                                            .renderingMode(.original)
+                                    )
+                                    
+                                }else {
+                                    Text(emoji.emoji)
+                                }
+                            })
+                        }
                     }.padding()
                     HStack{
-                    ForEach(listOfEmojis2, id: \.self) {emoji in
-                        
-                        Button(action: {self.selectedEmoji = emoji.emoji}, label:{
-                            if self.selectedEmoji == emoji.emoji{
-                                Text(emoji.emoji)
-                                    .background(Image("Rectangle")
-                                        .resizable()
-                                        .renderingMode(.original)
-                                )
-                                
-                            }else {
-                                Text(emoji.emoji)
-                            }
-                        })
-                    }
+                        ForEach(listOfEmojis2, id: \.self) {emoji in
+                            
+                            Button(action: {self.selectedEmoji = emoji.emoji}, label:{
+                                if self.selectedEmoji == emoji.emoji{
+                                    Text(emoji.emoji)
+                                        .font(.system(size: 20))
+                                        .background(Image("Rectangle")
+                                            .resizable()
+                                            .renderingMode(.original)
+                                    )
+                                    
+                                }else {
+                                    Text(emoji.emoji)
+                                }
+                            })
+                        }
                     }.padding()
                     HStack{
-                    ForEach(listOfEmojis3, id: \.self) {emoji in
-                        
-                        Button(action: {self.selectedEmoji = emoji.emoji}, label:{
-                            if self.selectedEmoji == emoji.emoji{
-                                Text(emoji.emoji)
-                                    .background(Image("Rectangle")
-                                        .resizable()
-                                        .renderingMode(.original)
-                                )
-                                
-                            }else {
-                                Text(emoji.emoji)
-                            }
-                        })
-                    }
+                        ForEach(listOfEmojis3, id: \.self) {emoji in
+                            
+                            Button(action: {self.selectedEmoji = emoji.emoji}, label:{
+                                if self.selectedEmoji == emoji.emoji{
+                                    Text(emoji.emoji)
+                                        .font(.system(size: 20))
+                                        .background(Image("Rectangle")
+                                            .resizable()
+                                            .renderingMode(.original)
+                                    )
+                                    
+                                }else {
+                                    Text(emoji.emoji)
+                                }
+                            })
+                        }
+                    }.padding()
+                    HStack{
+                        ForEach(listOfEmojis4, id: \.self) {emoji in
+                            
+                            Button(action: {self.selectedEmoji = emoji.emoji}, label:{
+                                if self.selectedEmoji == emoji.emoji{
+                                    Text(emoji.emoji)
+                                        .font(.system(size: 20))
+                                        .background(Image("Rectangle")
+                                            .resizable()
+                                            .renderingMode(.original)
+                                    )
+                                    
+                                }else {
+                                    Text(emoji.emoji)
+                                }
+                            })
+                        }
                     }.padding()
                 }
 
-            })
+                }).padding()
             Spacer()
             Button(action: {
                 self.refrigeratorViewModel.isInShoppingListItemAddingView.toggle()

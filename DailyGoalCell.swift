@@ -25,6 +25,7 @@ struct DailyGoalCell: View {
                 HStack{
                     Text("Daily Goal")
                         .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
                 }.padding()
                 ZStack(alignment: .center){
                     PercentageRing(ringWidth: 17, percent: Double(calculatePercentByThirds(with: Double(self.goalStatus))), backgroundColor: Color.green.opacity(0.2), foregroundColors: [Color(hex: "5EFFC2"), Color(hex: "3BFF6B")])
@@ -32,6 +33,7 @@ struct DailyGoalCell: View {
                         .padding()
                         .rotationEffect(Angle(degrees: self.rotation))
                         .onTapGesture {
+                            simpleSuccess()
                             withAnimation(.interpolatingSpring(stiffness: 5, damping: 0.4)){
                                 self.rotation += 45
                             }

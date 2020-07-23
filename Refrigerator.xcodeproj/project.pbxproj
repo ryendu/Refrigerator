@@ -126,7 +126,7 @@
 		9444E64B24673137006B6215 /* StorageLocation+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageLocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9444E64C24673137006B6215 /* FoodItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		9444E64D24673137006B6215 /* FoodItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		94598D0D2458E22700456333 /* Refrigerator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refrigerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		94598D0D2458E22700456333 /* Refrigerators.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refrigerators.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94598D102458E22700456333 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		94598D122458E22700456333 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		94598D152458E22700456333 /* Refrigerator.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Refrigerator.xcdatamodel; sourceTree = "<group>"; };
@@ -272,7 +272,7 @@
 		94598D0E2458E22700456333 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				94598D0D2458E22700456333 /* Refrigerator.app */,
+				94598D0D2458E22700456333 /* Refrigerators.app */,
 				94598D262458E23100456333 /* RefrigeratorTests.xctest */,
 				94598D312458E23100456333 /* RefrigeratorUITests.xctest */,
 			);
@@ -460,7 +460,7 @@
 				9482EE33247B077000704674 /* SwiftUICharts */,
 			);
 			productName = Refrigerator;
-			productReference = 94598D0D2458E22700456333 /* Refrigerator.app */;
+			productReference = 94598D0D2458E22700456333 /* Refrigerators.app */;
 			productType = "com.apple.product-type.application";
 		};
 		94598D252458E23100456333 /* RefrigeratorTests */ = {
@@ -955,7 +955,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryandu.refrigerator;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Refrigerators;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -978,7 +978,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryandu.refrigerator;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Refrigerators;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
