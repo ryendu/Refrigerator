@@ -97,6 +97,12 @@ struct FoodPlannerView: View {
                             
                             
                             Spacer()
+                            
+                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 13 && possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
+                                GADBannerViewController()
+                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+                            }else {
+                            }
                         })
                         
                     }

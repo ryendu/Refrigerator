@@ -16,13 +16,22 @@ struct AddAnyFoodItemsSheet: View {
     @Binding var showingView: String?
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
-    
+    @FetchRequest(entity: User.entity(),sortDescriptors: []) var user: FetchedResults<User>
+    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     var body: some View {
         NavigationView{
             VStack{
+                if self.refrigeratorViewModel.isPremiumPurchased() == true{
                 NavigationLink(destination: AddFoodItemsListView().environment(\.managedObjectContext, self.moc), label: {
                     Image("SelectFromListButton").renderingMode(.original)
                     }).padding()
+                }else {
+                    Image("SelectFromListButton").renderingMode(.original).overlay(RoundedRectangle(cornerRadius: 19).foregroundColor(Color("whiteAndBlack")).opacity(0.4)).padding()
+                    NavigationLink(destination: PremiumView()){
+                        Text("Only avalible for premium users").font(.caption)
+                    }.padding()
+                    
+                }
                 NavigationLink(destination: AddFoodItemSheet(), label: {
                 Image("EnterManuallyButton").renderingMode(.original)
                 }).padding()

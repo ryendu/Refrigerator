@@ -23,6 +23,8 @@ struct MealCell: View {
     @State var customMealTapped: MealItem? = nil
     @State var editCustomMealSheet: MealItem? = nil
     @State var showAddToShoppingListAlert: ShoppingListItem? = nil
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+
     var body: some View {
         VStack{
             HStack(){
@@ -107,9 +109,7 @@ struct MealCell: View {
                             .default(Text("Eat All"), action: {
                                 addToDailyGoal()
                                 refreshDailyGoalAndStreak()
-                                var previousInteger = UserDefaults.standard.double(forKey: "eaten")
-                                previousInteger += 1.0
-                                UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                                self.user.first?.foodsEaten += Int32(1)
                                 let center = UNUserNotificationCenter.current()
                                 center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                                 self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
@@ -117,35 +117,7 @@ struct MealCell: View {
                                 try? self.managedObjectContext.save()
                             })
                             ,.default(Text("Throw Away"), action: {
-                                var previousData = [shoppingListItems]()
-                                if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                                    do {
-                                        let decoder = JSONDecoder()
-                                        let note = try decoder.decode([shoppingListItems].self, from: data)
-                                        previousData = note
-                                    } catch {
-                                        print("Unable to Decode Note (\(error))")
-                                    }
-                                }
-                                previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
-                                
-                                do {
-                                    let encoder = JSONEncoder()
-                                    
-                                    let data = try encoder.encode(previousData)
-                                    
-                                    UserDefaults.standard.set(data, forKey: "recentlyDeleted")
-                                    
-                                } catch {
-                                    print("Unable to Encode previousData (\(error))")
-                                }
-                                var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
-                                previousInteger += 1.0
-                                UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
-                                print(previousData)
-                                print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
-                                
-                                
+                                self.user.first?.foodsThrownAway += Int32(1)
                                 let center = UNUserNotificationCenter.current()
                                 center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                                 self.managedObjectContext.delete(item)
@@ -185,7 +157,7 @@ struct MealCell: View {
                                 let content = UNMutableNotificationContent()
                                 content.title = "Eat This Food Soon"
                                 let date = Date()
-                                let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                                let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                                 content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                                 content.sound = UNNotificationSound.default
                                 var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)

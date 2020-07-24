@@ -91,6 +91,7 @@ struct AddFoodItemListEditCell: View {
     var searchResult: SearchDisplayObject
     @State var title: String
     @State var lastsFor: Int
+    @FetchRequest(entity: User.entity(),sortDescriptors: []) var user: FetchedResults<User>
     @State var usingStorageLocation: StorageLocation? = nil
     
     var body: some View {
@@ -194,7 +195,8 @@ struct AddFoodItemListEditCell: View {
                 let content = UNMutableNotificationContent()
                 content.title = "Eat This Food Soon"
                 let date = Date()
-                let twoDaysBefore = addDays(days: self.lastsFor - 2, dateCreated: date)
+
+                let twoDaysBefore = addDays(days: 7 - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                 content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                 content.sound = UNNotificationSound.default
                 var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
@@ -217,6 +219,7 @@ struct DetectItemCoreDataCell: View {
     @State var title = ""
     @State var lastsFor = 7
     @State var usingStorageLocation: StorageLocation? = nil
+    @FetchRequest(entity: User.entity(),sortDescriptors: []) var user: FetchedResults<User>
     var body: some View {
         HStack{
             if self.foodsToDisplay.usesImage == false{
@@ -300,7 +303,9 @@ struct DetectItemCoreDataCell: View {
             let content = UNMutableNotificationContent()
             content.title = "Eat This Food Soon"
             let date = Date()
-            let twoDaysBefore = addDays(days: self.lastsFor - 2, dateCreated: date)
+            
+
+            let twoDaysBefore = addDays(days: 7 - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
             content.body = "Your food item, \(self.foodsToDisplay.wrappedName) is about to go bad in 2 days."
             content.sound = UNNotificationSound.default
             var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)

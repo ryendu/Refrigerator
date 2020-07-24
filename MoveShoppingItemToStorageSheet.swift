@@ -40,7 +40,7 @@ struct MoveShoppingItemToStorageSheet: View {
     @Binding var Item: ShoppingList?
         @State var interstitial: GADInterstitial!
     var adDelegate = MyDInterstitialDelegate()
-
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
@@ -85,7 +85,7 @@ struct MoveShoppingItemToStorageSheet: View {
                         let content = UNMutableNotificationContent()
                         content.title = "Eat This Food Soon"
                         let date = Date()
-                        let twoDaysBefore = addDays(days: 7 - 2, dateCreated: date)
+                        let twoDaysBefore = addDays(days: 7 - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                         content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                         content.sound = UNNotificationSound.default
                         var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
@@ -110,7 +110,7 @@ struct MoveShoppingItemToStorageSheet: View {
                     Text("There are no storage Locations")
                 }
                 
-                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 5 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 5 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                 GADBannerViewController()
                 .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                     .padding(.top, 150)

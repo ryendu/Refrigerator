@@ -13,36 +13,26 @@ struct LaunchView3: View {
     
     var body: some View {
         ZStack{
-            Color.white
             VStack {
-                Spacer()
-                Image("home view mock")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                
-                Text("In Your home page, you get a new random fun fact each time you open the app, a reminder of foods that will go bad soon, and a shopping list.")
-                    .padding()
-                    .layoutPriority(1)
-                
-                Button(action: {
-                    
-                    self.showNextView.toggle()
-                }, label: {Image("Next button")
-                    .renderingMode(.original)}).padding(.bottom, CGFloat(60))
                 
                 Spacer()
-            }
-            if self.showNextView{
-                LaunchView4()
-            }
+                    Image(systemName: "house.fill")
+                        .font(.system(size: 50))
+                        .foregroundColor(.black)
+                        .padding()
+                Text("Get Greeted with a daily streak & goal and add food items with a few taps from the Home page.")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.black)
+                .multilineTextAlignment(.center)
+                .padding(.top, CGFloat())
+                .padding(.horizontal, CGFloat(20))
+                
+               
+            Spacer()
         }
         
         
     }
 }
-
-struct LaunchView3_Previews: PreviewProvider {
-    static var previews: some View {
-        LaunchView3()
-    }
 }

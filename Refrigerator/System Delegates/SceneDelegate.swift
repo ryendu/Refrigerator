@@ -45,6 +45,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 newUser.name = ""
                 newUser.dailyGoal = Int16(0)
                 newUser.streak = Int16(0)
+                newUser.foodsEaten = Int32(0)
+                newUser.foodsThrownAway = Int32(0)
                 
                 
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")

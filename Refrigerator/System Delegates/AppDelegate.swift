@@ -35,13 +35,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         
-        var expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
-        if (expirationDate?.daysTo(date: Date()))! <= 1 {
-            UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
-            print("cleared userDefaults")
-            
-            expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
-        }
+//        var expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
+//        if (expirationDate?.daysTo(date: Date()))! <= 1 {
+//            UserDefaults.standard.removeObject(forKey: "recentlyDeleted")
+//            print("cleared userDefaults")
+//            
+//            expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
+//        }
         if let usrs = user{
             if usrs.count > 0{
                 let usr = usrs[0]

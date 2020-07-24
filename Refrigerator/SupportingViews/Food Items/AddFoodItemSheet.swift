@@ -24,7 +24,8 @@ struct AddFoodItemSheet: View {
     @State var storage: StorageLocation? = nil
     @State var showStorageNilError = false
     @FetchRequest(entity: StorageLocation.entity(),sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
-    
+    @FetchRequest(entity: User.entity(),sortDescriptors: []) var user: FetchedResults<User>
+
     @State var lastsFor = 7
     @State var selectedEmoji = ""
     @State var nameOfFood = ""
@@ -237,7 +238,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             let content = UNMutableNotificationContent()
                             content.title = "Eat This Food Soon"
                             let date = Date()
-                            let twoDaysBefore = addDays(days: self.lastsFor - 2, dateCreated: date)
+                            let twoDaysBefore = addDays(days: 7 - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                             content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                             content.sound = UNNotificationSound.default
                             var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
@@ -255,7 +256,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         }
                     }, label: {Image("addOrange").renderingMode(.original)}).padding()
                     
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 6 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 6 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                         GADBannerViewController()
                             .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                     }else {

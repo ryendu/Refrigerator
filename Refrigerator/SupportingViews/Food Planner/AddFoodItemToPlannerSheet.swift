@@ -175,7 +175,11 @@ struct StorageLocationDropDownView: View{
                         simpleSuccess()
                         NotificationCenter.default.post(name: .shouldRefreshFoodPlannerSelection, object: nil)
                     }, label: {
+                        if item.usesImage == false{
                         FoodItemCellFoodPlannerSelection(icon: item.wrappedSymbol, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince), storageLocationIcon: item.origion?.symbolName ?? "", selection: self.$selection, item: item)
+                        }else {
+                            FoodItemCellFoodPlannerSelectionImage(image: item.image, title: item.wrappedName, lastsUntil: self.addDays(days: Int(item.wrappedStaysFreshFor), dateCreated: item.wrappedInStorageSince), storageLocationIcon: item.origion?.symbolName ?? "", selection: self.$selection, item: item)
+                        }
                         }).buttonStyle(PlainButtonStyle())
                     
                         

@@ -9,27 +9,28 @@
 import SwiftUI
 
 struct LaunchView5: View {
-    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     var body: some View {
-        VStack {
-            Spacer()
-            Text("\((self.user[0].name == "" ? "Guess What" : self.user[0].name) ?? "Guess What"), You are Ready to Go! Start saving food from going to the trash! Take a minute to create a fridge and take note of what is in your fridge.")
-                .font(.largeTitle)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
-                .padding(.top, CGFloat())
-                .padding(.horizontal, CGFloat(20))
-            Spacer()
-            
-            
-            
-            
-            
-            
-        
-          
-            
+        ZStack{
+                VStack {
+                        
+                        Spacer()
+                    HStack{
+                            Image(systemName: "circle.grid.hex")
+                                .font(.system(size: 50))
+                                .foregroundColor(.black)
+                                .padding()
+                        
+                    }
+                        Text("Only keep track of what you have and don't worry about how much you have.")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, CGFloat())
+                        .padding(.horizontal, CGFloat(20))
+                    Spacer()
+                }
+           
         }
     }
 }

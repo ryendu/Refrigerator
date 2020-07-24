@@ -84,7 +84,7 @@ struct RefrigeratorView: View {
                         Text("Start by adding a new Storage location with the plus button above").padding()
                     }
                     
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                     GADBannerViewController()
                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                     }else {
@@ -102,8 +102,8 @@ struct RefrigeratorView: View {
                     }))
                     
                 .onAppear(perform: {
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false{
-                        self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false && self.refrigeratorViewModel.isPremiumPurchased() == false{
+                        self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
                         self.interstitial.delegate = self.adDelegate
                         
                         let req = GADRequest()
@@ -188,7 +188,7 @@ struct RefrigeratorViewiPad: View {
                         Text("Start by adding a new Storage location with the plus button above").padding()
                     }
                     
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                     GADBannerViewController()
                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                     }else {
@@ -206,8 +206,8 @@ struct RefrigeratorViewiPad: View {
                     }))
                     
                 .onAppear(perform: {
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false{
-                        self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false  && self.refrigeratorViewModel.isPremiumPurchased() == false{
+                        self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
                         self.interstitial.delegate = self.adDelegate
                         
                         let req = GADRequest()

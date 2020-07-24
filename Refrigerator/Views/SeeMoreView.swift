@@ -41,13 +41,15 @@ struct SeeMoreView: View {
         print("Modified date: \(modifiedDate)")
         return modifiedDate
     }
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+
     @State var showAddToShoppingListAlert: ShoppingListItem? = nil
     @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @Environment(\.managedObjectContext) var managedObjectContext
     @State var foodItemTapped: FoodItem? = nil
     @State var editFoodItem: FoodItem? = nil
-    
+    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     var body: some View {
         VStack {
             ScrollView(.vertical, showsIndicators: false, content: {
@@ -65,6 +67,11 @@ struct SeeMoreView: View {
                 })
                     
                 Spacer()
+                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 12 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
+                    GADBannerViewController()
+                        .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+                }else {
+                }
             })
             
         }.alert(item: self.$showAddToShoppingListAlert, content: { item in
@@ -87,9 +94,7 @@ struct SeeMoreView: View {
                 .default(Text("Eat All"), action: {
                     addToDailyGoal()
                                     refreshDailyGoalAndStreak()
-                    var previousInteger = UserDefaults.standard.double(forKey: "eaten")
-                    previousInteger += 1.0
-                    UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                    self.user.first?.foodsEaten += Int32(1)
                     let center = UNUserNotificationCenter.current()
                     center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                     self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
@@ -97,33 +102,8 @@ struct SeeMoreView: View {
                     try? self.managedObjectContext.save()
                 })
                 ,.default(Text("Throw Away"), action: {
-                    var previousData = [shoppingListItems]()
-                    if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                        do {
-                            let decoder = JSONDecoder()
-                            let note = try decoder.decode([shoppingListItems].self, from: data)
-                            previousData = note
-                        } catch {
-                            print("Unable to Decode Note (\(error))")
-                        }
-                    }
-                    previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
                     
-                    do {
-                        let encoder = JSONEncoder()
-                        
-                        let data = try encoder.encode(previousData)
-                        
-                        UserDefaults.standard.set(data, forKey: "recentlyDeleted")
-                        
-                    } catch {
-                        print("Unable to Encode previousData (\(error))")
-                    }
-                    var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
-                    previousInteger += 1.0
-                    UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
-                    print(previousData)
-                    print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                    self.user.first?.foodsThrownAway += Int32(1)
                     let center = UNUserNotificationCenter.current()
                     center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                     self.managedObjectContext.delete(item)
@@ -161,7 +141,7 @@ struct SeeMoreView: View {
                     let content = UNMutableNotificationContent()
                     content.title = "Eat This Food Soon"
                     let date = Date()
-                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                     content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                     content.sound = UNNotificationSound.default
                     var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
@@ -184,8 +164,8 @@ struct SeeMoreView: View {
         })
     .navigationBarTitle("Eat These Foods Soon")
         .onAppear(perform: {
-            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 10 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "SeeMoreViewLoadedAd") == false{
-                self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 10 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "SeeMoreViewLoadedAd") == false && self.refrigeratorViewModel.isPremiumPurchased() == false{
+                self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
                 self.interstitial.delegate = self.adDelegate
                 
                 let req = GADRequest()

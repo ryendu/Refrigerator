@@ -33,6 +33,7 @@ struct IndivisualRefrigeratorView: View {
     @Binding var image: [CGImage]?
     @State var foodItemTapped: FoodItem? = nil
     @State var showAddToShoppingListAlert: ShoppingListItem? = nil
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
 
     @State var interstitial: GADInterstitial!
     var adDelegate = MyDInterstitialDelegate()
@@ -92,7 +93,7 @@ struct IndivisualRefrigeratorView: View {
                             DetectItemCoreDataCell(foodsToDisplay: item)
                         }
                     }
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 8 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 8 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                     GADBannerViewController()
                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                     }else {
@@ -142,8 +143,8 @@ struct IndivisualRefrigeratorView: View {
 
             .navigationBarTitle(storageIndex.wrappedStorageName)
             .onAppear(perform: {
-                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 9 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "IndivisualRefrigeratorViewLoadedAd") == false{
-                    self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-3940256099942544/4411468910")
+                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 9 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "IndivisualRefrigeratorViewLoadedAd") == false  && self.refrigeratorViewModel.isPremiumPurchased() == false{
+                    self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
                     self.interstitial.delegate = self.adDelegate
                     
                     let req = GADRequest()
@@ -190,9 +191,7 @@ struct IndivisualRefrigeratorView: View {
                 .default(Text("Eat All"), action: {
                     addToDailyGoal()
                             refreshDailyGoalAndStreak()
-                    var previousInteger = UserDefaults.standard.double(forKey: "eaten")
-                    previousInteger += 1.0
-                    UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                    self.user.first?.foodsEaten += Int32(1)
                     let center = UNUserNotificationCenter.current()
                     center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                     self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
@@ -200,33 +199,7 @@ struct IndivisualRefrigeratorView: View {
                     try? self.managedObjectContext.save()
                 })
                 ,.default(Text("Throw Away"), action: {
-                    var previousData = [shoppingListItems]()
-                    if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                        do {
-                            let decoder = JSONDecoder()
-                            let note = try decoder.decode([shoppingListItems].self, from: data)
-                            previousData = note
-                        } catch {
-                            print("Unable to Decode Note (\(error))")
-                        }
-                    }
-                    previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
-                    
-                    do {
-                        let encoder = JSONEncoder()
-                        
-                        let data = try encoder.encode(previousData)
-                        
-                        UserDefaults.standard.set(data, forKey: "recentlyDeleted")
-                        
-                    } catch {
-                        print("Unable to Encode previousData (\(error))")
-                    }
-                    var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
-                    previousInteger += 1.0
-                    UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
-                    print(previousData)
-                    print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                    self.user.first?.foodsThrownAway += Int32(1)
                     let center = UNUserNotificationCenter.current()
                     center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                     self.managedObjectContext.delete(item)
@@ -261,7 +234,7 @@ struct IndivisualRefrigeratorView: View {
                     let content = UNMutableNotificationContent()
                     content.title = "Eat This Food Soon"
                     let date = Date()
-                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                     content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                     content.sound = UNNotificationSound.default
                     var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
@@ -283,7 +256,7 @@ struct IndivisualRefrigeratorView: View {
             ])
         })
         .sheet(isPresented: self.$showAddFoodItemSheet, content: {
-            AddAnyFoodItemsSheet(showingView: self.$showingView, scan: self.$scan, image: self.$image).environment(\.managedObjectContext, self.managedObjectContext)
+            AddAnyFoodItemsSheet(showingView: self.$showingView, scan: self.$scan, image: self.$image).environment(\.managedObjectContext, self.managedObjectContext).environmentObject(refrigerator)
         })
         
         

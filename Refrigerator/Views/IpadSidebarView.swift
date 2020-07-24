@@ -28,16 +28,17 @@ struct IpadSidebarView: View {
             }
         })
     }
+    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
+    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
+    @Environment(\.managedObjectContext) var managedObjectContext
     var body: some View{
         NavigationView{
             ZStack{
                 ScrollView{
                     VStack{
-                        //List{
                         NavigationLink(destination: HomeViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
                             HStack{
-                                Image("Home icon").foregroundColor(.orange).padding()
-                                
+                                Image(systemName: "house").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 Text("Home")
                                     .foregroundColor(.black)
                                     .padding()
@@ -46,18 +47,16 @@ struct IpadSidebarView: View {
                         }).tag(0)
                         NavigationLink(destination: RefrigeratorViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image).environmentObject(refrigerator), label: {
                             HStack{
-                                Image("Fridge icon").foregroundColor(.orange).padding()
-                               
-                                Text("Refrigerator")
+                                Image(systemName: "square.grid.2x2").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
+                                Text("Refrigerators")
                                     .foregroundColor(.black)
                                     .padding()
                                  Spacer()
                             }
                         }).tag(0)
-                        
                         NavigationLink(destination: FoodPlannerViewiPad(trackDate: refrigerator.trackDate).environmentObject(refrigerator), label: {
                             HStack{
-                                Image(systemName: "calendar").foregroundColor(.orange).font(.system(size: 26)).padding()
+                                Image(systemName: "calendar").foregroundColor(.orange).font(.system(size: 26)).padding(.vertical).padding(.leading)
                                 
                                 Text("Food Planner")
                                     .foregroundColor(.black)
@@ -67,7 +66,7 @@ struct IpadSidebarView: View {
                         }).tag(0)
                         NavigationLink(destination: SettingsViewiPad(), label: {
                             HStack{
-                                Image(systemName: "gear").foregroundColor(.orange).font(.system(size: 25)).padding()
+                                Image(systemName: "gear").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 
                                 Text("Settings")
                                     .foregroundColor(.black)
@@ -76,8 +75,18 @@ struct IpadSidebarView: View {
                             }
                         }).tag(0)
                         
+                        Divider().padding()
                         
-                        //}.listStyle(PlainListStyle())
+                        if storageLocation.count > 0{
+                        ForEach(self.storageLocation, id: \.self) { item in
+                                                    
+                            NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item, showingView: self.$showingView, scan: self.$scan, image: self.$image ).environment(\.managedObjectContext, self.managedObjectContext)) {
+                                StorageLocationCell(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: item.foodItemArray.count, storageLocationTitle: item.wrappedStorageName, storage: item).environment(\.managedObjectContext, self.managedObjectContext)
+                                }.buttonStyle(PlainButtonStyle())
+
+
+                        }.padding(.leading)
+                        }
                     }.accentColor(.orange)
                         .navigationBarBackButtonHidden(true)
                         .font(.headline)
@@ -89,7 +98,7 @@ struct IpadSidebarView: View {
                     Spacer()
                 }
             }
-        }.navigationViewStyle(DoubleColumnNavigationViewStyle())
+        }.navigationViewStyle(DoubleColumnNavigationViewStyle()).accentColor(.orange)
     }
 }
 

@@ -16,6 +16,38 @@ import CoreHaptics
 import CoreData
 import VisionKit
 import Vision
+func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+    func contains(x: Int, numerator: Int)-> Bool{
+        var returnObj = false
+        for index in 1...numerator{
+            if index == x{
+                returnObj = true
+            }
+        }
+        return returnObj
+    }
+    func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+
+        var x = top
+        var y = bottom
+        while (y != 0) {
+            let buffer = y
+            y = x % y
+            x = buffer
+        }
+        let hcfVal = x
+        let newTopVal = top/hcfVal
+        let newBottomVal = bottom/hcfVal
+        return(newTopVal, newBottomVal)
+    }
+    let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+    var returnValue = false
+    print(denomenator)
+    if contains(x: Int.random(in: 1...denomenator.newBottom), numerator: denomenator.newTop) {
+    returnValue = true
+  }
+   return returnValue
+}
 
 struct ShoppingListItem: Hashable, Identifiable{
     var name: String
@@ -91,7 +123,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             //MARK: FOODS TO EAT SOON
                             FoodsToEatSoonView(geo:geo).padding()
                             
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
                                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                             }else {
@@ -101,7 +133,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             
                             ShoppingListView()
                             
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
                                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                             }else {
@@ -118,17 +150,16 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                 
             }
             
-            .navigationBarTitle("Hello, \(self.user.first?.name ?? "name not set (go to settings)")!")
-                
-                
-                
-                .onAppear(perform: {
-                    if self.user.count == 0 {
+            .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
+            .onAppear(perform: {
+                if self.user.first == nil {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
                         if UserDefaults.standard.string(forKey: "name") != "" {
                             newUser.name = UserDefaults.standard.string(forKey: "name")
                         }
+                        newUser.foodsEaten = Int32(0)
+                        newUser.foodsThrownAway = Int32(0)
                         newUser.dailyGoal = Int16(0)
                         newUser.streak = Int16(0)
                         try? self.managedObjectContext.save()
@@ -320,7 +351,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             //MARK: FOODS TO EAT SOON
                             FoodsToEatSoonView(geo: geo).padding()
                             
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
                                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                             }else {
@@ -329,7 +360,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             //MARK: SHOPPING LIST
                             ShoppingListView().padding()
                             
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
                                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                             }else {
@@ -345,14 +376,16 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                             
                 
             }
-            .navigationBarTitle("Hello, \(self.user.first?.name ?? "name not set (go to settings)")!")
+            .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
                 .onAppear(perform: {
-                    if self.user.count == 0 {
+                    if self.user.first == nil {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
                         if UserDefaults.standard.string(forKey: "name") != "" {
                             newUser.name = UserDefaults.standard.string(forKey: "name")
                         }
+                        newUser.foodsEaten = Int32(0)
+                        newUser.foodsThrownAway = Int32(0)
                         newUser.dailyGoal = Int16(0)
                         newUser.streak = Int16(0)
                         try? self.managedObjectContext.save()
@@ -433,6 +466,7 @@ struct FoodsToEatSoonView: View{
        return returnValue
     }
     @State var geo: GeometryProxy
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     var body: some View{
             VStack{
@@ -544,9 +578,7 @@ struct FoodsToEatSoonView: View{
                 .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
                 ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
                     .default(Text("Eat All"), action: {
-                        var previousInteger = UserDefaults.standard.double(forKey: "eaten")
-                        previousInteger += 1.0
-                        UserDefaults.standard.set(previousInteger, forKey: "eaten")
+                        self.user.first?.foodsEaten += Int32(1)
                         let center = UNUserNotificationCenter.current()
                         center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
                         self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
@@ -559,33 +591,8 @@ struct FoodsToEatSoonView: View{
                         
                     })
                     ,.default(Text("Throw Away"), action: {
-                        var previousData = [shoppingListItems]()
-                        if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                            do {
-                                let decoder = JSONDecoder()
-                                let note = try decoder.decode([shoppingListItems].self, from: data)
-                                previousData = note
-                            } catch {
-                                print("Unable to Decode Note (\(error))")
-                            }
-                        }
-                        previousData.append(shoppingListItems(icon: item.wrappedSymbol, title: item.wrappedName))
                         
-                        do {
-                            let encoder = JSONEncoder()
-                            
-                            let data = try encoder.encode(previousData)
-                            
-                            UserDefaults.standard.set(data, forKey: "recentlyDeleted")
-                            
-                        } catch {
-                            print("Unable to Encode previousData (\(error))")
-                        }
-                        var previousInteger = UserDefaults.standard.double(forKey: "thrownAway")
-                        previousInteger += 1.0
-                        UserDefaults.standard.set(previousInteger, forKey: "thrownAway")
-                        print(previousData)
-                        print(UserDefaults.standard.data(forKey: "recentlyDeleted")!)
+                        self.user.first?.foodsThrownAway += Int32(1)
                         
                         
                         let center = UNUserNotificationCenter.current()
@@ -626,7 +633,7 @@ struct FoodsToEatSoonView: View{
                         let content = UNMutableNotificationContent()
                         content.title = "Eat This Food Soon"
                         let date = Date()
-                        let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - 2, dateCreated: date)
+                        let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
                         content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
                         content.sound = UNNotificationSound.default
                         var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
@@ -705,7 +712,7 @@ struct HomeViewDashboardFeatures: View {
                 .padding()
                 
             }).sheet(isPresented: self.$showAddFoodItemSheet, content: {
-                AddAnyFoodItemsSheet(showingView: self.$showingView, scan: self.$scan, image: self.$image).environment(\.managedObjectContext, self.managedObjectContext)
+                AddAnyFoodItemsSheet(showingView: self.$showingView, scan: self.$scan, image: self.$image).environment(\.managedObjectContext, self.managedObjectContext).environmentObject(refrigerator)
             })
             }
             }else{
@@ -773,7 +780,7 @@ struct GADBannerViewController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let view = GADBannerView(adSize: kGADAdSizeBanner)
         let viewController = UIViewController()
-        view.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        view.adUnitID = AdUnitIDs.bannerTestID.rawValue
         view.rootViewController = viewController
         viewController.view.addSubview(view)
         viewController.view.frame = CGRect(origin: .zero, size: kGADAdSizeBanner.size)

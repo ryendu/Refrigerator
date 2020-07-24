@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 import CoreData
-
+import StoreKit
 enum WhichView {
     case homeView
     case refrigeratorView
@@ -26,6 +26,12 @@ enum RCKeys: String {
     case requestReview
     case feedbackViewMessage
     case requestReviewPeriod
+}
+enum AdUnitIDs: String{
+    case bannerTestID = "ca-app-pub-3940256099942544/2934735716"
+    case interstitialTestID = "ca-app-pub-3940256099942544/4411468910"
+    case bannerProductionID = "ca-app-pub-2772723693967190/3388696730"
+    case interstitialProductionID = "ca-app-pub-2772723693967190/6970289452"
 }
 class RefrigeratorViewModel: ObservableObject {
     @Published var defaultValues =  ([
@@ -48,6 +54,16 @@ class RefrigeratorViewModel: ObservableObject {
     // 1 2 3 0 2 0 2 0
     init(){
         self.trackDate = self.getTrackDate(with: Date())
+    }
+    @Published var premiumPrice = "1.99"
+    func isPremiumPurchased() -> Bool{
+        var returnobj = false
+        if RefrigeratorProducts.store.isProductPurchased("com.ryandu.refrigerators.premiumsubscriptionm") {
+            returnobj = true
+        }else {
+            returnobj = false
+        }
+        return returnobj
     }
     func getDate(from trackDate: String) -> Date? {
         let calendar = Calendar.current
