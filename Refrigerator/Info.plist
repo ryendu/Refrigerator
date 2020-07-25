@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>SFProDisplayRegular.otf</string>
-		<string>SF-Compact-Display-Regular.otf</string>
-		<string>SF-Pro-Display-Bold.otf</string>
-		<string>SF-Pro-Display-Thin.otf</string>
-		<string>SF-Compact-Text-Thin.otf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -23,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GADApplicationIdentifier</key>
@@ -38,6 +30,14 @@
 	<string>please let us access your photos to help us scan your receipts</string>
 	<key>Non-Exempt Encryption (ITSAppUsesNonExemptEncryption)</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SFProDisplayRegular.otf</string>
+		<string>SF-Compact-Display-Regular.otf</string>
+		<string>SF-Pro-Display-Bold.otf</string>
+		<string>SF-Pro-Display-Thin.otf</string>
+		<string>SF-Compact-Text-Thin.otf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
