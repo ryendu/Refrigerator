@@ -40,7 +40,7 @@ struct IpadSidebarView: View {
                             HStack{
                                 Image(systemName: "house").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 Text("Home")
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color("blackAndWhite"))
                                     .padding()
                                 Spacer()
                             }
@@ -49,7 +49,7 @@ struct IpadSidebarView: View {
                             HStack{
                                 Image(systemName: "square.grid.2x2").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 Text("Refrigerators")
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color("blackAndWhite"))
                                     .padding()
                                  Spacer()
                             }
@@ -59,7 +59,7 @@ struct IpadSidebarView: View {
                                 Image(systemName: "calendar").foregroundColor(.orange).font(.system(size: 26)).padding(.vertical).padding(.leading)
                                 
                                 Text("Food Planner")
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color("blackAndWhite"))
                                     .padding()
                                 Spacer()
                             }
@@ -69,7 +69,7 @@ struct IpadSidebarView: View {
                                 Image(systemName: "gear").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 
                                 Text("Settings")
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color("blackAndWhite"))
                                     .padding()
                                 Spacer()
                             }

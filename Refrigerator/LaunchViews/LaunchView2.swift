@@ -57,7 +57,7 @@ struct LaunchView2: View {
                     print(error)
                 }
             }else if self.user.count == 1{
-                self.name = self.user[0].name ?? ""
+                self.name = self.user.first?.name ?? ""
             }else {
                 Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
                 for indx in 0...self.user.count - 1{

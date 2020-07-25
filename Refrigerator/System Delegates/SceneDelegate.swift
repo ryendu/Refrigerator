@@ -41,12 +41,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let tabBarView = TabBarView().environment(\.managedObjectContext, context)
             
             if !UserDefaults.standard.bool(forKey: "didLaunchBefore") {
-                let newUser = User(context: context)
-                newUser.name = ""
-                newUser.dailyGoal = Int16(0)
-                newUser.streak = Int16(0)
-                newUser.foodsEaten = Int32(0)
-                newUser.foodsThrownAway = Int32(0)
+                if user?.first == nil{
+                    print("THERE IS NO USER")
+                    let newUser = User(context: context)
+                    newUser.name = ""
+                    newUser.dailyGoal = Int16(0)
+                    newUser.streak = Int16(0)
+                    newUser.foodsEaten = Int32(0)
+                    newUser.foodsThrownAway = Int32(0)
                 
                 
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")
@@ -67,7 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 }catch{
                     print(error)
                 }
-                
+                }
                 window.rootViewController = UIHostingController(rootView: launchView1.environmentObject(refrigerator))
             } else {
                 if UIDevice.current.userInterfaceIdiom == .phone{

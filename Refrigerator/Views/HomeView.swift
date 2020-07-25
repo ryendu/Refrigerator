@@ -93,7 +93,8 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
   }
    return returnValue
 }
-    
+    @State var moveToStorageLocation: ShoppingList? = nil
+    @State var shoppingListItemTapped: ShoppingList? = nil
     @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
     @FetchRequest(entity: StorageLocation.entity(),sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
     @FetchRequest(entity: ShoppingList.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \ShoppingList.name, ascending: true)]) var shoppingList: FetchedResults<ShoppingList>
@@ -104,10 +105,11 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
     @State var showAddToShoppingListAlert: ShoppingListItem? = nil
+    @State var showMoreInfoOnShoppingList = false
+    @State var editFoodItem: FoodItem? = nil
     @State var shadowAmount = 0
     @State var showEatActionSheet = false
     @State var foodItemTapped: FoodItem? = nil
-    @State var editFoodItem: FoodItem? = nil
     @State var displayAmount = 0
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @State var showMoreInfoOnFoodsToEatSoon = false
@@ -121,7 +123,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             }
                             NavigationLink(destination: ExamineRecieptView(image: self.$image, showingView: self.$showingView, scan: self.$scan), tag: "results", selection: self.$showingView, label: {Text("")})
                             //MARK: FOODS TO EAT SOON
-                            FoodsToEatSoonView(geo:geo).padding()
+                            FoodsToEatSoonView(showAddToShoppingListAlert: self.$showAddToShoppingListAlert, foodItemTapped: self.$foodItemTapped, editFoodItem: self.$editFoodItem, geo: geo).padding()
                             
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
@@ -131,7 +133,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             }
                             //MARK: SHOPPING LIST
                             
-                            ShoppingListView()
+                            ShoppingListView(moveToStorageLocation: self.$moveToStorageLocation, shoppingListItemTapped: self.$shoppingListItemTapped)
                             
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
@@ -144,8 +146,115 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         
                         
                     }
-                    
-                    
+                    if self.foodItemTapped != nil{
+                        Text("")
+                            .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                            ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                                .default(Text("Eat All"), action: {
+                                    self.user.first?.foodsEaten += Int32(1)
+                                    let center = UNUserNotificationCenter.current()
+                                    center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                    self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
+                                    self.managedObjectContext.delete(item)
+                                    try? self.managedObjectContext.save()
+                                    addToDailyGoal()
+                                    refreshDailyGoalAndStreak()
+                                    refreshDailyGoalAndStreak()
+                                    
+                                    
+                                })
+                                ,.default(Text("Throw Away"), action: {
+                                    
+                                    self.user.first?.foodsThrownAway += Int32(1)
+                                    
+                                    
+                                    let center = UNUserNotificationCenter.current()
+                                    center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                    self.managedObjectContext.delete(item)
+                                    try? self.managedObjectContext.save()
+                                })
+                                ,.default(Text("Eat Some"), action: {
+                                    print("ate some of \(item)")
+                                    addToDailyGoal()
+                                    refreshDailyGoalAndStreak()
+                                })
+                                ,.default(Text("Edit"), action: {
+                                    self.editFoodItem = item
+                                    addToDailyGoal()
+                                    refreshDailyGoalAndStreak()
+                                })
+                                
+                                ,.default(Text("Duplicate"), action: {
+                                    let id = UUID()
+                                    let newFoodItem = FoodItem(context: self.managedObjectContext)
+                                    newFoodItem.staysFreshFor = item.staysFreshFor
+                                    if item.usesImage{
+                                        newFoodItem.usesImage = true
+                                        newFoodItem.image = item.image
+                                    }else{
+                                        newFoodItem.symbol = item.symbol
+                                    }
+                                    newFoodItem.name = item.name
+                                    newFoodItem.inStorageSince = Date()
+                                    newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+                                    newFoodItem.origion?.storageName = item.origion?.storageName
+                                    newFoodItem.origion?.symbolName = item.origion?.symbolName
+                                    newFoodItem.id = id
+                                    addToDailyGoal()
+                                    refreshDailyGoalAndStreak()
+                                    let center = UNUserNotificationCenter.current()
+                                    let content = UNMutableNotificationContent()
+                                    content.title = "Eat This Food Soon"
+                                    let date = Date()
+                                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
+                                    content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                                    content.sound = UNNotificationSound.default
+                                    var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                                    dateComponents.hour = 10
+                                    dateComponents.minute = 0
+                                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                                    print("dateComponents for notifs: \(dateComponents)")
+                                    let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                                    center.add(request)
+                                    Analytics.logEvent("addedFoodItem", parameters: nil)
+                                    do{
+                                        try self.managedObjectContext.save()
+                                    } catch let error{
+                                        print(error)
+                                    }
+                                    
+                                })
+                                ,.default(Text("Cancel"))
+                            ])
+                        })
+                    }
+                    if self.shoppingListItemTapped != nil {
+                        Text("")
+                        .actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
+                            ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this shopping list item"), buttons: [
+                                .default(Text("Delete"), action: {
+                                    self.managedObjectContext.delete(item)
+                                    try?self.managedObjectContext.save()
+                                })
+                                ,.default(Text("Duplicate"), action: {
+                                    let newShoppingListItem = ShoppingList(context: self.managedObjectContext)
+                                    newShoppingListItem.icon = item.wrappedIcon
+                                    newShoppingListItem.name = item.wrappedName
+                                    Analytics.logEvent("addedShoppingItem", parameters: nil)
+                                    do{
+                                        try self.managedObjectContext.save()
+                                    } catch let error{
+                                        print(error)
+                                    }
+                                    
+                                }),
+                                 .default(Text("Move to a storage location"), action: {
+                                    self.moveToStorageLocation = item
+                                 })
+                                ,.default(Text("Cancel"))
+                            ])
+                        })
+                    }
                                             
                 
             }
@@ -183,7 +292,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                     }
                     
                     
-                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user[0].didReviewThisMonth == false{
+                if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
                         rateApp()
                         
                         Analytics.logEvent("requestedReview", parameters: nil)
@@ -200,8 +309,8 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
 
 struct ShoppingListView: View{
     @State var showMoreInfoOnShoppingList = false
-    @State var moveToStorageLocation: ShoppingList? = nil
-    @State var shoppingListItemTapped: ShoppingList? = nil
+    @Binding var moveToStorageLocation: ShoppingList?
+    @Binding var shoppingListItemTapped: ShoppingList?
     @FetchRequest(entity: ShoppingList.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \ShoppingList.name, ascending: true)]) var shoppingList: FetchedResults<ShoppingList>
     @Environment(\.managedObjectContext) var managedObjectContext
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
@@ -231,13 +340,13 @@ struct ShoppingListView: View{
                             Image("plus")
                             }).padding()
                     }.padding(.horizontal)
-                        .sheet(isPresented: self.$refrigeratorViewModel.isInShoppingListItemAddingView, content: {AddToShoppingListSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext) })
-                    }
+                        
                 }
                 if self.showMoreInfoOnShoppingList{
                 Text(RemoteConfigManager.stringValue(forkey: RCKeys.shoppingListDescriptionHomeView.rawValue))
                     .font(.custom("SFProDisplayLight", size: 18))
                     .padding(.horizontal)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundColor(Color(hex: "878787"))
                     .animation(.spring())
                 }
@@ -253,37 +362,22 @@ struct ShoppingListView: View{
                     
                         
                     
-                }.actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
-                    ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this shopping list item"), buttons: [
-                        .default(Text("Delete"), action: {
-                            self.managedObjectContext.delete(item)
-                            try?self.managedObjectContext.save()
-                        })
-                        ,.default(Text("Duplicate"), action: {
-                            let newShoppingListItem = ShoppingList(context: self.managedObjectContext)
-                            newShoppingListItem.icon = item.wrappedIcon
-                            newShoppingListItem.name = item.wrappedName
-                            Analytics.logEvent("addedShoppingItem", parameters: nil)
-                            do{
-                                try self.managedObjectContext.save()
-                            } catch let error{
-                                print(error)
-                            }
-                            
-                        }),
-                         .default(Text("Move to a storage location"), action: {
-                            self.moveToStorageLocation = item
-                         })
-                        ,.default(Text("Cancel"))
-                    ])
-                })
-                    
-                .sheet(item: self.$moveToStorageLocation, content: { _ in
-                    MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext)
-                })
+                }
                     }
             }
         }
+            if self.refrigeratorViewModel.isInShoppingListItemAddingView{
+                Text("")
+                .sheet(isPresented: self.$refrigeratorViewModel.isInShoppingListItemAddingView, content: {AddToShoppingListSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext) })
+                }
+            if (self.moveToStorageLocation != nil){
+                Text("")
+            .sheet(item: self.$moveToStorageLocation, content: { _ in
+                MoveShoppingItemToStorageSheet(Item: self.$moveToStorageLocation).environment(\.managedObjectContext, self.managedObjectContext).environmentObject(refrigerator)
+            })
+            }
+        }
+        
     }
 }
 struct HomeViewiPad: View {
@@ -335,13 +429,18 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     @Binding var showingView: String?
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
-
     @State var shadowAmount = 0
-
+    @State var foodItemTapped: FoodItem? = nil
     @State var displayAmount = 0
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @State var showMoreInfoOnShoppingList = false
+    @State var showAddToShoppingListAlert: ShoppingListItem? = nil
+    @State var editFoodItem: FoodItem? = nil
 
+    
+    @State var moveToStorageLocation: ShoppingList? = nil
+    @State var shoppingListItemTapped: ShoppingList? = nil
+    
     var body: some View {
             GeometryReader { geo in
                 NavigationLink(destination: ExamineRecieptView(image: self.$image, showingView: self.$showingView, scan: self.$scan), tag: "results", selection: self.$showingView, label: {Text("")})
@@ -349,8 +448,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         VStack {
                              HomeViewDashboardFeatures(geo: geo, showingView: self.$showingView, scan: self.$scan, image: self.$image)
                             //MARK: FOODS TO EAT SOON
-                            FoodsToEatSoonView(geo: geo).padding()
-                            
+                            FoodsToEatSoonView(showAddToShoppingListAlert: self.$showAddToShoppingListAlert, foodItemTapped: self.$foodItemTapped, editFoodItem: self.$editFoodItem, geo: geo).padding()
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
                                     .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
@@ -358,7 +456,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                 
                             }
                             //MARK: SHOPPING LIST
-                            ShoppingListView().padding()
+                            ShoppingListView(moveToStorageLocation: self.$moveToStorageLocation, shoppingListItemTapped: self.$shoppingListItemTapped).padding()
                             
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
@@ -371,11 +469,120 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         
                         
                     }
-                    
+                if self.foodItemTapped != nil{
+                    Text("")
+                        .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
+                        ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
+                            .default(Text("Eat All"), action: {
+                                self.user.first?.foodsEaten += Int32(1)
+                                let center = UNUserNotificationCenter.current()
+                                center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
+                                self.managedObjectContext.delete(item)
+                                try? self.managedObjectContext.save()
+                                addToDailyGoal()
+                                refreshDailyGoalAndStreak()
+                                refreshDailyGoalAndStreak()
+                                
+                                
+                            })
+                            ,.default(Text("Throw Away"), action: {
+                                
+                                self.user.first?.foodsThrownAway += Int32(1)
+                                
+                                
+                                let center = UNUserNotificationCenter.current()
+                                center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
+                                self.managedObjectContext.delete(item)
+                                try? self.managedObjectContext.save()
+                            })
+                            ,.default(Text("Eat Some"), action: {
+                                print("ate some of \(item)")
+                                addToDailyGoal()
+                                refreshDailyGoalAndStreak()
+                            })
+                            ,.default(Text("Edit"), action: {
+                                self.editFoodItem = item
+                                addToDailyGoal()
+                                refreshDailyGoalAndStreak()
+                            })
+                            
+                            ,.default(Text("Duplicate"), action: {
+                                let id = UUID()
+                                let newFoodItem = FoodItem(context: self.managedObjectContext)
+                                newFoodItem.staysFreshFor = item.staysFreshFor
+                                if item.usesImage{
+                                    newFoodItem.usesImage = true
+                                    newFoodItem.image = item.image
+                                }else{
+                                    newFoodItem.symbol = item.symbol
+                                }
+                                newFoodItem.name = item.name
+                                newFoodItem.inStorageSince = Date()
+                                newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+                                newFoodItem.origion?.storageName = item.origion?.storageName
+                                newFoodItem.origion?.symbolName = item.origion?.symbolName
+                                newFoodItem.id = id
+                                addToDailyGoal()
+                                refreshDailyGoalAndStreak()
+                                let center = UNUserNotificationCenter.current()
+                                let content = UNMutableNotificationContent()
+                                content.title = "Eat This Food Soon"
+                                let date = Date()
+                                let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
+                                content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
+                                content.sound = UNNotificationSound.default
+                                var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
+                                dateComponents.hour = 10
+                                dateComponents.minute = 0
+                                let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                                print("dateComponents for notifs: \(dateComponents)")
+                                let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
+                                center.add(request)
+                                Analytics.logEvent("addedFoodItem", parameters: nil)
+                                do{
+                                    try self.managedObjectContext.save()
+                                } catch let error{
+                                    print(error)
+                                }
+                                
+                            })
+                            ,.default(Text("Cancel"))
+                        ])
+                    })
+                }
+                if self.shoppingListItemTapped != nil {
+                    Text("")
+                    .actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
+                        ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this shopping list item"), buttons: [
+                            .default(Text("Delete"), action: {
+                                self.managedObjectContext.delete(item)
+                                try?self.managedObjectContext.save()
+                            })
+                            ,.default(Text("Duplicate"), action: {
+                                let newShoppingListItem = ShoppingList(context: self.managedObjectContext)
+                                newShoppingListItem.icon = item.wrappedIcon
+                                newShoppingListItem.name = item.wrappedName
+                                Analytics.logEvent("addedShoppingItem", parameters: nil)
+                                do{
+                                    try self.managedObjectContext.save()
+                                } catch let error{
+                                    print(error)
+                                }
+                                
+                            }),
+                             .default(Text("Move to a storage location"), action: {
+                                self.moveToStorageLocation = item
+                             })
+                            ,.default(Text("Cancel"))
+                        ])
+                    })
+                }
                     
                                             
                 
             }
+        
             .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
                 .onAppear(perform: {
                     if self.user.first == nil {
@@ -422,14 +629,14 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
 
 struct FoodsToEatSoonView: View{
     @State var showEatActionSheet = false
-    @State var showAddToShoppingListAlert: ShoppingListItem? = nil
+    @Binding var showAddToShoppingListAlert: ShoppingListItem?
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
         print("Modified date: \(modifiedDate)")
         return modifiedDate
     }
-    @State var foodItemTapped: FoodItem? = nil
-    @State var editFoodItem: FoodItem? = nil
+    @Binding var foodItemTapped: FoodItem?
+    @Binding var editFoodItem: FoodItem?
     @State var showMoreInfoOnFoodsToEatSoon = false
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
@@ -487,8 +694,9 @@ struct FoodsToEatSoonView: View{
                                 }).padding()
                             }.padding(.horizontal)
                             if self.showMoreInfoOnFoodsToEatSoon {
-                                Text("Long press on any food item or shopping list item to see more options")
+                                Text("Tap on any food or shopping list item to toggle more options.")
                                     .padding()
+                                    .fixedSize(horizontal: false, vertical: true)
                                     .padding(.horizontal)
                                     .foregroundColor(Color(hex: "878787"))
                             }
@@ -508,9 +716,10 @@ struct FoodsToEatSoonView: View{
                         
                         NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
                         
-                        }.sheet(item: self.$editFoodItem, content: { item in
-                            EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
-                        })
+                        }
+//                        .sheet(item: self.$editFoodItem, content: { item in
+//                            EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+//                        })
                     }else if self.foodItem.count <= 9 && self.foodItem.count > 0 {
                         Group{
                         VStack(alignment: .leading){
@@ -549,9 +758,10 @@ struct FoodsToEatSoonView: View{
                         
                         NavigationLink(destination: SeeMoreView(), label: {Text("see more").foregroundColor(.blue).multilineTextAlignment(.leading)})
                         
-                        }.sheet(item: self.$editFoodItem, content: { item in
-                            EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
-                        })
+                        }
+//                        .sheet(item: self.$editFoodItem, content: { item in
+//                            EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+//                        })
                     }
                     else {
                         Text(RemoteConfigManager.stringValue(forkey: RCKeys.noFoodItemsText.rawValue))
@@ -575,85 +785,10 @@ struct FoodsToEatSoonView: View{
                             Analytics.logEvent("addedShoppingListItem", parameters: nil)
                         }), secondaryButton: .cancel(Text("Don't Add")))
                 })
-                .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
-                ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
-                    .default(Text("Eat All"), action: {
-                        self.user.first?.foodsEaten += Int32(1)
-                        let center = UNUserNotificationCenter.current()
-                        center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
-                        self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
-                        self.managedObjectContext.delete(item)
-                        try? self.managedObjectContext.save()
-                        addToDailyGoal()
-                        refreshDailyGoalAndStreak()
-                        refreshDailyGoalAndStreak()
-                        
-                        
-                    })
-                    ,.default(Text("Throw Away"), action: {
-                        
-                        self.user.first?.foodsThrownAway += Int32(1)
-                        
-                        
-                        let center = UNUserNotificationCenter.current()
-                        center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
-                        self.managedObjectContext.delete(item)
-                        try? self.managedObjectContext.save()
-                    })
-                    ,.default(Text("Eat Some"), action: {
-                        print("ate some of \(item)")
-                        addToDailyGoal()
-                        refreshDailyGoalAndStreak()
-                    })
-                    ,.default(Text("Edit"), action: {
-                        self.editFoodItem = item
-                        addToDailyGoal()
-                        refreshDailyGoalAndStreak()
-                    })
-                    
-                    ,.default(Text("Duplicate"), action: {
-                        let id = UUID()
-                        let newFoodItem = FoodItem(context: self.managedObjectContext)
-                        newFoodItem.staysFreshFor = item.staysFreshFor
-                        if item.usesImage{
-                            newFoodItem.usesImage = true
-                            newFoodItem.image = item.image
-                        }else{
-                            newFoodItem.symbol = item.symbol
-                        }
-                        newFoodItem.name = item.name
-                        newFoodItem.inStorageSince = Date()
-                        newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                        newFoodItem.origion?.storageName = item.origion?.storageName
-                        newFoodItem.origion?.symbolName = item.origion?.symbolName
-                        newFoodItem.id = id
-                        addToDailyGoal()
-                        refreshDailyGoalAndStreak()
-                        let center = UNUserNotificationCenter.current()
-                        let content = UNMutableNotificationContent()
-                        content.title = "Eat This Food Soon"
-                        let date = Date()
-                        let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
-                        content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
-                        content.sound = UNNotificationSound.default
-                        var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
-                        dateComponents.hour = 10
-                        dateComponents.minute = 0
-                        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-                        print("dateComponents for notifs: \(dateComponents)")
-                        let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
-                        center.add(request)
-                        Analytics.logEvent("addedFoodItem", parameters: nil)
-                        do{
-                            try self.managedObjectContext.save()
-                        } catch let error{
-                            print(error)
-                        }
-                        
-                    })
-                    ,.default(Text("Cancel"))
-                ])
-            })
+                
+                .sheet(item: self.$editFoodItem, content: { item in
+                                    EditFoodItemPopUpView(foodItem: item, icon: item.wrappedSymbol, title: item.wrappedName, lastsFor: Int(item.wrappedStaysFreshFor))
+                                })
         
         
     }
@@ -754,7 +889,7 @@ struct RemoteConfigManager {
                 return
             }
             print("Recieved Values From Remote Config")
-                        RemoteConfig.remoteConfig().activate(completionHandler: nil)
+                RemoteConfig.remoteConfig().activate(completionHandler: nil)
         }
     }
     
@@ -780,7 +915,7 @@ struct GADBannerViewController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let view = GADBannerView(adSize: kGADAdSizeBanner)
         let viewController = UIViewController()
-        view.adUnitID = AdUnitIDs.bannerTestID.rawValue
+        view.adUnitID = AdUnitIDs.bannerProductionID.rawValue
         view.rootViewController = viewController
         viewController.view.addSubview(view)
         viewController.view.frame = CGRect(origin: .zero, size: kGADAdSizeBanner.size)
@@ -866,3 +1001,6 @@ func addToDailyGoal(){
         Analytics.logEvent("errorSavingUserAddToDailyGoal", parameters: ["error": error.localizedDescription])
     }
 }
+
+
+    

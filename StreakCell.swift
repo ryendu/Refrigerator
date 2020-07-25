@@ -17,7 +17,7 @@ struct StreakCell: View {
     var body: some View {
         ZStack{
             Rectangle()
-                .fill(Color("whiteAndBlack"))
+                .fill(Color("whiteAndGray"))
                 .cornerRadius(20)
                 .shadow(color: Color("shadows"), radius: 4)
             VStack(alignment: .center){
