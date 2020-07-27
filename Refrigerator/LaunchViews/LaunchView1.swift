@@ -8,38 +8,59 @@
 
 import SwiftUI
 import ConcentricOnboarding
+import Firebase
 
 struct LaunchView1: View {
     @State var showNextView = false
     var body: some View {
-        //[Color(hex: "6A63FF"), Color(hex: "C463FF"), Color(hex: "4AD0FF")]
-        var onboarding =  ConcentricOnboardingView(pages: [AnyView(LaunchPageView1()), AnyView(LaunchView2()), AnyView(LaunchView3()),AnyView(LaunchView4()),AnyView(LaunchView405()),AnyView(LaunchView5())], bgColors: [Color(hex: "FFE5A1"), Color(hex: "FFACAC"), Color(hex: "B9FFAC"),Color(hex: "8DFFF2"), Color(hex: "FFE5A1"), Color(hex: "B9FFAC"),Color(hex: "FFACAC")])
-        onboarding.insteadOfCyclingToFirstPage = {
-            withTransaction(.init(animation: .default)){
-                self.showNextView = true
-            }
+//        var onboarding =  ConcentricOnboardingView(pages: [AnyView(LaunchPageView1()), AnyView(LaunchView2()), AnyView(LaunchView3()),AnyView(LaunchView4()),AnyView(LaunchView405()),AnyView(LaunchView5())], bgColors: [ , ,Color(hex: "8DFFF2"), Color(hex: "FFE5A1"), Color(hex: "B9FFAC"),Color(hex: "FFACAC")])
+//        onboarding.insteadOfCyclingToFirstPage = {
+//            withTransaction(.init(animation: .default)){
+//                self.showNextView = true
+//            }
+//        }
+        VStack{
+        if self.showNextView{
+             ZStack{
+                       if self.showNextView{
+                           Color("whiteAndBlack").edgesIgnoringSafeArea(.all)
+                       }
+
+                       if self.showNextView {
+                        if UIDevice.current.userInterfaceIdiom == .pad{
+                           IpadSidebarView().transition(.slide)
+                        }else if UIDevice.current.userInterfaceIdiom == .phone{
+                            TabBarView().transition(.slide)
+                        }
+                       }
+                   }
+        }else {
+             NavigationView{
+                LaunchPageView1(showNextView: self.$showNextView)
+            }.navigationViewStyle(StackNavigationViewStyle())
         }
-        
-        return ZStack{
-            if self.showNextView{
-                Color("whiteAndBlack").edgesIgnoringSafeArea(.all)
-            }
-            onboarding
-            
-            if self.showNextView {
-                TabBarView().transition(.slide)
-            }
-        }
+    }
     }
 }
 
+
+
 struct LaunchPageView1: View {
+    @Binding var showNextView: Bool
     @State var animationAmount:CGSize = CGSize(width: 0, height: 0)
+    @State private var name = ""
+    @State private var didFinishTyping = false
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @Environment(\.managedObjectContext) var managedObjectContext
     var body: some View {
-        ZStack{
-            GeometryReader{ geo in
+        return ZStack{
+            Color(hex: "FFE5A1").edgesIgnoringSafeArea(.all)
                     VStack {
-                        Text("Hey there, welcome to the Refrigerator App!")
+                        Spacer()
+                        
+                        Text("👋")
+                            .font(.custom("Open Sans", size: CGFloat(60))).padding()
+                        Text("Hey there, welcome to the Refrigerator App, whats your name?")
                             .font(.largeTitle)
                             .fontWeight(.semibold)
                             .foregroundColor(.black)
@@ -48,11 +69,51 @@ struct LaunchPageView1: View {
                             .padding(.horizontal, CGFloat(20))
                         
                         
+                        Spacer()
+                        TextField("name", text: $name)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal, 40)
+                        Spacer()
+                        
+                        NavigationLink(destination: LaunchView3(showNextView: self.$showNextView), label: {
+                            Image("Next button").renderingMode(.original).padding()
+                        })
+                        Spacer()
+                       
                         
                     }
                 
-            }
             
+        }.onDisappear{
+            self.user[0].name = self.name
+            do{
+                try self.managedObjectContext.save()
+            }catch{
+                print(error)
+            }
+        }
+        .onAppear{
+            if self.user.count == 0 {
+                let newUser = User(context: self.managedObjectContext)
+                newUser.name = self.name
+                newUser.dailyGoal = Int16(0)
+                newUser.streak = Int16(0)
+                do{
+                    try self.managedObjectContext.save()
+                }catch{
+                    print(error)
+                }
+            }else if self.user.count == 1{
+                self.name = self.user.first?.name ?? ""
+            }else {
+                Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
+                for indx in 0...self.user.count - 1{
+                    if indx != 0 {
+                        self.managedObjectContext.delete(self.user[indx])
+                        try? self.managedObjectContext.save()
+                    }
+                }
+            }
         }
         
         

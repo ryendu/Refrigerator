@@ -9,9 +9,11 @@
 import SwiftUI
 
 struct LaunchView5: View {
+    @Binding var showNextView: Bool
     var body: some View {
-        ZStack{
-                VStack {
+        return ZStack{
+            Color(hex: "B9FFAC").edgesIgnoringSafeArea(.all)
+            VStack {
                         
                         Spacer()
                     HStack{
@@ -29,14 +31,12 @@ struct LaunchView5: View {
                         .padding(.top, CGFloat())
                         .padding(.horizontal, CGFloat(20))
                     Spacer()
-                }
-           
-        }
+            Button(action: {
+                self.showNextView = true
+            }, label: {
+                Image("Next button").renderingMode(.original).padding()
+            })
+            }
     }
-}
-
-struct LaunchView5_Previews: PreviewProvider {
-    static var previews: some View {
-        LaunchView5()
     }
 }

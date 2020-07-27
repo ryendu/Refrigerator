@@ -111,8 +111,8 @@ struct PremiumView: View {
                 }
                 .onAppear{
                 
-                print("is product purchased: \(RefrigeratorProducts.store.isProductPurchased("com.ryandu.premiumsubscription"))")
-                if RefrigeratorProducts.store.isProductPurchased("com.ryandu.premiumsubscription"){
+                print("is product purchased: \(RefrigeratorProducts.store.isProductPurchased("com.ryandu.refrigerators.premiumsubscriptionm"))")
+                if RefrigeratorProducts.store.isProductPurchased("com.ryandu.refrigerators.premiumsubscriptionm"){
                     self.isPurchased = true
                 }else {
                     self.isPurchased = false

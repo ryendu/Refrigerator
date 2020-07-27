@@ -52,7 +52,6 @@
 		946C5693245A1D75007C2986 /* LaunchView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5692245A1D75007C2986 /* LaunchView1.swift */; };
 		946C5695245A20D3007C2986 /* LaunchView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5694245A20D3007C2986 /* LaunchView3.swift */; };
 		946C5697245A20E2007C2986 /* LaunchView4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5696245A20E2007C2986 /* LaunchView4.swift */; };
-		946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C5698245A20F7007C2986 /* LaunchView2.swift */; };
 		946C569B245A2104007C2986 /* LaunchView5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946C569A245A2104007C2986 /* LaunchView5.swift */; };
 		946D065D24C796B7006D74EC /* IpadSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946D065C24C796B7006D74EC /* IpadSidebarView.swift */; };
 		9470A49E2461E508006CBC6F /* AddToStorageItemSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */; };
@@ -155,7 +154,6 @@
 		946C5692245A1D75007C2986 /* LaunchView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView1.swift; sourceTree = "<group>"; };
 		946C5694245A20D3007C2986 /* LaunchView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView3.swift; sourceTree = "<group>"; };
 		946C5696245A20E2007C2986 /* LaunchView4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView4.swift; sourceTree = "<group>"; };
-		946C5698245A20F7007C2986 /* LaunchView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView2.swift; sourceTree = "<group>"; };
 		946C569A245A2104007C2986 /* LaunchView5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView5.swift; sourceTree = "<group>"; };
 		946D065C24C796B7006D74EC /* IpadSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpadSidebarView.swift; sourceTree = "<group>"; };
 		9470A49D2461E508006CBC6F /* AddToStorageItemSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToStorageItemSheet.swift; sourceTree = "<group>"; };
@@ -385,7 +383,6 @@
 			isa = PBXGroup;
 			children = (
 				946C5692245A1D75007C2986 /* LaunchView1.swift */,
-				946C5698245A20F7007C2986 /* LaunchView2.swift */,
 				946C5694245A20D3007C2986 /* LaunchView3.swift */,
 				946C5696245A20E2007C2986 /* LaunchView4.swift */,
 				946C569A245A2104007C2986 /* LaunchView5.swift */,
@@ -773,7 +770,6 @@
 				946A6D15245E09E0006845CC /* RefrigeratorView.swift in Sources */,
 				940F7F4D24C279E7006076AA /* FoodItemCellFoodPlannerSelection.swift in Sources */,
 				94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */,
-				946C5699245A20F7007C2986 /* LaunchView2.swift in Sources */,
 				946A6D1A245E09E0006845CC /* SeeMoreView.swift in Sources */,
 				946A6D1D245E09E0006845CC /* FunFactCell.swift in Sources */,
 				94408209249AFB0C006490AD /* FeedbackView.swift in Sources */,
@@ -952,7 +948,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
@@ -977,7 +973,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
 				ENABLE_PREVIEWS = YES;

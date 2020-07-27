@@ -9,16 +9,16 @@
 import SwiftUI
 
 struct LaunchView4: View {
-
+    @Binding var showNextView: Bool
     var body: some View {
-        ZStack{
-                VStack {
+        return ZStack{ Color(hex: "FFE5A1").edgesIgnoringSafeArea(.all)
+            VStack {
                         
-                        Spacer()
-                            Image(systemName: "doc.text.viewfinder")
-                                .font(.system(size: 50))
-                                .foregroundColor(.black)
-                                .padding()
+                    Spacer()
+                        Image(systemName: "doc.text.viewfinder")
+                            .font(.system(size: 50))
+                            .foregroundColor(.black)
+                            .padding()
                         Text("Scan reciepts and have foods to be automatically added to your storage locations.")
                         .font(.largeTitle)
                         .fontWeight(.semibold)
@@ -26,11 +26,11 @@ struct LaunchView4: View {
                         .multilineTextAlignment(.center)
                         .padding(.top, CGFloat())
                         .padding(.horizontal, CGFloat(20))
-                        
-                       
-                    Spacer()
+                        Spacer()
+                       NavigationLink(destination: LaunchView5(showNextView: self.$showNextView), label: {
+                           Image("Next button").renderingMode(.original).padding()
+                       })
                 }
-           
         }
     }
 }
@@ -38,10 +38,32 @@ struct LaunchView4: View {
 struct LaunchView405: View {
 
     var body: some View {
-        ZStack{
-                VStack {
-                        
-                        Spacer()
+        return ZStack{
+            Color(hex: "8DFFF2").edgesIgnoringSafeArea(.all)
+            VStack {
+                    
+                    Spacer()
+                HStack{
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 50))
+                            .foregroundColor(.black)
+                            .padding()
+                    Image(systemName: "sparkles")
+                    .font(.system(size: 50))
+                    .foregroundColor(.black)
+                    .padding()
+                    Image(systemName: "sparkles")
+                    .font(.system(size: 50))
+                    .foregroundColor(.black)
+                    .padding()
+                }
+                    Text("Plan for the future with the food planner.")
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, CGFloat())
+                    .padding(.horizontal, CGFloat(20))
                     HStack{
                             Image(systemName: "sparkles")
                                 .font(.system(size: 50))
@@ -56,37 +78,9 @@ struct LaunchView405: View {
                         .foregroundColor(.black)
                         .padding()
                     }
-                        Text("Plan for the future with the food planner.")
-                        .font(.largeTitle)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.black)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, CGFloat())
-                        .padding(.horizontal, CGFloat(20))
-                        HStack{
-                                Image(systemName: "sparkles")
-                                    .font(.system(size: 50))
-                                    .foregroundColor(.black)
-                                    .padding()
-                            Image(systemName: "sparkles")
-                            .font(.system(size: 50))
-                            .foregroundColor(.black)
-                            .padding()
-                            Image(systemName: "sparkles")
-                            .font(.system(size: 50))
-                            .foregroundColor(.black)
-                            .padding()
-                        }
-                       
-                    Spacer()
-                }
-           
+                    
+                Spacer()
+            }
         }
-    }
-}
-
-struct LaunchView4_Previews: PreviewProvider {
-    static var previews: some View {
-        LaunchView4()
     }
 }

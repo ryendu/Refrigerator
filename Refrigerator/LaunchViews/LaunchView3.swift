@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct LaunchView3: View {
-    @State var showNextView = false
-    
+    @Binding var showNextView: Bool
     var body: some View {
-        ZStack{
+        return ZStack{
+            Color(hex: "B9FFAC").edgesIgnoringSafeArea(.all)
             VStack {
                 
                 Spacer()
@@ -30,9 +30,13 @@ struct LaunchView3: View {
                 
                
             Spacer()
+            
+            NavigationLink(destination: LaunchView4(showNextView: self.$showNextView), label: {
+                Image("Next button").renderingMode(.original).padding()
+            })
+        }
         }
         
         
-    }
 }
 }
