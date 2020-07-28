@@ -5,7 +5,6 @@
 //  Created by Ryan Du on 5/2/20.
 //  Copyright © 2020 Ryan Du. All rights reserved.
 //
-import SwiftUICharts
 import Combine
 import SwiftUI
 import GoogleMobileAds

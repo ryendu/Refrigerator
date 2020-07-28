@@ -39,6 +39,7 @@
 		94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94598D1E2458E23000456333 /* LaunchScreen.storyboard */; };
 		94598D2B2458E23100456333 /* RefrigeratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D2A2458E23100456333 /* RefrigeratorTests.swift */; };
 		94598D362458E23100456333 /* RefrigeratorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94598D352458E23100456333 /* RefrigeratorUITests.swift */; };
+		9467D07024D061000058B89F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9467D06F24D061000058B89F /* StoreKit.framework */; };
 		946A6D15245E09E0006845CC /* RefrigeratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0B245E09DF006845CC /* RefrigeratorView.swift */; };
 		946A6D16245E09E0006845CC /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0C245E09DF006845CC /* Models.swift */; };
 		946A6D17245E09E0006845CC /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946A6D0D245E09DF006845CC /* TabBarView.swift */; };
@@ -65,7 +66,6 @@
 		9482EE2B2476FF8800704674 /* detectItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9482EE2A2476FF8800704674 /* detectItemCell.swift */; };
 		9482EE2E2479A5B400704674 /* ShoppingList+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9482EE2C2479A5B400704674 /* ShoppingList+CoreDataClass.swift */; };
 		9482EE2F2479A5B400704674 /* ShoppingList+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9482EE2D2479A5B400704674 /* ShoppingList+CoreDataProperties.swift */; };
-		9482EE34247B077000704674 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 9482EE33247B077000704674 /* SwiftUICharts */; };
 		9486CC8124CA646A008B94E2 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9486CC8024CA6469008B94E2 /* IAPHelper.swift */; };
 		9486CC8324CA6643008B94E2 /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9486CC8224CA6643008B94E2 /* PremiumView.swift */; };
 		948BCDFC245E7F4E00ED10A2 /* AboutDialougView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */; };
@@ -141,6 +141,7 @@
 		94598D312458E23100456333 /* RefrigeratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefrigeratorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		94598D352458E23100456333 /* RefrigeratorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefrigeratorUITests.swift; sourceTree = "<group>"; };
 		94598D372458E23100456333 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9467D06F24D061000058B89F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		946A6D0B245E09DF006845CC /* RefrigeratorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefrigeratorView.swift; sourceTree = "<group>"; };
 		946A6D0C245E09DF006845CC /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		946A6D0D245E09DF006845CC /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
@@ -188,10 +189,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9482EE34247B077000704674 /* SwiftUICharts in Frameworks */,
 				94311E0024C3BF3600F8671B /* CloudKit.framework in Frameworks */,
 				6BC3E3E935E6A2F9201172EA /* Pods_Refrigerator.framework in Frameworks */,
 				94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */,
+				9467D07024D061000058B89F /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +218,7 @@
 		573CE28C0F4EBBEC0CD09FEC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9467D06F24D061000058B89F /* StoreKit.framework */,
 				94311DFF24C3BF3600F8671B /* CloudKit.framework */,
 				94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */,
 				80C4032977C3A5BFB255F727 /* Pods_Refrigerator.framework */,
@@ -460,7 +462,6 @@
 			);
 			name = Refrigerator;
 			packageProductDependencies = (
-				9482EE33247B077000704674 /* SwiftUICharts */,
 			);
 			productName = Refrigerator;
 			productReference = 94598D0D2458E22700456333 /* Refrigerators.app */;
@@ -948,7 +949,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
@@ -973,7 +974,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
 				ENABLE_PREVIEWS = YES;
@@ -1129,14 +1130,6 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		9482EE33247B077000704674 /* SwiftUICharts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9482EE32247B077000704674 /* XCRemoteSwiftPackageReference "ChartView" */;
-			productName = SwiftUICharts;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		94598D142458E22700456333 /* Refrigerator.xcdatamodeld */ = {

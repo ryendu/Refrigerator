@@ -616,7 +616,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                     }
                     
                     
-                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user[0].didReviewThisMonth == false{
+                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
                         rateApp()
                         
                         Analytics.logEvent("requestedReview", parameters: nil)
