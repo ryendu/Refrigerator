@@ -32,7 +32,8 @@ struct IpadSidebarView: View {
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @Environment(\.managedObjectContext) var managedObjectContext
     var body: some View{
-        NavigationView{
+        ZStack{
+            NavigationView{
             ZStack{
                 ScrollView{
                     VStack{
@@ -92,13 +93,16 @@ struct IpadSidebarView: View {
                         .font(.headline)
                         .navigationBarTitle(Text("Refrigerators"))
                     
-                    if self.showingView == "scanner" {
-                        makeScannerView()
-                    }
+                    
                     Spacer()
                 }
+                
             }
         }.navigationViewStyle(DoubleColumnNavigationViewStyle()).accentColor(.orange)
+            if self.showingView == "scanner" {
+                makeScannerView()
+            }
+        }
     }
 }
 
