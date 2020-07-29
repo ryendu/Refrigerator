@@ -261,7 +261,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
             
             .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
             .onAppear(perform: {
-                if self.user.first == nil {
+                if self.user.count < 1 {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
                         if UserDefaults.standard.string(forKey: "name") != "" {
@@ -271,17 +271,22 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         newUser.foodsThrownAway = Int32(0)
                         newUser.dailyGoal = Int16(0)
                         newUser.streak = Int16(0)
-                        try? self.managedObjectContext.save()
+                    do{
+                        try self.managedObjectContext.save()
+                    }catch{
+                        print(error)
+                        Analytics.logEvent("errorSavingNewUser", parameters: ["error": error.localizedDescription ?? ""])
+                    }
                     }else if self.user.count == 1{
                         
-                    }else {
+                }else if self.user.count > 1{
                         Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
-                        for indx in 0...self.user.count - 1{
-                            if indx != 0 {
-                                self.managedObjectContext.delete(self.user[indx])
-                                try? self.managedObjectContext.save()
-                            }
-                        }
+//                        for indx in 0...self.user.count - 1{
+//                            if indx != 0 {
+//                                self.managedObjectContext.delete(self.user[indx])
+//                                try? self.managedObjectContext.save()
+//                            }
+//                        }
                     }
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
                         if success {
@@ -585,8 +590,9 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
             }
         
             .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
+                
                 .onAppear(perform: {
-                    if self.user.first == nil {
+                    if self.user.count < 1 {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
                         if UserDefaults.standard.string(forKey: "name") != "" {
@@ -596,17 +602,22 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         newUser.foodsThrownAway = Int32(0)
                         newUser.dailyGoal = Int16(0)
                         newUser.streak = Int16(0)
-                        try? self.managedObjectContext.save()
+                    do{
+                        try self.managedObjectContext.save()
+                    }catch{
+                        print(error)
+                        Analytics.logEvent("errorSavingNewUser", parameters: ["error": error.localizedDescription ?? ""])
+                    }
                     }else if self.user.count == 1{
                         
-                    }else {
+                    }else if self.user.count > 1{
                         Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
-                        for indx in 0...self.user.count - 1{
-                            if indx != 0 {
-                                self.managedObjectContext.delete(self.user[indx])
-                                try? self.managedObjectContext.save()
-                            }
-                        }
+//                        for indx in 0...self.user.count - 1{
+//                            if indx != 0 {
+//                                self.managedObjectContext.delete(self.user[0])
+//                                try? self.managedObjectContext.save()
+//                            }
+//                        }
                     }
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
                         if success {
@@ -617,12 +628,13 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                     }
                     
                     
-                    if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
+                if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
                         rateApp()
                         
                         Analytics.logEvent("requestedReview", parameters: nil)
                     }
                 })
+                
         .navigationBarBackButtonHidden(true)
         
     }
@@ -916,7 +928,7 @@ struct GADBannerViewController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let view = GADBannerView(adSize: kGADAdSizeBanner)
         let viewController = UIViewController()
-        view.adUnitID = AdUnitIDs.bannerTestID.rawValue
+        view.adUnitID = AdUnitIDs.bannerProductionID.rawValue
         view.rootViewController = viewController
         viewController.view.addSubview(view)
         viewController.view.frame = CGRect(origin: .zero, size: kGADAdSizeBanner.size)

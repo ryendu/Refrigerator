@@ -86,7 +86,7 @@ struct LaunchPageView1: View {
                 
             
         }.onDisappear{
-            self.user[0].name = self.name
+            self.user.first?.name = self.name
             do{
                 try self.managedObjectContext.save()
             }catch{
@@ -94,27 +94,6 @@ struct LaunchPageView1: View {
             }
         }
         .onAppear{
-            if self.user.count == 0 {
-                let newUser = User(context: self.managedObjectContext)
-                newUser.name = self.name
-                newUser.dailyGoal = Int16(0)
-                newUser.streak = Int16(0)
-                do{
-                    try self.managedObjectContext.save()
-                }catch{
-                    print(error)
-                }
-            }else if self.user.count == 1{
-                self.name = self.user.first?.name ?? ""
-            }else {
-                Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
-                for indx in 0...self.user.count - 1{
-                    if indx != 0 {
-                        self.managedObjectContext.delete(self.user[indx])
-                        try? self.managedObjectContext.save()
-                    }
-                }
-            }
         }
         
         

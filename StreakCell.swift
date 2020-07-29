@@ -52,13 +52,13 @@ struct StreakCell: View {
                     .padding()
             }
             .onAppear{
-                self.streak = Int(self.user[0].streak)
+                self.streak = Int(self.user.first?.streak ?? 0)
             }
             .onReceive(NotificationCenter.default.publisher(for: .refreshStreak)) {_ in
 
                 DispatchQueue.main.asyncAfter(deadline: .now()) {
                     withAnimation(.interpolatingSpring(stiffness: 4, damping: 1)){
-                        self.streak = Int(self.user[0].streak)
+                        self.streak = Int(self.user.first?.streak ?? 0)
                     }
                }
             }

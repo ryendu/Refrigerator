@@ -93,9 +93,9 @@ struct SettingsView: View{
                         }else {
                             HStack{
                                 Stepper(value: self.$remindDate, in: 1...100) {
-                                    Text("Be reminded of your food's expiration date")
+                                    Text("Be reminded of your food's expiration date \(self.remindDate) days before its expiration date")
                                 }
-                                Text("Days before its expiration date").padding()
+                                
                                 
                                 Button(action: {
                                     self.user.first?.remindDate = Int16(self.remindDate)
@@ -153,7 +153,7 @@ struct SettingsView: View{
         }.navigationViewStyle(StackNavigationViewStyle())
             .onAppear{
                 self.remindDate = Int(self.user.first?.remindDate ?? 2)
-                self.name = self.user[0].name ?? ""
+                self.name = self.user.first?.name ?? ""
         }
     }
 }

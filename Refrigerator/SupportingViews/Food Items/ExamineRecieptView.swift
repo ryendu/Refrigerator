@@ -332,18 +332,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                 }
                                 
                                 
-                                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 3 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "ExamineRecieptViewLoadedAd") == false && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                                    self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
-                                    self.interstitial.delegate = self.adDelegate
-                                    
-                                    let req = GADRequest()
-                                    self.interstitial.load(req)
-                                    
-                                    UserDefaults.standard.set(true, forKey: "ExamineRecieptViewLoadedAd")
-                                    
-                                }else {
-                                    
-                                }
+                                
                                 
                                 
                                 

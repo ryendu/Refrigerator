@@ -53,7 +53,7 @@ struct DailyGoalCell: View {
                     
             }
             .onAppear{
-                self.goalStatus = Int(self.user[0].dailyGoal)
+                self.goalStatus = Int(self.user.first?.dailyGoal ?? 0)
             }
         .onReceive(NotificationCenter.default.publisher(for: .refreshDailyGoal)) {_ in
 
@@ -68,7 +68,7 @@ struct DailyGoalCell: View {
     }
     func refresh() {
         withAnimation(.interpolatingSpring(stiffness: 4, damping: 1)){
-            self.goalStatus = Int(self.user[0].dailyGoal)
+            self.goalStatus = Int(self.user.first?.dailyGoal ?? 0)
         }
     }
 }
