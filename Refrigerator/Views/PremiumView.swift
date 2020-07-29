@@ -21,11 +21,17 @@ struct PremiumView: View {
                 VStack{
                     Divider().padding()
                     HStack{
-                        Text("Premium Features")
+                        Text("Premium Subscription")
                             .font(.system(size: 32))
                             .fontWeight(.medium)
                             .padding()
                         Spacer()
+                        Button(action: {
+                            RefrigeratorProducts.store.restorePurchases()
+                            print("Restoring Purchases")
+                        },label: {
+                            Text("Restore").padding()
+                        })
                     }
                     
                     HStack{
@@ -89,26 +95,39 @@ struct PremiumView: View {
                     }
                     
                     Text("auto-renewing subscription")
-                        .font(.system(size: 17))
+                        .font(.system(size: 20))
                         .foregroundColor(.gray)
                         .padding()
-                    Text("$\(self.refrigeratorViewModel.premiumPrice) per month")
-                    .font(.system(size: 17))
+                    Text("\(self.refrigeratorViewModel.premiumPrice) per month")
+                    .font(.system(size: 20))
                     .foregroundColor(.gray)
                     .padding()
                 }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .purchased)) {_ in
-                    DispatchQueue.main.asyncAfter(deadline: .now()) {
-                        self.isPurchased = true
-                    }
-                }
                     
-                .onReceive(NotificationCenter.default.publisher(for: .premiumPriceGot)) { e in
+                HStack{
+                    Button(action: {
+                        UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/terms.html")!)
+                    }, label: {
+                        Text("Terms And Conditions")
+                    })
+                    Text("and").padding()
+                    Button(action: {
+                        UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/privacy.html")!)
+                    }, label: {
+                        Text("Privacy Policy")
+                    })
+                }
+                
+                .onReceive(NotificationCenter.default.publisher(for: .premiumPriceGot)) { _ in
                     DispatchQueue.main.asyncAfter(deadline: .now()) {
-                        self.refrigeratorViewModel.premiumPrice = (e.object as? String ?? "1.99")
+                        
+                        self.refrigeratorViewModel.premiumPrice = self.products.first?.regularPrice ?? "$0.99"
+                    
                     }
                 }
+                
+            }
+            
                 .onAppear{
                 
                 print("is product purchased: \(RefrigeratorProducts.store.isProductPurchased("com.ryandu.refrigerators.premiumsubscriptionm"))")
@@ -117,18 +136,32 @@ struct PremiumView: View {
                 }else {
                     self.isPurchased = false
                 }
+                    print("on appear")
                 RefrigeratorProducts.store.requestProducts{ success, products in
                     
                     if success {
                         if let producs = products{
                         self.products = producs
-                            print("Products found: \(self.products.first?.productIdentifier)")
+                            print("Products found: \(String(describing: self.products.first?.productIdentifier))")
+                        }else {
+                            print("Didnt find products")
                         }
+                        
+                        
+                    }else {
+                        print("error getting products")
                     }
                 }
                 
             }
         }.navigationBarTitle(Text("Upgrade to Premium"))
+        .onReceive(NotificationCenter.default.publisher(for: .purchased)) {_ in
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                self.isPurchased = true
+            }
+        }
+
+        
     }
 }
 

@@ -250,7 +250,6 @@
 				940F7F4E24C2959B006076AA /* FoodPlannerMeal+CoreDataProperties.swift */,
 				9473C71324C14165008BB219 /* FoodPlanner+CoreDataClass.swift */,
 				9473C71124C14165008BB219 /* FoodPlanner+CoreDataProperties.swift */,
-				948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */,
 				9482EE2C2479A5B400704674 /* ShoppingList+CoreDataClass.swift */,
 				9482EE2D2479A5B400704674 /* ShoppingList+CoreDataProperties.swift */,
 				9444E64A24673137006B6215 /* StorageLocation+CoreDataClass.swift */,
@@ -346,6 +345,7 @@
 		946A6D22245E0A1C006845CC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				948BCDFB245E7F4E00ED10A2 /* AboutDialougView.swift */,
 				946A6D0F245E09DF006845CC /* HomeView.swift */,
 				946D065C24C796B7006D74EC /* IpadSidebarView.swift */,
 				946A6D0E245E09DF006845CC /* SettingsView.swift */,
@@ -949,12 +949,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = "11['";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Refrigerator/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -974,11 +975,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = "11['";
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Refrigerator/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

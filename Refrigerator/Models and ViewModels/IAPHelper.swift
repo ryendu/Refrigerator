@@ -100,7 +100,7 @@ extension IAPHelper: SKProductsRequestDelegate {
     for p in products {
       print("Found product: \(p.productIdentifier) \(p.localizedTitle) \(p.price.floatValue)")
         DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .premiumPriceGot, object: p.price.stringValue)
+            NotificationCenter.default.post(name: .premiumPriceGot, object: nil)
         }
     }
   }
@@ -191,3 +191,12 @@ extension Notification.Name {
     }
 }
  
+extension SKProduct {
+    /// - returns: The cost of the product formatted in the local currency.
+    var regularPrice: String? {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = self.priceLocale
+        return formatter.string(from: self.price)
+    }
+}

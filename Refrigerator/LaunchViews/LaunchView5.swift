@@ -31,12 +31,44 @@ struct LaunchView5: View {
                         .padding(.top, CGFloat())
                         .padding(.horizontal, CGFloat(20))
                     Spacer()
-            Button(action: {
-                self.showNextView = true
-            }, label: {
+            NavigationLink(destination: LaunchView6(showNextView: self.$showNextView), label: {
                 Image("Next button").renderingMode(.original).padding()
             })
             }
     }
+    }
+}
+
+struct LaunchView6: View {
+    @Binding var showNextView: Bool
+    var body: some View {
+        return ZStack{ Color(hex: "FFE5A1").edgesIgnoringSafeArea(.all)
+            VStack {
+                        
+                    Spacer()
+                        Image(systemName: "doc.text.viewfinder")
+                            .font(.system(size: 50))
+                            .foregroundColor(.black)
+                            .padding()
+                        Text("Get started today for free, or subscribe to premium to access all features.")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, CGFloat())
+                        .padding(.horizontal, CGFloat(20))
+                        Spacer()
+                
+                NavigationLink(destination: PremiumView(), label: {
+                    Image("CheckoutPremium").renderingMode(.original)
+                    }).padding()
+                Text("Or").font(.title).fontWeight(.bold).padding()
+                       Button(action: {
+                           self.showNextView = true
+                       }, label: {
+                           Image("Next button").renderingMode(.original).padding()
+                       })
+                }
+        }
     }
 }

@@ -34,9 +34,7 @@ struct IpadSidebarView: View {
     var body: some View{
         ZStack{
             NavigationView{
-            ZStack{
-                ScrollView{
-                    VStack{
+                    List{
                         NavigationLink(destination: HomeViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
                             HStack{
                                 Image(systemName: "house").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
@@ -46,16 +44,16 @@ struct IpadSidebarView: View {
                                 Spacer()
                             }
                         }).tag(0)
-                        NavigationLink(destination: RefrigeratorViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image).environmentObject(refrigerator), label: {
+                        NavigationLink(destination: RefrigeratorViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
                             HStack{
                                 Image(systemName: "square.grid.2x2").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 Text("Refrigerators")
                                     .foregroundColor(Color("blackAndWhite"))
                                     .padding()
-                                 Spacer()
+                                Spacer()
                             }
                         }).tag(0)
-                        NavigationLink(destination: FoodPlannerViewiPad(trackDate: refrigerator.trackDate).environmentObject(refrigerator), label: {
+                        NavigationLink(destination: FoodPlannerViewiPad(trackDate: refrigerator.trackDate), label: {
                             HStack{
                                 Image(systemName: "calendar").foregroundColor(.orange).font(.system(size: 26)).padding(.vertical).padding(.leading)
                                 
@@ -65,7 +63,7 @@ struct IpadSidebarView: View {
                                 Spacer()
                             }
                         }).tag(0)
-                        NavigationLink(destination: SettingsViewiPad(), label: {
+                        NavigationLink(destination: SettingsView(), label: {
                             HStack{
                                 Image(systemName: "gear").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 
@@ -75,30 +73,24 @@ struct IpadSidebarView: View {
                                 Spacer()
                             }
                         }).tag(0)
-                        
-                        Divider().padding()
-                        
+                                                
                         if storageLocation.count > 0{
-                        ForEach(self.storageLocation, id: \.self) { item in
-                                                    
-                            NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item, showingView: self.$showingView, scan: self.$scan, image: self.$image ).environment(\.managedObjectContext, self.managedObjectContext)) {
-                                StorageLocationCell(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: item.foodItemArray.count, storageLocationTitle: item.wrappedStorageName, storage: item).environment(\.managedObjectContext, self.managedObjectContext)
+                            ForEach(self.storageLocation, id: \.self) { item in
+                                
+                                NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item, showingView: self.$showingView, scan: self.$scan, image: self.$image ).environment(\.managedObjectContext, self.managedObjectContext)) {
+                                    StorageLocationCellSideBar(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: item.foodItemArray.count, storageLocationTitle: item.wrappedStorageName, storage: item).environment(\.managedObjectContext, self.managedObjectContext)
                                 }.buttonStyle(PlainButtonStyle())
-
-
-                        }.padding(.leading)
+                                
+                                
+                            }.padding(.leading)
                         }
-                    }.accentColor(.orange)
-                        .navigationBarBackButtonHidden(true)
-                        .font(.headline)
-                        .navigationBarTitle(Text("Refrigerators"))
-                    
-                    
-                    Spacer()
-                }
-                
+                    }
+                .accentColor(.orange)
+                .navigationBarTitle(Text("Refrigerators"))
             }
-        }.navigationViewStyle(DoubleColumnNavigationViewStyle()).accentColor(.orange)
+                .listStyle(PlainListStyle())
+            .navigationBarBackButtonHidden(true)
+            .navigationViewStyle(DoubleColumnNavigationViewStyle()).accentColor(.orange)
             if self.showingView == "scanner" {
                 makeScannerView()
             }

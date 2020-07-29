@@ -250,7 +250,7 @@ struct FoodPlannerViewiPad: View {
                         })
                         
                     }
-                    .navigationBarTitle("Food Planner")
+                    .navigationBarTitle(Text("Food Planner"))
                         .onAppear(perform: {
                             self.updateSelfDate()
                             

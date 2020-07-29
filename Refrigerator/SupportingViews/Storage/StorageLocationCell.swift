@@ -74,3 +74,51 @@ struct StorageLocationCell: View {
 }
 
 
+
+
+struct StorageLocationCellSideBar: View {
+    
+    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
+    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @State var isShowingActionSheet = false
+    var storageLocationIcon: String
+    var storageLocationNumberOfItems: Int
+    var storageLocationTitle: String
+    var storage: StorageLocation
+    var body: some View {
+         HStack {
+                
+                   HStack {
+                    Image(storageLocationIcon)
+                        .padding(.horizontal)
+                    
+                           
+                       VStack {
+                        HStack {
+                            Text("\(String(storageLocationNumberOfItems)) items")
+                                .font(.custom("SFProDisplay", size: 16))
+                            .foregroundColor(.gray)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                           HStack {
+                            Text(storageLocationTitle)
+                                   .font(.custom("SFProDisplay", size: 23))
+                                   .multilineTextAlignment(.leading)
+                               Spacer()
+                           }
+//                            .padding(.bottom)
+                           
+                       }
+                       Spacer()
+                    
+                       }
+                   .padding()
+//
+//                   .padding(.bottom)
+               }
+
+    }
+}
+

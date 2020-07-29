@@ -380,6 +380,7 @@ struct ShoppingListView: View{
         
     }
 }
+
 struct HomeViewiPad: View {
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
@@ -915,7 +916,7 @@ struct GADBannerViewController: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         let view = GADBannerView(adSize: kGADAdSizeBanner)
         let viewController = UIViewController()
-        view.adUnitID = AdUnitIDs.bannerProductionID.rawValue
+        view.adUnitID = AdUnitIDs.bannerTestID.rawValue
         view.rootViewController = viewController
         viewController.view.addSubview(view)
         viewController.view.frame = CGRect(origin: .zero, size: kGADAdSizeBanner.size)
