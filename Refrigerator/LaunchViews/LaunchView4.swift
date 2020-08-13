@@ -19,7 +19,7 @@ struct LaunchView4: View {
                             .font(.system(size: 50))
                             .foregroundColor(.black)
                             .padding()
-                        Text("Scan reciepts and have foods to be automatically added to your storage locations.")
+                        Text("Scan reciepts and have foods be automatically added to your storage locations.")
                         .font(.largeTitle)
                         .fontWeight(.semibold)
                         .foregroundColor(.black)

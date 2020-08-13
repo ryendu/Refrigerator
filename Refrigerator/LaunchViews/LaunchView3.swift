@@ -20,7 +20,7 @@ struct LaunchView3: View {
                         .font(.system(size: 50))
                         .foregroundColor(.black)
                         .padding()
-                Text("Get Greeted with a daily streak & goal and add food items with a few taps from the Home page.")
+                Text("Get Greeted with a daily streak & goal. Add new food items with just a few taps from the Home page.")
                 .font(.largeTitle)
                 .fontWeight(.semibold)
                 .foregroundColor(.black)
