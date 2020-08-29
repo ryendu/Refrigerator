@@ -127,6 +127,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                             NavigationLink(destination: ExamineRecieptView(image: self.$image, showingView: self.$showingView, scan: self.$scan), tag: "results", selection: self.$showingView, label: {Text("")})
                             //MARK: FOODS TO EAT SOON
                             FoodsToEatSoonView(showAddToShoppingListAlert: self.$showAddToShoppingListAlert, foodItemTapped: self.$foodItemTapped, editFoodItem: self.$editFoodItem, geo: geo).padding()
+
                             
                             if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                                 GADBannerViewController()
@@ -628,7 +629,14 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                     
                     
                 if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
+
                         rateApp()
+                        let now = Calendar.current.dateComponents(in: .current, from: Date())
+                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
+                        let date = Calendar.current.date(from: tomorrow)
+                        let midnight = Calendar.current.startOfDay(for: date!)
+                        UserDefaults.standard.set(midnight, forKey: "InAMonth")
+                        UserDefaults.standard.set(false, forKey: "didReviewThisMonth")
                         
                         Analytics.logEvent("requestedReview", parameters: nil)
                     }
@@ -934,12 +942,19 @@ struct GADBannerViewController: UIViewControllerRepresentable {
         view.load(GADRequest())
         return viewController
     }
+    
     func adViewDidReceiveAd(_ bannerView: GADBannerView) {
         bannerView.alpha = 0
         UIView.animate(withDuration: 1, animations: {
             bannerView.alpha = 1
         })
     }
+    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
+        let gadErrorCode = GADErrorCode(rawValue: error.code)
+        print("gadErrorCode: \(gadErrorCode)")
+        Analytics.logEvent("gadErrorCode", parameters: ["gadErrorCode": gadErrorCode])
+    }
+    
     
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }

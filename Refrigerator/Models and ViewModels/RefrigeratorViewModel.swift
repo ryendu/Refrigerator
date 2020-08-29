@@ -26,6 +26,7 @@ enum RCKeys: String {
     case requestReview
     case feedbackViewMessage
     case requestReviewPeriod
+    case chanceOfReview
 }
 enum AdUnitIDs: String{
     case bannerTestID = "ca-app-pub-3940256099942544/2934735716"
@@ -42,7 +43,9 @@ class RefrigeratorViewModel: ObservableObject {
         "noFoodItemsText" : "Start by adding a food to one of your fridges by going to the Refrigerator Tab in the middle down below 👇." as NSObject,
         "numberOfAdsNonHomeView" : 6 as NSObject,
         "chanceOfBanners" : 0.25 as NSObject,
-        "requestReview" : false as NSObject, RCKeys.feedbackViewMessage.rawValue: "Hey there! If you have anything you like, or dislike about this app, please do send us some feedback and know that we will read it and either be happy with your positive response, or do the best we can to fix any errors, or things you suggest us to change. :) But DO feel free to review us on the app store! And please do!" as NSObject, RCKeys.requestReviewPeriod.rawValue: 40 as NSObject])
+        "requestReview" : false as NSObject, RCKeys.feedbackViewMessage.rawValue: "Hey there! If you have anything you like, or dislike about this app, please do send us some feedback and know that we will read it and either be happy with your positive response, or do the best we can to fix any errors, or things you suggest us to change. :) But DO feel free to review us on the app store! And please do!" as NSObject, RCKeys.requestReviewPeriod.rawValue: 40 as NSObject,
+        "chanceOfReview": 0.2 as NSObject
+    ])
     @Published var percentDone = 0.0
     @Published var images = [CGImage]()
     @Published var presentScanner = false

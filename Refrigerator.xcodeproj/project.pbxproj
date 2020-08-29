@@ -76,6 +76,7 @@
 		94A2C7AD247EDC1D003DC68B /* EditFoodItemPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */; };
 		94A2C7AF247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */; };
 		94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */; };
+
 		94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */; };
 		94EE905324BFAD5B000C2FC2 /* DailyGoalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EE905224BFAD5B000C2FC2 /* DailyGoalCell.swift */; };
 /* End PBXBuildFile section */
@@ -299,8 +300,8 @@
 				94EA3D37245B5D03001FCB5A /* LaunchViews */,
 				94598D192458E23000456333 /* Assets.xcassets */,
 				94598D1E2458E23000456333 /* LaunchScreen.storyboard */,
-				949C1EC7247EAE180064D326 /* GoogleService-Info.plist */,
 				94598D212458E23000456333 /* Info.plist */,
+				94D7C79F24A4007B00B6E2C5 /* GoogleService-Info.plist */,
 				94598D142458E22700456333 /* Refrigerator.xcdatamodeld */,
 				94598D1B2458E23000456333 /* Preview Content */,
 			);
@@ -565,7 +566,6 @@
 				94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */,
 				94311DF824C3A85D00F8671B /* SFProDisplayRegular.otf in Resources */,
 				94598D1D2458E23000456333 /* Preview Assets.xcassets in Resources */,
-				949C1EC8247EAE190064D326 /* GoogleService-Info.plist in Resources */,
 				94598D1A2458E23000456333 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -32,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           user = try managedContext.fetch(fetchRequest) as? [User]
         } catch let error as NSError {
           print("Could not fetch. \(error), \(error.userInfo)")
+
         }
         
         
