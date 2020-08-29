@@ -9,40 +9,66 @@
 import SwiftUI
 
 struct LaunchView5: View {
-    @State var showNextView = false
+    @Binding var showNextView: Bool
     var body: some View {
-        ZStack{
-            Color.white
-        VStack {
-            Spacer()
-            Text("\(UserDefaults.standard.string(forKey: "name") ?? "Guess What"), You are Ready to Go! Start saving food from going to the trash! Take a minute to create a fridge and take note of what is in your fridge.")
-                .font(.largeTitle)
-                .bold()
-                .padding()
-            Spacer()
-            
-            
-            Button(action: {
-                
-                self.showNextView.toggle()
-            }, label: {
-                Image("Next button")
-                .renderingMode(.original)
-                .padding(.bottom, 50)
+        return ZStack{
+            Color(hex: "B9FFAC").edgesIgnoringSafeArea(.all)
+            VStack {
+                        
+                        Spacer()
+                    HStack{
+                            Image(systemName: "circle.grid.hex")
+                                .font(.system(size: 50))
+                                .foregroundColor(.black)
+                                .padding()
+                        
+                    }
+                        Text("Only keep track of what you have and don't worry about how much you have.")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, CGFloat())
+                        .padding(.horizontal, CGFloat(20))
+                    Spacer()
+            NavigationLink(destination: LaunchView6(showNextView: self.$showNextView), label: {
+                Image("Next button").renderingMode(.original).padding()
             })
-            
-            
-        }
-           if self.showNextView{
-                TabBarView()
             }
-            
-        }
+    }
     }
 }
 
-struct LaunchView5_Previews: PreviewProvider {
-    static var previews: some View {
-        LaunchView5()
+struct LaunchView6: View {
+    @Binding var showNextView: Bool
+    var body: some View {
+        return ZStack{ Color(hex: "FFE5A1").edgesIgnoringSafeArea(.all)
+            VStack {
+                        
+                    Spacer()
+                        Image(systemName: "doc.text.viewfinder")
+                            .font(.system(size: 50))
+                            .foregroundColor(.black)
+                            .padding()
+                        Text("Get started today for free, or subscribe to premium to access all features.")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, CGFloat())
+                        .padding(.horizontal, CGFloat(20))
+                        Spacer()
+                
+                NavigationLink(destination: PremiumView(), label: {
+                    Image("CheckoutPremium").renderingMode(.original)
+                    }).padding()
+                Text("Or").font(.title).fontWeight(.bold).padding()
+                       Button(action: {
+                           self.showNextView = true
+                       }, label: {
+                           Image("Next button").renderingMode(.original).padding()
+                       })
+                }
+        }
     }
 }

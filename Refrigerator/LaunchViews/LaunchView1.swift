@@ -7,70 +7,96 @@
 //
 
 import SwiftUI
+import ConcentricOnboarding
+import Firebase
 
 struct LaunchView1: View {
     @State var showNextView = false
-    @State var animationAmount:CGSize = CGSize(width: 0, height: 0)
     var body: some View {
-        ZStack{
-            Color.white
-            GeometryReader{ geo in
-                ScrollView{
-                ZStack{
-                    Color.white
-                        .edgesIgnoringSafeArea(.all)
-                    VStack {
-                        Spacer()
-                        Text("Hey there, welcome to the Refrigerator App!")
-                            .font(.custom("SF Compact Display", size: 35))
-                            .fontWeight(.semibold)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, CGFloat())
-                            .padding(.horizontal, CGFloat(20))
-                        Spacer()
-                        Text("Manage all of your refrigerators, freezers, and pantries to reduce, diminish, and eventually eliminate food waste with the simple and powerful Refrigerator app.")
-                            .multilineTextAlignment(.center)
-                            .font(.custom("SF Compact Display", size: 27))
-                            .foregroundColor(Color(hex: "3D3D3D"))
-                            .padding(.horizontal, CGFloat(20))
-                            .padding(.bottom, CGFloat(35))
-                        Spacer()
-                        Image("refrigeIcon").renderingMode(.original)
-                            
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: geo.size.width * 0.6)
-                            .offset(self.animationAmount)
-                            .animation(.interpolatingSpring(stiffness: 50, damping: 3))
-                            .onTapGesture(perform: {
-                                if self.animationAmount.height == 0{
-                                    self.animationAmount = CGSize(width: 0, height: self.animationAmount.height - 5)
-                                }else {
-                                    self.animationAmount.height = 0
-                                }
-                            })
-                            .padding()
-                        Spacer()
-                        
-                        
-                        Button(action: {
-                            self.showNextView.toggle()
-                        }, label: {Image("Next button")
-                            .renderingMode(.original)}).padding(.bottom, CGFloat(60))
-                        
-                    }}}}
-            if self.showNextView{
-                LaunchView2()
-            }
+//        var onboarding =  ConcentricOnboardingView(pages: [AnyView(LaunchPageView1()), AnyView(LaunchView2()), AnyView(LaunchView3()),AnyView(LaunchView4()),AnyView(LaunchView405()),AnyView(LaunchView5())], bgColors: [ , ,Color(hex: "8DFFF2"), Color(hex: "FFE5A1"), Color(hex: "B9FFAC"),Color(hex: "FFACAC")])
+//        onboarding.insteadOfCyclingToFirstPage = {
+//            withTransaction(.init(animation: .default)){
+//                self.showNextView = true
+//            }
+//        }
+        VStack{
+        if self.showNextView{
+             ZStack{
+                       if self.showNextView{
+                           Color("whiteAndBlack").edgesIgnoringSafeArea(.all)
+                       }
+
+                       if self.showNextView {
+                        if UIDevice.current.userInterfaceIdiom == .pad{
+                           IpadSidebarView().transition(.slide)
+                        }else if UIDevice.current.userInterfaceIdiom == .phone{
+                            TabBarView().transition(.slide)
+                        }
+                       }
+                   }
+        }else {
+             NavigationView{
+                LaunchPageView1(showNextView: self.$showNextView)
+                }.navigationViewStyle(StackNavigationViewStyle())
+            .navigationBarTitle("").navigationBarHidden(true)
         }
-        
-        
+    }
     }
 }
 
-struct LaunchView1_Previews: PreviewProvider {
-    static var previews: some View {
-        LaunchView1()
+
+
+struct LaunchPageView1: View {
+    @Binding var showNextView: Bool
+    @State var animationAmount:CGSize = CGSize(width: 0, height: 0)
+    @State private var name = ""
+    @State private var didFinishTyping = false
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @Environment(\.managedObjectContext) var managedObjectContext
+    var body: some View {
+        return ZStack{
+            Color(hex: "FFE5A1").edgesIgnoringSafeArea(.all)
+                    VStack {
+                        Spacer()
+                        
+                        Text("👋")
+                            .font(.custom("Open Sans", size: CGFloat(60))).padding()
+                        Text("Hey there, welcome to the Refrigerator App, whats your name?")
+                            .font(.largeTitle)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, CGFloat())
+                            .padding(.horizontal, CGFloat(20))
+                        
+                        
+                        Spacer()
+                        TextField("name", text: $name)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal, 40)
+                        Spacer()
+                        
+                        NavigationLink(destination: LaunchView3(showNextView: self.$showNextView), label: {
+                            Image("Next button").renderingMode(.original).padding()
+                        })
+                        Spacer()
+                       
+                        
+                    }
+                
+            
+        }.onDisappear{
+            self.user.first?.name = self.name
+            do{
+                try self.managedObjectContext.save()
+            }catch{
+                print(error)
+            }
+        }
+        .onAppear{
+        }
+        
+        
     }
 }
 

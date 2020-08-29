@@ -12,6 +12,7 @@ struct refrigeItem:  Identifiable, Hashable {
     var icon: String
     var title: String
     var daysLeft: Int
+    var addToStorage: StorageLocation
 }
 
 struct shoppingListItems: Identifiable, Hashable, Codable {

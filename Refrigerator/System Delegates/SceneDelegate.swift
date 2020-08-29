@@ -23,6 +23,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Get the managed object context from the shared persistent container.
         let context = (UIApplication.shared.delegate as!AppDelegate).persistentContainer.viewContext
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        var user: [User]? = nil
+        let fetchRequest =
+          NSFetchRequest<NSManagedObject>(entityName: "User")
+        do {
+          user = try context.fetch(fetchRequest) as? [User]
+        } catch let error as NSError {
+          print("Could not fetch. \(error), \(error.userInfo)")
+        }
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
         // Use a UIHostingController as window root view controller.
@@ -33,16 +41,43 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let tabBarView = TabBarView().environment(\.managedObjectContext, context)
             
             if !UserDefaults.standard.bool(forKey: "didLaunchBefore") {
+                if user?.first == nil{
+                    print("THERE IS NO USER")
+                    let newUser = User(context: context)
+                    newUser.name = ""
+                    newUser.dailyGoal = Int16(0)
+                    newUser.streak = Int16(0)
+                    newUser.foodsEaten = Int32(0)
+                    newUser.foodsThrownAway = Int32(0)
+                
+                
                 UserDefaults.standard.set(true, forKey: "didLaunchBefore")
-                UserDefaults.standard.set(true, forKey: "didReviewThisMonth")
+                newUser.didReviewThisMonth = true
+
                 let now = Calendar.current.dateComponents(in: .current, from: Date())
                 let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
                 let date = Calendar.current.date(from: tomorrow)
                 let midnight = Calendar.current.startOfDay(for: date!)
-                UserDefaults.standard.set(midnight, forKey: "InAMonth")
+                newUser.inAMonth = midnight
+                let tomorrow1 = DateComponents(year: now.year, month: now.month, day: now.day! + 1)
+                let date1 = Calendar.current.date(from: tomorrow1)
+                let midnight1 = Calendar.current.startOfDay(for: date1!)
+                newUser.streakDueDate = midnight1
+                newUser.midnightTomorrow = midnight1
+                
+                do{
+                    try context.save()
+                }catch{
+                    print(error)
+                }
+                }
                 window.rootViewController = UIHostingController(rootView: launchView1.environmentObject(refrigerator))
             } else {
+                if UIDevice.current.userInterfaceIdiom == .phone{
                 window.rootViewController = UIHostingController(rootView: tabBarView.environmentObject(refrigerator))
+                }else if UIDevice.current.userInterfaceIdiom == .pad{
+                    window.rootViewController = UIHostingController(rootView: IpadSidebarView().environmentObject(refrigerator).environment(\.managedObjectContext, context))
+                }
             }
             self.window = window
             window.makeKeyAndVisible()

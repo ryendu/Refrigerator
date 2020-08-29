@@ -5,12 +5,24 @@
 //  Created by Ryan Du on 5/2/20.
 //  Copyright © 2020 Ryan Du. All rights reserved.
 //
-import SwiftUICharts
 import Combine
 import SwiftUI
 import GoogleMobileAds
 
 struct SettingsView: View{
+    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
+    func foodsEaten() -> String {
+        let foodsEaten = Double(self.user.first?.foodsEaten ?? 0)
+        let totalFoods = foodsEaten + Double(self.user.first?.foodsThrownAway ?? 0)
+        print("this ran 253")
+        if totalFoods != 0{
+            print("foods eaten function 253: \(((foodsEaten / totalFoods) * 100.0).rounded()), foodsEaten: \(foodsEaten), total foods: \(totalFoods)")
+        return String(((foodsEaten / totalFoods) * 100.0).rounded())
+        }else {
+            print("total foods is 0 253")
+            return String(0)
+        }
+    }
     func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
         func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
 
@@ -34,8 +46,10 @@ struct SettingsView: View{
       }
        return returnValue
     }
-
-    @State var name = UserDefaults.standard.string(forKey: "name") ?? ""
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+    @State var name = ""
+    @State var remindDate = 2
     var body: some View{
         NavigationView{
             GeometryReader{ geo in
@@ -47,19 +61,56 @@ struct SettingsView: View{
                             TextField("name", text: self.$name)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             Button(action: {
-                                UserDefaults.standard.set(self.name, forKey: "name")
+                                self.user[0].name = self.name
+                                try? self.managedObjectContext.save()
                             }, label: {
                                 Text("Save")
                                 })
                         }
                     }
+                    Section{
+                        Text("Premium")
+                            .font(.title)
+                        if self.refrigeratorViewModel.isPremiumPurchased() == false {
+                        NavigationLink(destination: PremiumView(), label: {
+                            Text("Upgrade to premium")
+                            }).padding()
+                        }else {
+                            Text("Subscribed to premium")
+                            Button(action: {
+                                UIApplication.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
+                            },label: {
+                                Text("Manage Premium Subscription")
+                                }).padding()
+                        }
+                    }
                     
+                    Section{
+                        Text("Reminders")
+                            .font(.title)
+                        if self.refrigeratorViewModel.isPremiumPurchased() == false {
+                        Text("You will be reminded 2 days before a food expires.")
+                        }else {
+                            HStack{
+                                Stepper(value: self.$remindDate, in: 1...100) {
+                                    Text("Be reminded of your food's expiration date \(self.remindDate) days before its expiration date")
+                                }
+                                
+                                
+                                Button(action: {
+                                    self.user.first?.remindDate = Int16(self.remindDate)
+                                    try? self.managedObjectContext.save()
+                                }, label: {
+                                    Text("Save")
+                                })
+                            }
+                            Text("Note: Current food reminders will not be changed, only new food items will have this remind date.").font(.caption)
+                        }
+                    }
                     Section{
                         Text("Progress")
                         .font(.title)
-                    NavigationLink(destination: ProgressView(), label: {
-                        Text("See Your Progress")
-                    })
+                        Text("🌳 You have eaten \(self.foodsEaten()) percent of all your foods")
                      }
                     Section{
                     NavigationLink(destination: AboutDialougView(), label: {
@@ -67,13 +118,25 @@ struct SettingsView: View{
                     })
                      }
                     Section{
-                        if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
+                        if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
                         GADBannerViewController()
                         .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
                         }else {
 
                         }
                         
+                    }
+                    Section{
+                        Button(action: {
+                            UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/terms.html")!)
+                        }, label: {
+                            Text("Terms And Conditions")
+                        })
+                        Button(action: {
+                            UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/privacy.html")!)
+                        }, label: {
+                            Text("Privacy Policy")
+                        })
                     }
                     
                     Section{
@@ -88,141 +151,150 @@ struct SettingsView: View{
             
         }
         }.navigationViewStyle(StackNavigationViewStyle())
-        
-    }
-}
-struct ProgressView: View {
-    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
-        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
-
-            var x = top
-            var y = bottom
-            while (y != 0) {
-                let buffer = y
-                y = x % y
-                x = buffer
-            }
-            let hcfVal = x
-            let newTopVal = top/hcfVal
-            let newBottomVal = bottom/hcfVal
-            return(newTopVal, newBottomVal)
+            .onAppear{
+                self.remindDate = Int(self.user.first?.remindDate ?? 2)
+                self.name = self.user.first?.name ?? ""
         }
-        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
-        var returnValue = false
-        print(denomenator)
-        if Int.random(in: 1...denomenator.newBottom) == 1 {
-        returnValue = true
-      }
-       return returnValue
-    }
-    let pieChartStyle = ChartStyle(
-        backgroundColor: Color.white,
-        accentColor: Colors.GradientNeonBlue,
-        secondGradientColor: Colors.GradientPurple,
-        textColor: Color.black,
-        legendTextColor: Color.gray,
-        dropShadowColor: Color.gray)
-    @State var thrownAway = UserDefaults.standard.double(forKey: "thrownAway")
-    @State var eaten = UserDefaults.standard.double(forKey: "eaten")
-
-
-    @State var foodsThrownAwayInThePastWeek: [shoppingListItems]? = nil
-    @State var lineChartWidth = Double()
-    var body: some View {
-            
-                    GeometryReader { i in
-                     List{
-                        
-                        VStack{
-                            
-                            Text("Here Is Your Progress")
-                            .font(.title)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                            PieChartView(data: [self.eaten,self.thrownAway], title: "Foods Eaten Vs Thrown Away", legend: "Legendary", style: self.pieChartStyle, form: CGSize(width:self.lineChartWidth, height:self.lineChartWidth), dropShadow: false).padding()
-                                Text("You Have thrown away \(Int(UserDefaults.standard.double(forKey: "thrownAway"))) Items Since Using this app.")
-                            
-                            
-                            if self.foodsThrownAwayInThePastWeek != nil{
-                                Text("Foods You Threw away Today")
-                                .font(.custom("SF Compact Display", size: 22))
-                                .fontWeight(.semibold)
-                                ScrollView(.vertical, showsIndicators: true, content: {
-                                    ForEach(self.foodsThrownAwayInThePastWeek!, id: \.self){ item in
-                                        
-                                        
-                                        HStack {
-                                            HStack {
-                                                Text(item.icon)
-                                                    .font(.largeTitle)
-                                                    .padding(.leading, 8)
-                                                VStack {
-                                                    HStack {
-                                                        Text(item.title)
-                                                            .font(.custom("SF Pro Text", size: 16))
-                                                            .multilineTextAlignment(.leading)
-                                                        Spacer()
-                                                    }
-                                                    
-                                                }
-                                                Spacer()
-                                            }
-                                            .padding()
-                                            .background(Rectangle().cornerRadius(16).padding(.horizontal)
-                                            .foregroundColor(Color("cellColor"))
-                                            )
-                                                .padding(.bottom)
-                                        }
-                                        
-                                        
-                                        
-                                        
-                                    }
-                                })
-                            
-                            }else {
-                                Text("You have thrown away no food in the past day")
-                            }
-                                }.onAppear(perform: {
-                                self.lineChartWidth = Double(i.size.width - 50)
-                                self.thrownAway = UserDefaults.standard.double(forKey: "thrownAway")
-                                self.eaten = UserDefaults.standard.double(forKey: "eaten")
-                                
-                                if let data = UserDefaults.standard.data(forKey: "recentlyDeleted") {
-                                    do {
-                                        let decoder = JSONDecoder()
-
-                                        let note = try decoder.decode([shoppingListItems].self, from: data)
-                                        self.foodsThrownAwayInThePastWeek = note
-                                    } catch {
-                                        print("Unable to Decode Note (\(error))")
-                                    }
-                                }
-                        })
-                    
-                    
-                    
-                    
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)){
-                    GADBannerViewController()
-                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                    }else {
-
-                    }
-                    
-                }
-
-                
-            
-            }
-            
-                    
-
     }
 }
 
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView()
-    }
-}
+
+
+
+
+
+
+//struct SettingsViewiPad: View{
+//    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
+//    func foodsEaten() -> String {
+//        let foodsEaten = Double(self.user.first?.foodsEaten ?? 0)
+//        let totalFoods = foodsEaten + Double(self.user.first?.foodsThrownAway ?? 0)
+//        print("this ran 253")
+//        if totalFoods != 0{
+//            print("foods eaten function 253: \(((foodsEaten / totalFoods) * 100.0).rounded()), foodsEaten: \(foodsEaten), total foods: \(totalFoods)")
+//        return String(((foodsEaten / totalFoods) * 100.0).rounded())
+//        }else {
+//            print("total foods is 0 253")
+//            return String(0)
+//        }
+//    }
+//    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
+//        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
+//
+//            var x = top
+//            var y = bottom
+//            while (y != 0) {
+//                let buffer = y
+//                y = x % y
+//                x = buffer
+//            }
+//            let hcfVal = x
+//            let newTopVal = top/hcfVal
+//            let newBottomVal = bottom/hcfVal
+//            return(newTopVal, newBottomVal)
+//        }
+//        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
+//        var returnValue = false
+//        print(denomenator)
+//        if Int.random(in: 1...denomenator.newBottom) == 1 {
+//        returnValue = true
+//      }
+//       return returnValue
+//    }
+//    @Environment(\.managedObjectContext) var managedObjectContext
+//    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
+//    @State var name = ""
+//    @State var remindDate = 2
+//    var body: some View{
+//            GeometryReader{ geo in
+//                List{
+//                    Section{
+//                   Text("Name")
+//                    .font(.title)
+//                        HStack{
+//                            TextField("name", text: self.$name)
+//                            .textFieldStyle(RoundedBorderTextFieldStyle())
+//                            Button(action: {
+//                                self.user[0].name = self.name
+//                                try? self.managedObjectContext.save()
+//                            }, label: {
+//                                Text("Save")
+//                                })
+//                        }
+//                    }
+//                    Section{
+//                        Text("Premium")
+//                            .font(.title)
+//                        if self.refrigeratorViewModel.isPremiumPurchased() == false {
+//                        NavigationLink(destination: PremiumView(), label: {
+//                            Text("Upgrade to premium")
+//                            }).padding()
+//                        }else {
+//                            Text("Subscribed to premium")
+//                            Button(action: {
+//                                UIApplication.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
+//                            },label: {
+//                                Text("Manage Premium Subscription")
+//                                }).padding()
+//                        }
+//                    }
+//
+//                    Section{
+//                        Text("Reminders")
+//                            .font(.title)
+//                        if self.refrigeratorViewModel.isPremiumPurchased() == false {
+//                        Text("You will be reminded 2 days before a food expires.")
+//                        }else {
+//                            HStack{
+//                                Stepper(value: self.$remindDate, in: 1...100) {
+//                                    Text("Be reminded of your food's expiration date")
+//                                }
+//                                Text("Days before its expiration date").padding()
+//
+//                                Button(action: {
+//                                    self.user.first?.remindDate = Int16(self.remindDate)
+//                                    try? self.managedObjectContext.save()
+//                                }, label: {
+//                                    Text("Save")
+//                                })
+//                            }
+//                            Text("Note: Current food reminders will not be changed, only new food items will have this remind date.").font(.caption)
+//                        }
+//                    }
+//                    Section{
+//                        Text("Progress")
+//                        .font(.title)
+//                        Text("🌳 You have eaten \(self.foodsEaten()) percent of all your foods")
+//                     }
+//                    Section{
+//                    NavigationLink(destination: AboutDialougView(), label: {
+//                        Text("about dialoug")
+//                    })
+//                     }
+//                    Section{
+//                        if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
+//                        GADBannerViewController()
+//                        .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
+//                        }else {
+//
+//                        }
+//
+//                    }
+//
+//                    Section{
+//                    NavigationLink(destination: FeedbackView(), label: {
+//                        Text("send feedback")
+//                    })
+//                     }
+//                    }.listStyle(GroupedListStyle())
+//
+//            .navigationBarTitle("Settings")
+//
+//
+//        }
+//            .onAppear{
+//                self.remindDate = Int(self.user.first?.remindDate ?? 2)
+//                self.name = self.user[0].name ?? ""
+//        }
+//    }
+//}

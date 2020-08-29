@@ -20,8 +20,8 @@ extension StorageLocation {
     @NSManaged public var storageName: String?
     @NSManaged public var symbolName: String?
     @NSManaged public var foodItem: NSSet?
-
     
+
     public var wrappedStorageName: String {
         storageName ?? "Unkown Storage Name"
     }

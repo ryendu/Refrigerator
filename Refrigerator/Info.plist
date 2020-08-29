@@ -30,6 +30,14 @@
 	<string>please let us access your photos to help us scan your receipts</string>
 	<key>Non-Exempt Encryption (ITSAppUsesNonExemptEncryption)</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SFProDisplayRegular.otf</string>
+		<string>SF-Compact-Display-Regular.otf</string>
+		<string>SF-Pro-Display-Bold.otf</string>
+		<string>SF-Pro-Display-Thin.otf</string>
+		<string>SF-Compact-Text-Thin.otf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -57,12 +65,14 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array/>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>

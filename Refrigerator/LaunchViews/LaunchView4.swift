@@ -9,38 +9,78 @@
 import SwiftUI
 
 struct LaunchView4: View {
-    @State var showNextView = false
-
+    @Binding var showNextView: Bool
     var body: some View {
-        ZStack{
-            Color.white
-                VStack {
-            Spacer()
-            Image("refrigerator view mock")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-            Spacer()
-            Text("In Your Refrigerator View, You can see all of the places where you store food.")
-                .padding()
-                .layoutPriority(1)
-                
-            Spacer()
-            Button(action: {
-                
-                self.showNextView.toggle()
-            }, label: {Image("Next button")
-                .renderingMode(.original)}).padding(.bottom, CGFloat(60))
-        
-        }
-            if self.showNextView{
-                LaunchView5()
-            }
+        return ZStack{ Color(hex: "FFE5A1").edgesIgnoringSafeArea(.all)
+            VStack {
+                        
+                    Spacer()
+                        Image(systemName: "doc.text.viewfinder")
+                            .font(.system(size: 50))
+                            .foregroundColor(.black)
+                            .padding()
+                        Text("Scan reciepts and have foods be automatically added to your storage locations.")
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, CGFloat())
+                        .padding(.horizontal, CGFloat(20))
+                        Spacer()
+                       NavigationLink(destination: LaunchView5(showNextView: self.$showNextView), label: {
+                           Image("Next button").renderingMode(.original).padding()
+                       })
+                }
         }
     }
 }
 
-struct LaunchView4_Previews: PreviewProvider {
-    static var previews: some View {
-        LaunchView4()
+struct LaunchView405: View {
+
+    var body: some View {
+        return ZStack{
+            Color(hex: "8DFFF2").edgesIgnoringSafeArea(.all)
+            VStack {
+                    
+                    Spacer()
+                HStack{
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 50))
+                            .foregroundColor(.black)
+                            .padding()
+                    Image(systemName: "sparkles")
+                    .font(.system(size: 50))
+                    .foregroundColor(.black)
+                    .padding()
+                    Image(systemName: "sparkles")
+                    .font(.system(size: 50))
+                    .foregroundColor(.black)
+                    .padding()
+                }
+                    Text("Plan for the future with the food planner.")
+                    .font(.largeTitle)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, CGFloat())
+                    .padding(.horizontal, CGFloat(20))
+                    HStack{
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 50))
+                                .foregroundColor(.black)
+                                .padding()
+                        Image(systemName: "sparkles")
+                        .font(.system(size: 50))
+                        .foregroundColor(.black)
+                        .padding()
+                        Image(systemName: "sparkles")
+                        .font(.system(size: 50))
+                        .foregroundColor(.black)
+                        .padding()
+                    }
+                    
+                Spacer()
+            }
+        }
     }
 }

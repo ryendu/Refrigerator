@@ -35,7 +35,7 @@ struct TabBarView: View {
             Color.white
         TabView(selection: $selection){
             
-            HomeView()
+            HomeView(showingView: self.$showingView, scan: self.$scan, image: self.$image)
                 .tabItem {
                     selection == 0 ? Image("Home icon filled") : Image("Home icon")
                 }
@@ -45,19 +45,27 @@ struct TabBarView: View {
                     selection == 1 ? Image("Fridge icon fillied") : Image("Fridge icon")
             }
             .tag(1)
+            FoodPlannerView(trackDate: refrigerator.trackDate).environmentObject(refrigerator)
+                .tabItem {
+                    Image(systemName: "calendar").font(.system(size: 26))
+                }
+            .tag(2)
             SettingsView()
                 .tabItem {
-                    selection == 2 ?  Image("Settings icon filled") : Image("Settings icon")
-            }
-        .tag(2)
+                    Image(systemName: "gear").font(.system(size: 25))
+            }.accentColor(.orange)
+        .tag(3)
+            
         
         }
+        .accentColor(.orange)
         .navigationBarBackButtonHidden(true)
         .font(.headline)
             
             if self.showingView == "scanner" {
                 makeScannerView()
             }
+            
     }
     }
 }
