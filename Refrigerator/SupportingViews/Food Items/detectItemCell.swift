@@ -178,10 +178,8 @@ struct AddFoodItemListEditCell: View {
                 }
                 newFoodItem.name = self.searchResult.title
                 newFoodItem.inStorageSince = Date()
-                newFoodItem.origion = StorageLocation(context: self.moc)
-                newFoodItem.origion?.storageName = self.usingStorageLocation?.wrappedStorageName
-                newFoodItem.origion?.symbolName = self.usingStorageLocation?.wrappedSymbolName
                 newFoodItem.id = id
+                self.usingStorageLocation?.addToFoodItem(newFoodItem)
                 
                 Analytics.logEvent("addedFoodItem", parameters: nil)
                    do{

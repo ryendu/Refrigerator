@@ -65,6 +65,7 @@ struct TabBarView: View {
             if self.showingView == "scanner" {
                 makeScannerView()
             }
+            
     }
     }
 }

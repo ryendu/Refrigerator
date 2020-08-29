@@ -216,15 +216,19 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         if let storg = self.storage{
                             self.showStorageNilError = false
                             let id = UUID()
+                            
                             let newFoodItem = FoodItem(context: self.managedObjectContext)
                             newFoodItem.staysFreshFor = Int16(self.lastsFor)
                             newFoodItem.symbol = self.selectedEmoji
                             newFoodItem.name = self.nameOfFood
                             newFoodItem.inStorageSince = Date()
-                            newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                            newFoodItem.origion?.storageName = storg.wrappedStorageName
-                            newFoodItem.origion?.symbolName = storg.wrappedSymbolName
+//                            newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
+//                            newFoodItem.origion?.storageName = storg.wrappedStorageName
+//                            newFoodItem.origion?.symbolName = storg.wrappedSymbolName
                             newFoodItem.id = id
+                            if let strg = self.storage{
+                                strg.addToFoodItem(newFoodItem)
+                            }
                             
                             Analytics.logEvent("addedFoodItem", parameters: nil)
                             do{

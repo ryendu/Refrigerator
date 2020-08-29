@@ -16,6 +16,9 @@ import CoreHaptics
 import CoreData
 import VisionKit
 import Vision
+import AppTrackingTransparency
+import AdSupport
+
 func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     func contains(x: Int, numerator: Int)-> Bool{
         var returnObj = false
@@ -196,10 +199,8 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                     }
                                     newFoodItem.name = item.name
                                     newFoodItem.inStorageSince = Date()
-                                    newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                                    newFoodItem.origion?.storageName = item.origion?.storageName
-                                    newFoodItem.origion?.symbolName = item.origion?.symbolName
                                     newFoodItem.id = id
+                                    item.origion?.addToFoodItem(newFoodItem)
                                     addToDailyGoal()
                                     refreshDailyGoalAndStreak()
                                     let center = UNUserNotificationCenter.current()
@@ -525,10 +526,8 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                 }
                                 newFoodItem.name = item.name
                                 newFoodItem.inStorageSince = Date()
-                                newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                                newFoodItem.origion?.storageName = item.origion?.storageName
-                                newFoodItem.origion?.symbolName = item.origion?.symbolName
                                 newFoodItem.id = id
+                                item.origion?.addToFoodItem(newFoodItem)
                                 addToDailyGoal()
                                 refreshDailyGoalAndStreak()
                                 let center = UNUserNotificationCenter.current()

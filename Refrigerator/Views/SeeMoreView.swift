@@ -131,10 +131,8 @@ struct SeeMoreView: View {
                     }
                     newFoodItem.name = item.name
                     newFoodItem.inStorageSince = Date()
-                    newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                    newFoodItem.origion?.storageName = item.origion?.storageName
-                    newFoodItem.origion?.symbolName = item.origion?.symbolName
                     newFoodItem.id = id
+                    item.origion?.addToFoodItem(newFoodItem)
                     addToDailyGoal()
                                     refreshDailyGoalAndStreak()
                     let center = UNUserNotificationCenter.current()

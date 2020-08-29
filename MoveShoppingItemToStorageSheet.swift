@@ -68,10 +68,8 @@ struct MoveShoppingItemToStorageSheet: View {
                         newFoodItem.symbol = self.Item?.wrappedIcon
                         newFoodItem.name = self.Item?.wrappedName
                         newFoodItem.inStorageSince = Date()
-                        newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                        newFoodItem.origion?.storageName = item.wrappedStorageName
-                        newFoodItem.origion?.symbolName = item.wrappedSymbolName
                         newFoodItem.id = id
+                        item.addToFoodItem(newFoodItem)
                         Analytics.logEvent("addedFoodItem", parameters: nil)
                         do{
                             try self.managedObjectContext.save()

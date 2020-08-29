@@ -184,10 +184,8 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                                     newFoodItem.symbol = i.icon
                                     newFoodItem.name = i.title
                                     newFoodItem.inStorageSince = Date()
-                                    newFoodItem.origion = StorageLocation(context: self.managedObjectContext)
-                                    newFoodItem.origion?.storageName = i.addToStorage.wrappedStorageName
-                                    newFoodItem.origion?.symbolName = i.addToStorage.wrappedSymbolName
                                     newFoodItem.id = id
+                                    i.addToStorage.addToFoodItem(newFoodItem)
                                     
                                     
                                     let center = UNUserNotificationCenter.current()
