@@ -89,7 +89,6 @@ struct FoodPlannerView: View {
                                     Image(systemName: "chevron.right")
                                 }).padding()
                             }
-                            //MARK: Below is the divider
                             Divider()
                             Spacer()
                             //MARK: SHOW THE FOOD PLANNER HERE

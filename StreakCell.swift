@@ -33,7 +33,6 @@ struct StreakCell: View {
                         .padding()
                         .rotationEffect(Angle(degrees: self.rotation))
                         .onTapGesture {
-                            simpleSuccess()
                             withAnimation(.interpolatingSpring(stiffness: 5, damping: 0.4)){
                                 self.rotation += 45
                             }

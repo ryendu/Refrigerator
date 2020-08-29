@@ -33,6 +33,7 @@ struct TabBarView: View {
     var body: some View {
         ZStack{
             Color.white
+            
         TabView(selection: $selection){
             
             HomeView(showingView: self.$showingView, scan: self.$scan, image: self.$image)

@@ -55,12 +55,13 @@ struct AddAnyFoodItemsSheet: View {
                     self.presentationMode.wrappedValue.dismiss()
                }
             }
-        }.navigationBarTitle(Text("Add A Food Item"))
-        .navigationBarItems(trailing: Button(action: {
-            self.presentationMode.wrappedValue.dismiss()
-        }, label: {
-            Text("Cancel")
-        }))
+            .navigationBarTitle(Text("Add A Food Item"))
+            .navigationBarItems(trailing: Button(action: {
+                self.presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Text("Cancel").foregroundColor(.orange)
+            }))
+        }
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }

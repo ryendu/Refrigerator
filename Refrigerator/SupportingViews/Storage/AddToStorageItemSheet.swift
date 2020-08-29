@@ -194,7 +194,7 @@ ForEach(listOfIcons1, id: \.self) {emoji in
                 }
                 
                 
-                
+                Analytics.logEvent("AddedStorageLocation", parameters: ["type": self.storageType])
                 self.presentationMode.wrappedValue.dismiss()
                
                }, label: {Image("addOrange").renderingMode(.original)})

@@ -28,6 +28,8 @@
 	<string>please let us access your camrea to help us scan your receipts</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>please let us access your photos to help us scan your receipts</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>Non-Exempt Encryption (ITSAppUsesNonExemptEncryption)</key>
 	<false/>
 	<key>UIAppFonts</key>
@@ -69,8 +71,6 @@
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

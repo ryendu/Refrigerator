@@ -46,18 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let usrs = user{
             if usrs.count > 0{
                 let usr = usrs[0]
-                if usr.inAMonth != nil{
-                    if Date() > usr.inAMonth!{
-                        
-                        let now = Calendar.current.dateComponents(in: .current, from: Date())
-                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
-                        let date = Calendar.current.date(from: tomorrow)
-                        let midnight = Calendar.current.startOfDay(for: date!)
-                        usr.inAMonth = midnight
-                        usr.didReviewThisMonth = false
-                        try? managedContext.save()
-                    }
-                }
+                
 
 
                 

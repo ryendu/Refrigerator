@@ -263,6 +263,10 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
             
             .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
             .onAppear(perform: {
+                
+                if #available(iOS 14, *) {
+                    requestIDFA()
+                }
                 if self.user.count < 1 {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
@@ -298,12 +302,13 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         }
                     }
                     
-                    
-                if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
-                        rateApp()
-                        
-                        Analytics.logEvent("requestedReview", parameters: nil)
-                    }
+                if Date() > self.user.first?.inAMonth ?? Date() && RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
+                    rateApp()
+                    // did review this month is called did review this month but is actually used as did review and once turned to true it will never be turned to false ever again
+                    self.user.first?.didReviewThisMonth = true
+                    try? self.managedObjectContext.save()
+                    Analytics.logEvent("requestedReview", parameters: nil)
+                }
                 })
         }
             
@@ -312,6 +317,14 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
         
     }
 }
+
+@available(iOS 14, *)
+func requestIDFA() {
+  ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+  })
+}
+
+
 
 
 struct ShoppingListView: View{
@@ -592,6 +605,14 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
             .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
                 
                 .onAppear(perform: {
+                    
+                    if #available(iOS 14, *) {
+                        requestIDFA()
+                    } else {
+                        // Fallback on earlier versions
+                    }
+                    
+                    
                     if self.user.count < 1 {
                         let newUser = User(context: self.managedObjectContext)
                         newUser.name = ""
@@ -628,16 +649,11 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                     }
                     
                     
-                if RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
-
+                    if Date() > self.user.first?.inAMonth ?? Date() && RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
                         rateApp()
-                        let now = Calendar.current.dateComponents(in: .current, from: Date())
-                        let tomorrow = DateComponents(year: now.year, month: now.month, day: now.day! + RemoteConfigManager.intValue(forkey: RCKeys.requestReviewPeriod.rawValue))
-                        let date = Calendar.current.date(from: tomorrow)
-                        let midnight = Calendar.current.startOfDay(for: date!)
-                        UserDefaults.standard.set(midnight, forKey: "InAMonth")
-                        UserDefaults.standard.set(false, forKey: "didReviewThisMonth")
-                        
+                        // did review this month is called did review this month but is actually used as did review and once turned to true it will never be turned to false ever again
+                        self.user.first?.didReviewThisMonth = true
+                        try? self.managedObjectContext.save()
                         Analytics.logEvent("requestedReview", parameters: nil)
                     }
                 })
