@@ -58,7 +58,7 @@ class RefrigeratorViewModel: ObservableObject {
     init(){
         self.trackDate = self.getTrackDate(with: Date())
     }
-    @Published var premiumPrice = "0.99"
+    @Published var premiumPrice = "1.99"
     
     func isPremiumPurchased() -> Bool{
         var returnobj = false

@@ -451,15 +451,12 @@
 				94598D0A2458E22700456333 /* Frameworks */,
 				94598D0B2458E22700456333 /* Resources */,
 				4EEDD15764BCD731427229F9 /* [CP] Embed Pods Frameworks */,
-				883BB575B764BECB3E0319F9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Refrigerator;
-			packageProductDependencies = (
-			);
 			productName = Refrigerator;
 			productReference = 94598D0D2458E22700456333 /* Refrigerators.app */;
 			productType = "com.apple.product-type.application";
@@ -492,7 +489,6 @@
 				94598D2E2458E23100456333 /* Frameworks */,
 				94598D2F2458E23100456333 /* Resources */,
 				760F3A502E035A59BF1E63E9 /* [CP] Embed Pods Frameworks */,
-				9D429A74211488606ED00271 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -660,40 +656,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		883BB575B764BECB3E0319F9 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Refrigerator/Pods-Refrigerator-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Refrigerator/Pods-Refrigerator-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Refrigerator/Pods-Refrigerator-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9D429A74211488606ED00271 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C5AB65F00F6548583A32F036 /* [CP] Check Pods Manifest.lock */ = {
@@ -945,7 +907,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
@@ -971,7 +933,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
 				ENABLE_PREVIEWS = YES;

@@ -11,7 +11,6 @@ import CoreData
 import Firebase
 import GoogleMobileAds
 import UserNotifications
-import AppLovinSDK
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -21,8 +20,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         RemoteConfigManager.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-        let sdk = ALSdk.shared(withKey: "uyPsJe0ovs7S7xTXrXDUzTuOvU_nQdwTgfIcQWPGXyd2W8QuqmRlrSa0C1ubG7kkSxhl7-NT3TEaIRgyvKfX3w")
-        sdk?.initializeSdk()
         var user: [User]? = nil
         let managedContext =
             self.persistentContainer.viewContext
@@ -34,7 +31,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
           print("Could not fetch. \(error), \(error.userInfo)")
 
         }
-        
         
 //        var expirationDate = Calendar.current.date(byAdding: .day, value: 7, to: Date())
 //        if (expirationDate?.daysTo(date: Date()))! <= 1 {

@@ -74,8 +74,12 @@ struct SettingsView: View{
                             .font(.title)
                         if self.refrigeratorViewModel.isPremiumPurchased() == false {
                         NavigationLink(destination: PremiumView(), label: {
-                            Text("Upgrade to premium")
-                            }).padding()
+                            HStack{
+                                Text("Upgrade to premium")
+                                Spacer()
+                                Text("\(self.refrigeratorViewModel.premiumPrice) / month")
+                            }
+                            })
                         }else {
                             Text("Subscribed to premium")
                             Button(action: {

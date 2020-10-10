@@ -37,8 +37,9 @@ struct LaunchView1: View {
         }else {
              NavigationView{
                 LaunchPageView1(showNextView: self.$showNextView)
+                .navigationBarTitle("").navigationBarHidden(true)
                 }.navigationViewStyle(StackNavigationViewStyle())
-            .navigationBarTitle("").navigationBarHidden(true)
+            
         }
     }
     }

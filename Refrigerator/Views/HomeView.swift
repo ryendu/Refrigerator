@@ -16,8 +16,8 @@ import CoreHaptics
 import CoreData
 import VisionKit
 import Vision
-import AppTrackingTransparency
 import AdSupport
+import AppTrackingTransparency
 
 func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     func contains(x: Int, numerator: Int)-> Bool{
@@ -265,7 +265,14 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
             .onAppear(perform: {
                 
                 if #available(iOS 14, *) {
+                    #if canImport(AppTrackingTransparency) && canImport(AdSupport)
+                    @available(iOS 14, *)
+                    func requestIDFA() {
+                      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+                      })
+                    }
                     requestIDFA()
+                    #endif
                 }
                 if self.user.count < 1 {
                         let newUser = User(context: self.managedObjectContext)
@@ -318,11 +325,8 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     }
 }
 
-@available(iOS 14, *)
-func requestIDFA() {
-  ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-  })
-}
+
+
 
 
 
@@ -607,7 +611,15 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                 .onAppear(perform: {
                     
                     if #available(iOS 14, *) {
+                        #if canImport(AppTrackingTransparency) && canImport(AdSupport)
+                        @available(iOS 14, *)
+                        func requestIDFA() {
+                          ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+                          })
+                        }
                         requestIDFA()
+                        #endif
+                        
                     } else {
                         // Fallback on earlier versions
                     }

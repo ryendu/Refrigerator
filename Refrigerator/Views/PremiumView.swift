@@ -20,61 +20,49 @@ struct PremiumView: View {
             ScrollView{
                 VStack{
                     Divider().padding()
-                    HStack{
-                        Text("Premium Subscription")
-                            .font(.system(size: 32))
-                            .fontWeight(.medium)
-                            .padding()
-                        Spacer()
-                        Button(action: {
-                            RefrigeratorProducts.store.restorePurchases()
-                            print("Restoring Purchases")
-                        },label: {
-                            Text("Restore").padding()
-                        })
-                    }
+                    
                     
                     HStack{
                         Image(systemName: "checkmark")
-                            .font(.system(size: 22))
+                            .font(.system(size: 20))
                             .foregroundColor(.orange)
-                            .padding()
+                            .padding(.horizontal)
                         Text("Be able to add foods from a food database with over 90k foods")
-                            .font(.system(size: 22))
-                            .padding()
+                            .font(.system(size: 18))
+                            .padding(.horizontal)
                         Spacer()
-                    }
+                    }.padding()
                     
                     HStack{
                         Image(systemName: "checkmark")
-                            .font(.system(size: 22))
+                            .font(.system(size: 20))
                             .foregroundColor(.orange)
-                            .padding()
+                            .padding(.horizontal)
                         Text("Be able to set custom food notifications times")
-                            .font(.system(size: 22))
-                            .padding()
+                            .font(.system(size: 18))
+                            .padding(.horizontal)
                         Spacer()
-                    }
-                    Text("Note: setting a custom food notification time will apply to all foods")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-                    .padding()
+                    }.padding()
+//                    Text("Note: setting a custom food notification time will apply to all foods")
+//                    .font(.caption)
+//                    .foregroundColor(.gray)
+//                    .padding()
                     
                     HStack{
                         Image(systemName: "checkmark")
-                            .font(.system(size: 22))
+                            .font(.system(size: 20))
                             .foregroundColor(.orange)
-                            .padding()
+                            .padding(.horizontal)
                         Text("Remove ads")
-                            .font(.system(size: 22))
-                            .padding()
+                            .font(.system(size: 18))
+                            .padding(.horizontal)
                         Spacer()
-                    }
+                    }.padding()
                     
-                    Image(systemName: "sparkles")
-                        .foregroundColor(.orange)
-                        .font(.system(size: 120))
-                        .padding()
+//                    Image(systemName: "sparkles")
+//                        .foregroundColor(.orange)
+//                        .font(.system(size: 100))
+//                        .padding()
                     
                     if self.isPurchased == false{
                         Button(action: {
@@ -83,7 +71,7 @@ struct PremiumView: View {
                             }
                         }, label: {
                             Image("Subscribe Button").renderingMode(.original).padding()
-                        })
+                        }).padding(.top, 65)
                         
                     }else {
                         
@@ -93,35 +81,35 @@ struct PremiumView: View {
                             Image("ManageSubscriptionbutton").renderingMode(.original)
                             }).padding()
                     }
-                    
-                    Text("auto-renewing subscription")
-                        .font(.system(size: 20))
-                        .foregroundColor(.gray)
-                        .padding()
                     Text("\(self.refrigeratorViewModel.premiumPrice) per month")
-                    .font(.system(size: 20))
-                    .foregroundColor(.gray)
-                    .padding()
+                        .font(.system(size: 18))
+                        .foregroundColor(.gray)
+                        .padding(.horizontal).padding(.bottom)
+                    Text("auto-renewing subscription")
+                        .font(.system(size: 15))
+                        .foregroundColor(.gray)
+                        .padding(.horizontal)
+                    
                 }
                     
                 HStack{
                     Button(action: {
                         UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/terms.html")!)
                     }, label: {
-                        Text("Terms And Conditions")
-                    })
-                    Text("and").padding()
+                        Text("Terms And Conditions").font(.system(size: 15))
+                    }).padding(.leading)
+                    Text("and").font(.system(size: 15)).padding()
                     Button(action: {
                         UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/privacy.html")!)
                     }, label: {
-                        Text("Privacy Policy")
-                    })
+                        Text("Privacy Policy").font(.system(size: 15))
+                    }).padding(.trailing)
                 }
                 
                 .onReceive(NotificationCenter.default.publisher(for: .premiumPriceGot)) { _ in
                     DispatchQueue.main.asyncAfter(deadline: .now()) {
                         
-                        self.refrigeratorViewModel.premiumPrice = self.products.first?.regularPrice ?? "$0.99"
+                        self.refrigeratorViewModel.premiumPrice = self.products.first?.regularPrice ?? "$1.99"
                     
                     }
                 }
@@ -154,7 +142,13 @@ struct PremiumView: View {
                 }
                 
             }
-        }.navigationBarTitle(Text("Upgrade to Premium"))
+        }.navigationBarTitle(Text("Premium Subscription"))
+        .navigationBarItems(trailing: Button(action: {
+            RefrigeratorProducts.store.restorePurchases()
+            print("Restoring Purchases")
+        },label: {
+            Text("Restore").padding()
+        }))
         .onReceive(NotificationCenter.default.publisher(for: .purchased)) {_ in
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 self.isPurchased = true
