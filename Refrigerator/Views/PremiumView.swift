@@ -70,7 +70,8 @@ struct PremiumView: View {
                             RefrigeratorProducts.store.buyProduct(firstPrd)
                             }
                         }, label: {
-                            Image("Subscribe Button").renderingMode(.original).padding()
+                            SubscribeButton(text: "\(self.refrigeratorViewModel.premiumPrice) per month").padding()
+                            
                         }).padding(.top, 65)
                         
                     }else {
@@ -81,7 +82,7 @@ struct PremiumView: View {
                             Image("ManageSubscriptionbutton").renderingMode(.original)
                             }).padding()
                     }
-                    Text("\(self.refrigeratorViewModel.premiumPrice) per month")
+                    Text("7 day free trial if eligible")
                         .font(.system(size: 18))
                         .foregroundColor(.gray)
                         .padding(.horizontal).padding(.bottom)
@@ -166,5 +167,29 @@ extension Float {
         formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 16 //maximum digits in Double after dot (maximum precision)
         return String(formatter.string(from: number) ?? "")
+    }
+}
+
+struct SubscribeButton: View {
+    @State var text: String
+    var body: some View {
+        VStack{
+            HStack{
+                Spacer()
+                Text(text)
+                    .foregroundColor(.white)
+                    .font(.custom("SFProDisplay-Bold", size: 22))
+                Spacer()
+            }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(LinearGradient(gradient: Gradient(colors: [Color(hex: "FF8838"), Color(hex: "FF5839")]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .frame(height: 57)
+                        .padding()
+                )
+                
+            
+        }
     }
 }
