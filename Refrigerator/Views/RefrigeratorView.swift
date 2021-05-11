@@ -8,7 +8,6 @@
 
 import SwiftUI
 import CoreData
-import GoogleMobileAds
 import Firebase
 import Vision
 import VisionKit
@@ -52,113 +51,6 @@ struct RefrigeratorView: View {
       }
        return returnValue
     }
-        @State var interstitial: GADInterstitial!
-    var adDelegate = MyDInterstitialDelegate()
-    @Binding var showingView: String?
-    @Binding var scan: VNDocumentCameraScan?
-    @Binding var image: [CGImage]?
-    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
-    @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
-    @Environment(\.managedObjectContext) var managedObjectContext
-    @State var isShowingActionSheet = false
-    @State var indexOfDelete = 0
-    
-
-    var body: some View {
-        NavigationView {
-                
-            ScrollView(.vertical, showsIndicators: false, content: {
-                VStack {
-                    
-                    
-                    if storageLocation.count > 0{
-                    ForEach(self.storageLocation, id: \.self) { item in
-                                                
-                        NavigationLink(destination: IndivisualRefrigeratorView(storageIndex: item, showingView: self.$showingView, scan: self.$scan, image: self.$image ).environment(\.managedObjectContext, self.managedObjectContext)) {
-                            StorageLocationCell(storageLocationIcon: item.wrappedSymbolName, storageLocationNumberOfItems: item.foodItemArray.count, storageLocationTitle: item.wrappedStorageName, storage: item).environment(\.managedObjectContext, self.managedObjectContext)
-                            }.buttonStyle(PlainButtonStyle())
-
-
-                    }
-                    } else {
-                        Text("Start by adding a new Storage location with the plus button above").padding()
-                    }
-                    
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                    GADBannerViewController()
-                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                    }else {
-
-                    }
-                }
-                    .navigationBarTitle("Refrigerator View")
-                    .navigationBarItems(trailing:
-                    Button(action: {
-                        
-                        self.refrigeratorViewModel.isInStorageItemAddingView.toggle()
-                    }, label: {
-                        Image("plus")
-                            .renderingMode(.original)
-                    }))
-                    
-                .onAppear(perform: {
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                        self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
-                        self.interstitial.delegate = self.adDelegate
-                        
-                        let req = GADRequest()
-                        self.interstitial.load(req)
-
-                        UserDefaults.standard.set(true, forKey: "RefrigeratorViewLoadedAd")
-                        
-                    }else {
-
-                    }
-                    
-                    
-                })
-
-            })
-            
-            }.navigationBarBackButtonHidden(true)
-            .navigationViewStyle(StackNavigationViewStyle())
-            .sheet(isPresented: $refrigeratorViewModel.isInStorageItemAddingView, content: {
-                AddToStorageItemSheet().environmentObject(refrigerator).environment(\.managedObjectContext, self.managedObjectContext)
-            })
-        
-
-        
-    }
-}
-
-
-
-struct RefrigeratorViewiPad: View {
-    func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
-        func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
-
-            var x = top
-            var y = bottom
-            while (y != 0) {
-                let buffer = y
-                y = x % y
-                x = buffer
-            }
-            let hcfVal = x
-            let newTopVal = top/hcfVal
-            let newBottomVal = bottom/hcfVal
-            return(newTopVal, newBottomVal)
-        }
-        let denomenator = simplify(top:Int(percent * 100), bottom: 100)
-        var returnValue = false
-        print(denomenator)
-        if Int.random(in: 1...denomenator.newBottom) == 1 {
-        returnValue = true
-      }
-       return returnValue
-    }
-        @State var interstitial: GADInterstitial!
-    var adDelegate = MyDInterstitialDelegate()
     @Binding var showingView: String?
     @Binding var scan: VNDocumentCameraScan?
     @Binding var image: [CGImage]?
@@ -188,12 +80,6 @@ struct RefrigeratorViewiPad: View {
                         Text("Start by adding a new Storage location with the plus button above").padding()
                     }
                     
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 7 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                    GADBannerViewController()
-                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                    }else {
-
-                    }
                 }
                     .navigationBarTitle("Refrigerator View")
                     .navigationBarItems(trailing:
@@ -205,22 +91,6 @@ struct RefrigeratorViewiPad: View {
                             .renderingMode(.original)
                     }))
                     
-                .onAppear(perform: {
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 11 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "RefrigeratorViewLoadedAd") == false  && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                        self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
-                        self.interstitial.delegate = self.adDelegate
-                        
-                        let req = GADRequest()
-                        self.interstitial.load(req)
-
-                        UserDefaults.standard.set(true, forKey: "RefrigeratorViewLoadedAd")
-                        
-                    }else {
-
-                    }
-                    
-                    
-                })
 
             })
             

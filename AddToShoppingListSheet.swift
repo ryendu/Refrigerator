@@ -156,7 +156,7 @@ struct AddToShoppingListSheet: View {
                 } catch let error{
                 print(error)
                 }
-                Analytics.logEvent("addedShoppingListItem", parameters: nil)
+                
                 self.presentationMode.wrappedValue.dismiss()
             }, label: {
                 Image("addOrange").renderingMode(.original)

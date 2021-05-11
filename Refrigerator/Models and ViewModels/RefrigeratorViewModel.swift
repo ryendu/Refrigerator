@@ -10,6 +10,8 @@ import Foundation
 import SwiftUI
 import CoreData
 import StoreKit
+import Combine
+
 enum WhichView {
     case homeView
     case refrigeratorView
@@ -17,31 +19,18 @@ enum WhichView {
 }
 enum RCKeys: String {
     case homeCustomMessage
-    case chanceOfPopups
-    case numberOfAdsInHomeView
     case shoppingListDescriptionHomeView
     case noFoodItemsText
-    case numberOfAdsNonHomeView
-    case chanceOfBanners
     case requestReview
     case feedbackViewMessage
     case requestReviewPeriod
     case chanceOfReview
 }
-enum AdUnitIDs: String{
-    case bannerTestID = "ca-app-pub-3940256099942544/2934735716"
-    case interstitialTestID = "ca-app-pub-3940256099942544/4411468910"
-    case bannerProductionID = "ca-app-pub-2772723693967190/3388696730"
-    case interstitialProductionID = "ca-app-pub-2772723693967190/6970289452"
-}
 class RefrigeratorViewModel: ObservableObject {
     @Published var defaultValues =  ([
         "homeCustomMessage" : "" as NSObject,
-        "chanceOfPopups" : 0.2 as NSObject,
-        "numberOfAdsInHomeView" : 1 as NSObject,
         "shoppingListDescriptionHomeView" : "Making a shopping list for your weekly grocery run helps prevent buying extra food, helps you eat healthier, and helps prevent food waste. Tap the ring to mark the shopping list item as bought." as NSObject,
         "noFoodItemsText" : "Start by adding a food to one of your fridges by going to the Refrigerator Tab in the middle down below 👇." as NSObject,
-        "numberOfAdsNonHomeView" : 6 as NSObject,
         "chanceOfBanners" : 0.25 as NSObject,
         "requestReview" : false as NSObject, RCKeys.feedbackViewMessage.rawValue: "Hey there! If you have anything you like, or dislike about this app, please do send us some feedback and know that we will read it and either be happy with your positive response, or do the best we can to fix any errors, or things you suggest us to change. :) But DO feel free to review us on the app store! And please do!" as NSObject, RCKeys.requestReviewPeriod.rawValue: 40 as NSObject,
         "chanceOfReview": 0.2 as NSObject
@@ -54,9 +43,30 @@ class RefrigeratorViewModel: ObservableObject {
     @Published var isInStorageItemAddingView = false
     @Published var isInWhichView = WhichView.homeView
     @Published var trackDate = "07302020"
+    var products: [SKProduct] = []
     // 1 2 3 0 2 0 2 0
     init(){
+        
         self.trackDate = self.getTrackDate(with: Date())
+        RefrigeratorProducts.store.requestProducts{ success, products in
+            
+            if success {
+                if let producs = products{
+                self.products = producs
+                    print("Products found: \(String(describing: self.products.first?.productIdentifier))")
+                }else {
+                    print("Didnt find products")
+                }
+                
+                
+            }else {
+                print("error getting products")
+            }
+        }
+        let objectWillChange = ObservableObjectPublisher()
+        objectWillChange.send()
+        self.premiumPrice = self.products.first?.regularPrice ?? "error getting regular price."
+
     }
     @Published var premiumPrice = "1.99"
     

@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Firebase
-import GoogleMobileAds
 import UserNotifications
 func addDays (days: Int, dateCreated: Date) -> Date{
     let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
@@ -260,12 +259,7 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                         }
                     }, label: {Image("addOrange").renderingMode(.original)}).padding()
                     
-                    if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 6 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                        GADBannerViewController()
-                            .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                    }else {
-                        
-                    }}
+                    }
                 
             }
         }.navigationBarTitle(Text("Add A Food Manually"))

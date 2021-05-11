@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Firebase
-import GoogleMobileAds
 import UIKit
 import StoreKit
 import UserNotifications
@@ -16,8 +15,6 @@ import CoreHaptics
 import CoreData
 import VisionKit
 import Vision
-import AdSupport
-import AppTrackingTransparency
 
 func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     func contains(x: Int, numerator: Int)-> Bool{
@@ -56,273 +53,6 @@ struct ShoppingListItem: Hashable, Identifiable{
     var name: String
     var icon: String
     var id = UUID()
-}
-struct HomeView: View {
-    func addDays (days: Int, dateCreated: Date) -> Date{
-        let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
-        print("Modified date: \(modifiedDate)")
-        return modifiedDate
-    }
-    @State var ref: DocumentReference!
-func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
-    func contains(x: Int, numerator: Int)-> Bool{
-        var returnObj = false
-        for index in 1...numerator{
-            if index == x{
-                returnObj = true
-            }
-        }
-        return returnObj
-    }
-    func simplify(top:Int, bottom:Int) -> (newTop:Int, newBottom:Int) {
-
-        var x = top
-        var y = bottom
-        while (y != 0) {
-            let buffer = y
-            y = x % y
-            x = buffer
-        }
-        let hcfVal = x
-        let newTopVal = top/hcfVal
-        let newBottomVal = bottom/hcfVal
-        return(newTopVal, newBottomVal)
-    }
-    let denomenator = simplify(top:Int(percent * 100), bottom: 100)
-    var returnValue = false
-    print(denomenator)
-    if contains(x: Int.random(in: 1...denomenator.newBottom), numerator: denomenator.newTop) {
-    returnValue = true
-  }
-   return returnValue
-}
-    @State var moveToStorageLocation: ShoppingList? = nil
-    @State var shoppingListItemTapped: ShoppingList? = nil
-    @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
-    @FetchRequest(entity: StorageLocation.entity(),sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
-    @FetchRequest(entity: ShoppingList.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \ShoppingList.name, ascending: true)]) var shoppingList: FetchedResults<ShoppingList>
-    @Environment(\.managedObjectContext) var managedObjectContext
-    @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
-
-    @Binding var showingView: String?
-    @Binding var scan: VNDocumentCameraScan?
-    @Binding var image: [CGImage]?
-    @State var showAddToShoppingListAlert: ShoppingListItem? = nil
-    @State var showMoreInfoOnShoppingList = false
-    @State var editFoodItem: FoodItem? = nil
-    @State var shadowAmount = 0
-    @State var showEatActionSheet = false
-    @State var foodItemTapped: FoodItem? = nil
-    @State var displayAmount = 0
-    @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
-    @State var showMoreInfoOnFoodsToEatSoon = false
-    var body: some View {
-        NavigationView {
-            GeometryReader { geo in
-                    ScrollView(.vertical, showsIndicators: false){
-                        VStack {
-                            VStack{
-                             HomeViewDashboardFeatures(geo: geo, showingView: self.$showingView, scan: self.$scan, image: self.$image)
-                            }
-                            NavigationLink(destination: ExamineRecieptView(image: self.$image, showingView: self.$showingView, scan: self.$scan), tag: "results", selection: self.$showingView, label: {Text("")})
-                            //MARK: FOODS TO EAT SOON
-                            FoodsToEatSoonView(showAddToShoppingListAlert: self.$showAddToShoppingListAlert, foodItemTapped: self.$foodItemTapped, editFoodItem: self.$editFoodItem, geo: geo).padding()
-
-                            
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                                GADBannerViewController()
-                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                            }else {
-                                
-                            }
-                            //MARK: SHOPPING LIST
-                            
-                            ShoppingListView(moveToStorageLocation: self.$moveToStorageLocation, shoppingListItemTapped: self.$shoppingListItemTapped)
-                            
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                                GADBannerViewController()
-                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                            }else {
-                            }
-                        }
-                        
-                        
-                        
-                        
-                    }
-                    if self.foodItemTapped != nil{
-                        Text("")
-                            .actionSheet(item: self.$foodItemTapped, content: { item in // << activated on item
-                            ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this food item"), buttons: [
-                                .default(Text("Eat All"), action: {
-                                    self.user.first?.foodsEaten += Int32(1)
-                                    let center = UNUserNotificationCenter.current()
-                                    center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
-                                    self.showAddToShoppingListAlert = ShoppingListItem(name: item.wrappedName, icon: item.wrappedSymbol)
-                                    self.managedObjectContext.delete(item)
-                                    try? self.managedObjectContext.save()
-                                    addToDailyGoal()
-                                    refreshDailyGoalAndStreak()
-                                    refreshDailyGoalAndStreak()
-                                    
-                                    
-                                })
-                                ,.default(Text("Throw Away"), action: {
-                                    
-                                    self.user.first?.foodsThrownAway += Int32(1)
-                                    
-                                    
-                                    let center = UNUserNotificationCenter.current()
-                                    center.removePendingNotificationRequests(withIdentifiers: [item.wrappedID.uuidString])
-                                    self.managedObjectContext.delete(item)
-                                    try? self.managedObjectContext.save()
-                                })
-                                ,.default(Text("Eat Some"), action: {
-                                    print("ate some of \(item)")
-                                    addToDailyGoal()
-                                    refreshDailyGoalAndStreak()
-                                })
-                                ,.default(Text("Edit"), action: {
-                                    self.editFoodItem = item
-                                    addToDailyGoal()
-                                    refreshDailyGoalAndStreak()
-                                })
-                                
-                                ,.default(Text("Duplicate"), action: {
-                                    let id = UUID()
-                                    let newFoodItem = FoodItem(context: self.managedObjectContext)
-                                    newFoodItem.staysFreshFor = item.staysFreshFor
-                                    if item.usesImage{
-                                        newFoodItem.usesImage = true
-                                        newFoodItem.image = item.image
-                                    }else{
-                                        newFoodItem.symbol = item.symbol
-                                    }
-                                    newFoodItem.name = item.name
-                                    newFoodItem.inStorageSince = Date()
-                                    newFoodItem.id = id
-                                    item.origion?.addToFoodItem(newFoodItem)
-                                    addToDailyGoal()
-                                    refreshDailyGoalAndStreak()
-                                    let center = UNUserNotificationCenter.current()
-                                    let content = UNMutableNotificationContent()
-                                    content.title = "Eat This Food Soon"
-                                    let date = Date()
-                                    let twoDaysBefore = self.addDays(days: Int(item.staysFreshFor) - Int(self.user.first?.remindDate ?? Int16(2)), dateCreated: date)
-                                    content.body = "Your food item, \(newFoodItem.wrappedName) is about to go bad in 2 days."
-                                    content.sound = UNNotificationSound.default
-                                    var dateComponents = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute], from: twoDaysBefore)
-                                    dateComponents.hour = 10
-                                    dateComponents.minute = 0
-                                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-                                    print("dateComponents for notifs: \(dateComponents)")
-                                    let request = UNNotificationRequest(identifier: id.uuidString, content: content, trigger: trigger)
-                                    center.add(request)
-                                    Analytics.logEvent("addedFoodItem", parameters: nil)
-                                    do{
-                                        try self.managedObjectContext.save()
-                                    } catch let error{
-                                        print(error)
-                                    }
-                                    
-                                })
-                                ,.default(Text("Cancel"))
-                            ])
-                        })
-                    }
-                    if self.shoppingListItemTapped != nil {
-                        Text("")
-                        .actionSheet(item: self.$shoppingListItemTapped, content: { item in // << activated on item
-                            ActionSheet(title: Text("More Options"), message: Text("Chose what to do with this shopping list item"), buttons: [
-                                .default(Text("Delete"), action: {
-                                    self.managedObjectContext.delete(item)
-                                    try?self.managedObjectContext.save()
-                                })
-                                ,.default(Text("Duplicate"), action: {
-                                    let newShoppingListItem = ShoppingList(context: self.managedObjectContext)
-                                    newShoppingListItem.icon = item.wrappedIcon
-                                    newShoppingListItem.name = item.wrappedName
-                                    Analytics.logEvent("addedShoppingItem", parameters: nil)
-                                    do{
-                                        try self.managedObjectContext.save()
-                                    } catch let error{
-                                        print(error)
-                                    }
-                                    
-                                }),
-                                 .default(Text("Move to a storage location"), action: {
-                                    self.moveToStorageLocation = item
-                                 })
-                                ,.default(Text("Cancel"))
-                            ])
-                        })
-                    }
-                                            
-                
-            }
-            
-            .navigationBarTitle("Hello, \(self.user.first?.name ?? "there")!")
-            .onAppear(perform: {
-                
-                if #available(iOS 14, *) {
-                    #if canImport(AppTrackingTransparency) && canImport(AdSupport)
-                    @available(iOS 14, *)
-                    func requestIDFA() {
-                      ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-                      })
-                    }
-                    requestIDFA()
-                    #endif
-                }
-                if self.user.count < 1 {
-                        let newUser = User(context: self.managedObjectContext)
-                        newUser.name = ""
-                        if UserDefaults.standard.string(forKey: "name") != "" {
-                            newUser.name = UserDefaults.standard.string(forKey: "name")
-                        }
-                        newUser.foodsEaten = Int32(0)
-                        newUser.foodsThrownAway = Int32(0)
-                        newUser.dailyGoal = Int16(0)
-                        newUser.streak = Int16(0)
-                    do{
-                        try self.managedObjectContext.save()
-                    }catch{
-                        print(error)
-                        Analytics.logEvent("errorSavingNewUser", parameters: ["error": error.localizedDescription ?? ""])
-                    }
-                    }else if self.user.count == 1{
-                        
-                }else if self.user.count > 1{
-                        Analytics.logEvent("multipleUsersInCoredata", parameters: ["users": self.user.count])
-//                        for indx in 0...self.user.count - 1{
-//                            if indx != 0 {
-//                                self.managedObjectContext.delete(self.user[indx])
-//                                try? self.managedObjectContext.save()
-//                            }
-//                        }
-                    }
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                        if success {
-                        } else if let error = error {
-                            print(error)
-                            
-                        }
-                    }
-                    
-                if Date() > self.user.first?.inAMonth ?? Date() && RemoteConfigManager.boolValue(forkey: RCKeys.requestReview.rawValue) && self.user.first?.didReviewThisMonth == false{
-                    rateApp()
-                    // did review this month is called did review this month but is actually used as did review and once turned to true it will never be turned to false ever again
-                    self.user.first?.didReviewThisMonth = true
-                    try? self.managedObjectContext.save()
-                    Analytics.logEvent("requestedReview", parameters: nil)
-                }
-                })
-        }
-            
-        .navigationBarBackButtonHidden(true)
-        .navigationViewStyle(StackNavigationViewStyle())
-        
-    }
 }
 
 
@@ -405,7 +135,7 @@ struct ShoppingListView: View{
     }
 }
 
-struct HomeViewiPad: View {
+struct HomeView: View {
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
         print("Modified date: \(modifiedDate)")
@@ -474,20 +204,10 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                              HomeViewDashboardFeatures(geo: geo, showingView: self.$showingView, scan: self.$scan, image: self.$image)
                             //MARK: FOODS TO EAT SOON
                             FoodsToEatSoonView(showAddToShoppingListAlert: self.$showAddToShoppingListAlert, foodItemTapped: self.$foodItemTapped, editFoodItem: self.$editFoodItem, geo: geo).padding()
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                                GADBannerViewController()
-                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                            }else {
-                                
-                            }
+                            
                             //MARK: SHOPPING LIST
                             ShoppingListView(moveToStorageLocation: self.$moveToStorageLocation, shoppingListItemTapped: self.$shoppingListItemTapped).padding()
                             
-                            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsInHomeView.rawValue) >= 1 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                                GADBannerViewController()
-                                    .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                            }else {
-                            }
                         }
                         
                         
@@ -610,19 +330,6 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
                 
                 .onAppear(perform: {
                     
-                    if #available(iOS 14, *) {
-                        #if canImport(AppTrackingTransparency) && canImport(AdSupport)
-                        @available(iOS 14, *)
-                        func requestIDFA() {
-                          ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
-                          })
-                        }
-                        requestIDFA()
-                        #endif
-                        
-                    } else {
-                        // Fallback on earlier versions
-                    }
                     
                     
                     if self.user.count < 1 {
@@ -937,7 +644,7 @@ struct RemoteConfigManager {
                 return
             }
             print("Recieved Values From Remote Config")
-                RemoteConfig.remoteConfig().activate(completionHandler: nil)
+                RemoteConfig.remoteConfig().activate()
         }
     }
     
@@ -957,51 +664,6 @@ struct RemoteConfigManager {
     }
     
 }
-
-
-struct GADBannerViewController: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        let view = GADBannerView(adSize: kGADAdSizeBanner)
-        let viewController = UIViewController()
-        view.adUnitID = AdUnitIDs.bannerTestID.rawValue
-        view.rootViewController = viewController
-        viewController.view.addSubview(view)
-        viewController.view.frame = CGRect(origin: .zero, size: kGADAdSizeBanner.size)
-        view.load(GADRequest())
-        return viewController
-    }
-    
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        bannerView.alpha = 0
-        UIView.animate(withDuration: 1, animations: {
-            bannerView.alpha = 1
-        })
-    }
-    func adView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: GADRequestError) {
-        let gadErrorCode = GADErrorCode(rawValue: error.code)
-        print("gadErrorCode: \(gadErrorCode)")
-        Analytics.logEvent("gadErrorCode", parameters: ["gadErrorCode": gadErrorCode])
-    }
-    
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-}
-
-class MyDInterstitialDelegate: NSObject, GADInterstitialDelegate {
-    
-    func interstitialDidReceiveAd(_ ad: GADInterstitial) {
-        if ad.isReady{
-            let root = UIApplication.shared.windows.first?.rootViewController
-            ad.present(fromRootViewController: root!)
-        } else {
-            print("not ready")
-        }
-    }
-    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
-        
-    }
-}
-
 
 
 func rateApp() {

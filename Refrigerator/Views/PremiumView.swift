@@ -14,6 +14,7 @@ struct PremiumView: View {
     @State var isPurchased = false
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @Environment(\.presentationMode) var presentationMode
+    @State var premiumPrice = "1.99"
     var body: some View {
         ZStack{
             
@@ -43,26 +44,8 @@ struct PremiumView: View {
                             .padding(.horizontal)
                         Spacer()
                     }.padding()
-//                    Text("Note: setting a custom food notification time will apply to all foods")
-//                    .font(.caption)
-//                    .foregroundColor(.gray)
-//                    .padding()
                     
-                    HStack{
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 20))
-                            .foregroundColor(.orange)
-                            .padding(.horizontal)
-                        Text("Remove ads")
-                            .font(.system(size: 18))
-                            .padding(.horizontal)
-                        Spacer()
-                    }.padding()
                     
-//                    Image(systemName: "sparkles")
-//                        .foregroundColor(.orange)
-//                        .font(.system(size: 100))
-//                        .padding()
                     
                     if self.isPurchased == false{
                         Button(action: {
@@ -70,7 +53,7 @@ struct PremiumView: View {
                             RefrigeratorProducts.store.buyProduct(firstPrd)
                             }
                         }, label: {
-                            SubscribeButton(text: "\(self.refrigeratorViewModel.premiumPrice) per month").padding()
+                            SubscribeButton(text: "\(self.premiumPrice) per month").padding()
                             
                         }).padding(.top, 65)
                         
@@ -110,7 +93,7 @@ struct PremiumView: View {
                 .onReceive(NotificationCenter.default.publisher(for: .premiumPriceGot)) { _ in
                     DispatchQueue.main.asyncAfter(deadline: .now()) {
                         
-                        self.refrigeratorViewModel.premiumPrice = self.products.first?.regularPrice ?? "$1.99"
+                        self.premiumPrice = self.products.first?.regularPrice ?? "$1.99"
                     
                     }
                 }
@@ -119,6 +102,7 @@ struct PremiumView: View {
             
                 .onAppear{
                 
+                    
                 print("is product purchased: \(RefrigeratorProducts.store.isProductPurchased("com.ryandu.refrigerators.premiumsubscriptionm"))")
                 if RefrigeratorProducts.store.isProductPurchased("com.ryandu.refrigerators.premiumsubscriptionm"){
                     self.isPurchased = true
@@ -126,6 +110,20 @@ struct PremiumView: View {
                     self.isPurchased = false
                 }
                     print("on appear")
+                    
+                    RefrigeratorProducts.store.requestProducts{ success, products in
+                        
+                        if success {
+                            if let producs = products{
+                                self.premiumPrice = producs.first?.regularPrice ?? "1.99"
+                            }else {
+                                print("Didnt find products")
+                            }
+                            
+                        }else {
+                            print("error getting products")
+                        }
+                    }
                 RefrigeratorProducts.store.requestProducts{ success, products in
                     
                     if success {
@@ -141,7 +139,8 @@ struct PremiumView: View {
                         print("error getting products")
                     }
                 }
-                
+                    self.refrigeratorViewModel.premiumPrice = self.products.first?.regularPrice ?? "error getting regular price."
+
             }
         }.navigationBarTitle(Text("Premium Subscription"))
         .navigationBarItems(trailing: Button(action: {

@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Firebase
-import GoogleMobileAds
 import UserNotifications
 
 struct MoveShoppingItemToStorageSheet: View {
@@ -38,8 +37,6 @@ struct MoveShoppingItemToStorageSheet: View {
        return returnValue
     }
     @Binding var Item: ShoppingList?
-        @State var interstitial: GADInterstitial!
-    var adDelegate = MyDInterstitialDelegate()
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
     @FetchRequest(entity: StorageLocation.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \StorageLocation.storageName, ascending: true)]) var storageLocation: FetchedResults<StorageLocation>
@@ -108,13 +105,6 @@ struct MoveShoppingItemToStorageSheet: View {
                     Text("There are no storage Locations")
                 }
                 
-                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 5 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                GADBannerViewController()
-                .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                    .padding(.top, 150)
-                }else {
-
-                }
             }
 
         })

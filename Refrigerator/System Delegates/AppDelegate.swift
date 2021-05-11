@@ -9,7 +9,6 @@
 import UIKit
 import CoreData
 import Firebase
-import GoogleMobileAds
 import UserNotifications
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         FirebaseApp.configure()
         RemoteConfigManager.configure()
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
         var user: [User]? = nil
         let managedContext =
             self.persistentContainer.viewContext
@@ -75,10 +73,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }else {
             print("user14 is nil app delegate")
         }
-        UserDefaults.standard.set(false, forKey: "RefrigeratorViewLoadedAd")
-        UserDefaults.standard.set(false, forKey: "IndivisualRefrigeratorViewLoadedAd")
-        UserDefaults.standard.set(false, forKey: "ExamineRecieptViewLoadedAd")
-        UserDefaults.standard.set(false, forKey: "SeeMoreViewLoadedAd")
         
         let pushManager = PushNotificationManager(userID: "currently_logged_in_user_id")
         pushManager.registerForPushNotifications()
@@ -171,13 +165,8 @@ class PushNotificationManager: NSObject, MessagingDelegate, UNUserNotificationCe
         if let token = Messaging.messaging().fcmToken {
             let usersRef = Firestore.firestore().collection("users_table").document(userID)
             usersRef.setData(["fcmToken": token], merge: true)
+            print("Got new fcmToken: \(token)")
         }
-    }
-    func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
-        print(remoteMessage.appData)
-    }
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        updateFirestorePushTokenIfNeeded()
     }
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         print(response)

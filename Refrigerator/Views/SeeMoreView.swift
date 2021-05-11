@@ -8,7 +8,6 @@
 
 import SwiftUI
 import Firebase
-import GoogleMobileAds
 
 struct SeeMoreView: View {
     func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
@@ -34,8 +33,6 @@ struct SeeMoreView: View {
       }
        return returnValue
     }
-        @State var interstitial: GADInterstitial!
-    var adDelegate = MyDInterstitialDelegate()
     func addDays (days: Int, dateCreated: Date) -> Date{
         let modifiedDate = Calendar.current.date(byAdding: .day, value: days, to: dateCreated)!
         print("Modified date: \(modifiedDate)")
@@ -67,11 +64,6 @@ struct SeeMoreView: View {
                 })
                     
                 Spacer()
-                if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 12 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                    GADBannerViewController()
-                        .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                }else {
-                }
             })
             
         }.alert(item: self.$showAddToShoppingListAlert, content: { item in
@@ -162,19 +154,6 @@ struct SeeMoreView: View {
         })
     .navigationBarTitle("Eat These Foods Soon")
         .onAppear(perform: {
-            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 10 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfPopups.rawValue)) && UserDefaults.standard.bool(forKey: "SeeMoreViewLoadedAd") == false && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                self.interstitial = GADInterstitial(adUnitID: AdUnitIDs.interstitialTestID.rawValue)
-                self.interstitial.delegate = self.adDelegate
-                
-                let req = GADRequest()
-                self.interstitial.load(req)
-
-                UserDefaults.standard.set(true, forKey: "SeeMoreViewLoadedAd")
-                
-            }else {
-
-            }
-            
             
         })
     }

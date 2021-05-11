@@ -136,8 +136,6 @@ func possiblyDoSomething(withPercentAsDecimal percent: Double) -> Bool{
     @State var percentDone = 0.0
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(entity: FoodItem.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \FoodItem.staysFreshFor, ascending: true)]) var foodItem: FetchedResults<FoodItem>
-    @State var interstitial: GADInterstitial!
-    var adDelegate = MyDInterstitialDelegate()
     @FetchRequest(entity: User.entity(), sortDescriptors: []) var user: FetchedResults<User>
     var body: some View {
         GeometryReader{ geo in

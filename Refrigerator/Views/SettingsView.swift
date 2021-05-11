@@ -7,7 +7,6 @@
 //
 import Combine
 import SwiftUI
-import GoogleMobileAds
 
 struct SettingsView: View{
     @EnvironmentObject var refrigeratorViewModel: RefrigeratorViewModel
@@ -51,8 +50,8 @@ struct SettingsView: View{
     @State var name = ""
     @State var remindDate = 2
     @State var showShareSheet = false
+    @State var premiumPrice = "1.99"
     var body: some View{
-        NavigationView{
             GeometryReader{ geo in
                 List{
                     Section{
@@ -77,7 +76,7 @@ struct SettingsView: View{
                             HStack{
                                 Text("Upgrade to premium")
                                 Spacer()
-                                Text("\(self.refrigeratorViewModel.premiumPrice) / month")
+                                Text("\(self.premiumPrice) / month")
                             }
                             })
                         }else {
@@ -140,15 +139,6 @@ struct SettingsView: View{
                         })
                     }
                     Section{
-                        if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 2 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-                        GADBannerViewController()
-                        .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-                        }else {
-
-                        }
-                        
-                    }
-                    Section{
                         Button(action: {
                             UIApplication.shared.open(URL(string: "https://refrigerator.flycricket.io/terms.html")!)
                         }, label: {
@@ -166,8 +156,26 @@ struct SettingsView: View{
             
             
         }
-        }.navigationViewStyle(StackNavigationViewStyle())
+        
+        .navigationViewStyle(StackNavigationViewStyle())
             .onAppear{
+                
+                RefrigeratorProducts.store.requestProducts{ success, products in
+                    
+                    if success {
+                        if let producs = products{
+                            self.premiumPrice = producs.first?.regularPrice ?? "1.99"
+                        }else {
+                            print("Didnt find products")
+                        }
+                        
+                    }else {
+                        print("error getting products")
+                    }
+                }
+                    
+
+                
                 self.remindDate = Int(self.user.first?.remindDate ?? 2)
                 self.name = self.user.first?.name ?? ""
         }

@@ -16,7 +16,6 @@
 		8C2AB00024F9D5DD009AF53F /* MealItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2AAFFA24F9D5DC009AF53F /* MealItem+CoreDataClass.swift */; };
 		8C2AB00124F9D5DD009AF53F /* MealItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2AAFFB24F9D5DD009AF53F /* MealItem+CoreDataProperties.swift */; };
 		8C2AB00224F9D5DD009AF53F /* FoodPlannerMeal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2AAFFC24F9D5DD009AF53F /* FoodPlannerMeal+CoreDataProperties.swift */; };
-		8C2AB00424F9E7C9009AF53F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C2AB00324F9E7C9009AF53F /* GoogleService-Info.plist */; };
 		940F7F3D24C21DFE006076AA /* MealCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F3C24C21DFE006076AA /* MealCell.swift */; };
 		940F7F3F24C23204006076AA /* FoodPlannerCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F3E24C23204006076AA /* FoodPlannerCellView.swift */; };
 		940F7F4524C23925006076AA /* AddFoodItemToPlannerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940F7F4424C23925006076AA /* AddFoodItemToPlannerSheet.swift */; };
@@ -74,9 +73,9 @@
 		9494314D24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9494314C24C4D15B005EA24A /* AddAnyFoodItemsSheet.swift */; };
 		94A2C7AD247EDC1D003DC68B /* EditFoodItemPopUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AC247EDC1D003DC68B /* EditFoodItemPopUpView.swift */; };
 		94A2C7AF247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A2C7AE247F06E8003DC68B /* MoveShoppingItemToStorageSheet.swift */; };
-		94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */; };
 		94DABA0D2472EDC3003CFCF1 /* ExamineRecieptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */; };
 		94EE905324BFAD5B000C2FC2 /* DailyGoalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94EE905224BFAD5B000C2FC2 /* DailyGoalCell.swift */; };
+		9CAB162D263B9446006D7946 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CAB162C263B9446006D7946 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,7 +109,6 @@
 		8C2AAFFA24F9D5DC009AF53F /* MealItem+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MealItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		8C2AAFFB24F9D5DD009AF53F /* MealItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MealItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		8C2AAFFC24F9D5DD009AF53F /* FoodPlannerMeal+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FoodPlannerMeal+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		8C2AB00324F9E7C9009AF53F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		940F7F3C24C21DFE006076AA /* MealCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCell.swift; sourceTree = "<group>"; };
 		940F7F3E24C23204006076AA /* FoodPlannerCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodPlannerCellView.swift; sourceTree = "<group>"; };
 		940F7F4424C23925006076AA /* AddFoodItemToPlannerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodItemToPlannerSheet.swift; sourceTree = "<group>"; };
@@ -178,6 +176,7 @@
 		94D7C79B24A3FD3500B6E2C5 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		94DABA0C2472EDC3003CFCF1 /* ExamineRecieptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamineRecieptView.swift; sourceTree = "<group>"; };
 		94EE905224BFAD5B000C2FC2 /* DailyGoalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyGoalCell.swift; sourceTree = "<group>"; };
+		9CAB162C263B9446006D7946 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ACAD8F1CD146A75D064E861E /* Pods-Refrigerator-RefrigeratorUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Refrigerator-RefrigeratorUITests.release.xcconfig"; path = "Target Support Files/Pods-Refrigerator-RefrigeratorUITests/Pods-Refrigerator-RefrigeratorUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D3430B2FF85E6460D942D0F9 /* Pods-RefrigeratorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RefrigeratorTests.debug.xcconfig"; path = "Target Support Files/Pods-RefrigeratorTests/Pods-RefrigeratorTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -189,7 +188,6 @@
 			files = (
 				94311E0024C3BF3600F8671B /* CloudKit.framework in Frameworks */,
 				6BC3E3E935E6A2F9201172EA /* Pods_Refrigerator.framework in Frameworks */,
-				94D7C79C24A3FD3500B6E2C5 /* AdSupport.framework in Frameworks */,
 				9467D07024D061000058B89F /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,8 +295,8 @@
 				94EA3D37245B5D03001FCB5A /* LaunchViews */,
 				94598D192458E23000456333 /* Assets.xcassets */,
 				94598D1E2458E23000456333 /* LaunchScreen.storyboard */,
-				8C2AB00324F9E7C9009AF53F /* GoogleService-Info.plist */,
 				94598D212458E23000456333 /* Info.plist */,
+				9CAB162C263B9446006D7946 /* GoogleService-Info.plist */,
 				94598D142458E22700456333 /* Refrigerator.xcdatamodeld */,
 				94598D1B2458E23000456333 /* Preview Content */,
 			);
@@ -553,7 +551,7 @@
 			files = (
 				94311DFE24C3AB0D00F8671B /* SF-Compact-Text-Thin.otf in Resources */,
 				94311DFC24C3A9C900F8671B /* SF-Pro-Display-Thin.otf in Resources */,
-				8C2AB00424F9E7C9009AF53F /* GoogleService-Info.plist in Resources */,
+				9CAB162D263B9446006D7946 /* GoogleService-Info.plist in Resources */,
 				94311DFB24C3A9C500F8671B /* SF-Pro-Display-Bold.otf in Resources */,
 				94311DF724C3A85D00F8671B /* SF-Compact-Display-Regular.otf in Resources */,
 				94598D202458E23000456333 /* LaunchScreen.storyboard in Resources */,
@@ -907,7 +905,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
@@ -918,7 +916,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryandu.refrigerator;
 				PRODUCT_NAME = Refrigerators;
 				SWIFT_VERSION = 5.0;
@@ -933,7 +931,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Refrigerator/Refrigerator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Refrigerator/Preview Content\"";
 				DEVELOPMENT_TEAM = CUA3BVMUR5;
 				ENABLE_PREVIEWS = YES;
@@ -943,7 +941,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryandu.refrigerator;
 				PRODUCT_NAME = Refrigerators;
 				SWIFT_VERSION = 5.0;

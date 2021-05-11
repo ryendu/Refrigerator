@@ -35,23 +35,32 @@ struct TabBarView: View {
             Color.white
             
         TabView(selection: $selection){
-            
+            NavigationView{
             HomeView(showingView: self.$showingView, scan: self.$scan, image: self.$image)
+            }
                 .tabItem {
                     selection == 0 ? Image("Home icon filled") : Image("Home icon")
-                }
+            }
             .tag(0)
+            NavigationView{
             RefrigeratorView(showingView: self.$showingView, scan: self.$scan, image: self.$image).environmentObject(refrigerator)
+            }
                 .tabItem {
                     selection == 1 ? Image("Fridge icon fillied") : Image("Fridge icon")
             }
+            
             .tag(1)
+            NavigationView{
             FoodPlannerView(trackDate: refrigerator.trackDate).environmentObject(refrigerator)
+            }
                 .tabItem {
                     Image(systemName: "calendar").font(.system(size: 26))
                 }
+            
             .tag(2)
+            NavigationView{
             SettingsView()
+            }
                 .tabItem {
                     Image(systemName: "gear").font(.system(size: 25))
             }.accentColor(.orange)

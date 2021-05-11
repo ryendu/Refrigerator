@@ -35,7 +35,7 @@ struct IpadSidebarView: View {
         ZStack{
             NavigationView{
                     List{
-                        NavigationLink(destination: HomeViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
+                        NavigationLink(destination: HomeView(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
                             HStack{
                                 Image(systemName: "house").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 Text("Home")
@@ -44,7 +44,7 @@ struct IpadSidebarView: View {
                                 Spacer()
                             }
                         }).tag(0)
-                        NavigationLink(destination: RefrigeratorViewiPad(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
+                        NavigationLink(destination: RefrigeratorView(showingView: self.$showingView, scan: self.$scan, image: self.$image), label: {
                             HStack{
                                 Image(systemName: "square.grid.2x2").foregroundColor(.orange).font(.system(size: 25)).padding(.vertical).padding(.leading)
                                 Text("Refrigerators")
@@ -53,7 +53,7 @@ struct IpadSidebarView: View {
                                 Spacer()
                             }
                         }).tag(0)
-                        NavigationLink(destination: FoodPlannerViewiPad(trackDate: refrigerator.trackDate), label: {
+                        NavigationLink(destination: FoodPlannerView(trackDate: refrigerator.trackDate), label: {
                             HStack{
                                 Image(systemName: "calendar").foregroundColor(.orange).font(.system(size: 26)).padding(.vertical).padding(.leading)
                                 

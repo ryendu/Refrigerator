@@ -9,7 +9,6 @@
 import SwiftUI
 import CoreData
 import Foundation
-import GoogleMobileAds
 import Firebase
 
 struct AddToStorageItemSheet: View {
@@ -199,12 +198,7 @@ ForEach(listOfIcons1, id: \.self) {emoji in
                
                }, label: {Image("addOrange").renderingMode(.original)})
             
-            if RemoteConfigManager.intValue(forkey: RCKeys.numberOfAdsNonHomeView.rawValue) >= 4 && self.possiblyDoSomething(withPercentAsDecimal: RemoteConfigManager.doubleValue(forkey: RCKeys.chanceOfBanners.rawValue)) && self.refrigeratorViewModel.isPremiumPurchased() == false{
-            GADBannerViewController()
-            .frame(width: kGADAdSizeBanner.size.width, height: kGADAdSizeBanner.size.height)
-            }else {
-
-            }
+            
         }
         }
        }
